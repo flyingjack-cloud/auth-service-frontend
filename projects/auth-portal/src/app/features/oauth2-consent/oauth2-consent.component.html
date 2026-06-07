@@ -1,0 +1,52 @@
+<div class="consent-container">
+  <mat-card class="consent-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>apps</mat-icon>
+      <mat-card-title>授权请求</mat-card-title>
+      <mat-card-subtitle>{{ clientId }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <sh-error-alert [message]="errorMessage()" />
+
+      <p class="consent-intro">
+        <strong>{{ clientId }}</strong> 请求访问您的账号，包含以下权限：
+      </p>
+
+      <mat-list>
+        @for (s of scopeList; track s) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>check_circle</mat-icon>
+            <span matListItemTitle>{{ s }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-stroked-button (click)="deny()" [disabled]="loading()">
+        拒绝
+      </button>
+      <button mat-raised-button color="primary" (click)="authorize()" [disabled]="loading()">
+        @if (loading()) {
+          <mat-spinner diameter="18" />
+        } @else {
+          授权
+        }
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<style>
+  .consent-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--mat-sys-surface-variant, #f3edf7);
+  }
+  .consent-card { width: 100%; max-width: 420px; }
+  .consent-intro { margin: 0 0 8px; font-size: 14px; }
+</style>
