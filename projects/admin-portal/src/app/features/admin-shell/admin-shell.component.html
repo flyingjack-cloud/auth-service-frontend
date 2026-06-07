@@ -1,0 +1,30 @@
+<mat-toolbar color="primary" class="shell-toolbar">
+  <mat-icon class="toolbar-logo">admin_panel_settings</mat-icon>
+  <span class="toolbar-title">flyingjack cloud 管理后台</span>
+  <span class="spacer"></span>
+  <span class="toolbar-username">{{ currentUser()?.username }}</span>
+  <button mat-icon-button (click)="logout()" aria-label="退出登录">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/users" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>用户管理</span>
+      </a>
+      <a mat-list-item routerLink="/clients" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>apps</mat-icon>
+        <span matListItemTitle>客户端管理</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="content">
+    <div class="content-inner">
+      <router-outlet />
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
