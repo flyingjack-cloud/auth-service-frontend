@@ -1,0 +1,122 @@
+@if (loadingData()) {
+  <div class="loading-center"><mat-spinner diameter="40" /></div>
+}
+
+@if (!loadingData()) {
+  <div class="form-layout">
+    <div class="form-header">
+      <a mat-icon-button routerLink="/clients" aria-label="返回客户端列表">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2>{{ isEdit() ? '编辑客户端' : '新建客户端' }}</h2>
+    </div>
+
+    <sh-error-alert [message]="errorMessage()" />
+
+    <mat-card>
+      <mat-card-content>
+        <form [formGroup]="form">
+          <mat-tab-group>
+            <mat-tab label="基本信息">
+              <div class="tab-content">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>客户端 ID</mat-label>
+                  <input matInput formControlName="clientId" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>客户端名称</mat-label>
+                  <input matInput formControlName="clientName" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>{{ isEdit() ? '新密钥（留空保持不变）' : '客户端密钥' }}</mat-label>
+                  <input matInput formControlName="clientSecret" type="password" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>回调地址（多个用逗号分隔）</mat-label>
+                  <input matInput formControlName="redirectUris" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Scopes（空格分隔）</mat-label>
+                  <input matInput formControlName="scopes" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>描述</mat-label>
+                  <textarea matInput formControlName="description" rows="2"></textarea>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>联系邮箱</mat-label>
+                  <input matInput formControlName="contactEmail" type="email" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>头像 URL</mat-label>
+                  <input matInput formControlName="avatarUrl" />
+                </mat-form-field>
+              </div>
+            </mat-tab>
+
+            <mat-tab label="高级设置">
+              <div class="tab-content">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>授权类型（逗号分隔）</mat-label>
+                  <input matInput formControlName="authorizationGrantTypes" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>客户端认证方式</mat-label>
+                  <input matInput formControlName="clientAuthenticationMethods" />
+                </mat-form-field>
+
+                <div class="checkbox-row">
+                  <mat-checkbox formControlName="requireProofKey">需要 PKCE（requireProofKey）</mat-checkbox>
+                </div>
+
+                <div class="ttl-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>AccessToken 有效期（小时）</mat-label>
+                    <input matInput formControlName="accessTokenTtlHours" type="number" min="1" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>RefreshToken 有效期（天）</mat-label>
+                    <input matInput formControlName="refreshTokenTtlDays" type="number" min="1" />
+                  </mat-form-field>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </form>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        @if (isEdit()) {
+          <button mat-stroked-button color="warn" (click)="confirmDelete()" style="margin-right: auto;">
+            <mat-icon>delete</mat-icon>
+            删除客户端
+          </button>
+        }
+        <sh-loading-button [loading]="saving()" [disabled]="form.invalid" (clicked)="save()">
+          {{ isEdit() ? '保存' : '创建' }}
+        </sh-loading-button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+}
+
+<style>
+  .loading-center { display: flex; justify-content: center; padding: 48px; }
+  .form-layout { display: flex; flex-direction: column; gap: 16px; }
+  .form-header { display: flex; align-items: center; gap: 8px; }
+  .form-header h2 { margin: 0; }
+  .tab-content { padding: 20px 0; display: flex; flex-direction: column; gap: 4px; }
+  .full-width { width: 100%; }
+  .checkbox-row { padding: 8px 0; }
+  .ttl-row { display: flex; gap: 16px; }
+  .ttl-row mat-form-field { flex: 1; }
+</style>
