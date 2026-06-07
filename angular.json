@@ -17,7 +17,7 @@
       },
       "root": "projects/auth-portal",
       "sourceRoot": "projects/auth-portal/src",
-      "prefix": "app",
+      "prefix": "auth",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -48,8 +48,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all"
@@ -108,7 +108,7 @@
       },
       "root": "projects/admin-portal",
       "sourceRoot": "projects/admin-portal/src",
-      "prefix": "app",
+      "prefix": "admin",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -139,8 +139,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all"

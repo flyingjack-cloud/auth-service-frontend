@@ -6,7 +6,14 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "start:auth": "ng serve auth-portal",
+    "start:admin": "ng serve admin-portal",
+    "build:auth": "ng build auth-portal --configuration production",
+    "build:admin": "ng build admin-portal --configuration production",
+    "test:auth": "ng test auth-portal --watch=false",
+    "test:admin": "ng test admin-portal --watch=false",
+    "test:shared": "ng test shared --watch=false"
   },
   "prettier": {
     "overrides": [
