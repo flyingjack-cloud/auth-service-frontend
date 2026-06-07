@@ -1,0 +1,36 @@
+<mat-toolbar color="primary" class="shell-toolbar">
+  <mat-icon class="toolbar-logo">shield</mat-icon>
+  <span class="toolbar-title">个人中心</span>
+  <span class="spacer"></span>
+  <span class="toolbar-username">{{ currentUser()?.username }}</span>
+  <button mat-icon-button (click)="logout()" aria-label="退出登录">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<nav mat-tab-nav-bar [tabPanel]="tabPanel" class="account-nav">
+  <a
+    mat-tab-link
+    routerLink="/account/profile"
+    routerLinkActive
+    #rlaProfile="routerLinkActive"
+    [active]="rlaProfile.isActive"
+  >
+    个人资料
+  </a>
+  <a
+    mat-tab-link
+    routerLink="/account/security"
+    routerLinkActive
+    #rlaSecurity="routerLinkActive"
+    [active]="rlaSecurity.isActive"
+  >
+    安全设置
+  </a>
+</nav>
+
+<mat-tab-nav-panel #tabPanel>
+  <div class="account-content">
+    <router-outlet />
+  </div>
+</mat-tab-nav-panel>

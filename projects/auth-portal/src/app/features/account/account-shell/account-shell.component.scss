@@ -1,0 +1,33 @@
+.shell-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  .toolbar-logo {
+    margin-right: 8px;
+  }
+
+  .toolbar-title {
+    font-size: 18px;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .toolbar-username {
+    font-size: 14px;
+    margin-right: 8px;
+    opacity: 0.9;
+  }
+}
+
+.account-nav {
+  background: var(--mat-sys-surface, #fff);
+}
+
+.account-content {
+  max-width: 720px;
+  margin: 32px auto;
+  padding: 0 24px;
+}
