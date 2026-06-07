@@ -11,6 +11,10 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
+    "paths": {
+      "@shared": ["projects/shared/src/public-api.ts"],
+      "@shared/*": ["projects/shared/src/*"]
+    },
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve"
@@ -35,6 +39,12 @@
     },
     {
       "path": "./projects/admin-portal/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/shared/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/shared/tsconfig.spec.json"
     }
   ]
 }
