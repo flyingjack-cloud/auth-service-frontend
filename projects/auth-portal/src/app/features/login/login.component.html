@@ -1,0 +1,59 @@
+<mat-card class="login-card">
+  <mat-card-header>
+    <mat-card-title>登录</mat-card-title>
+  </mat-card-header>
+
+  <mat-tab-group (selectedTabChange)="onTabChange($event)" class="login-tabs">
+    <mat-tab label="用户名" />
+    <mat-tab label="手机号" />
+    <mat-tab label="邮箱" />
+  </mat-tab-group>
+
+  <mat-card-content>
+    <sh-error-alert [message]="errorMessage()" />
+
+    @if (showCooldown()) {
+      <div class="cooldown-notice">
+        登录尝试次数过多，请 {{ cooldownDisplay() }} 后再试
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ principalLabel() }}</mat-label>
+        <input
+          matInput
+          formControlName="principal"
+          [type]="principalInputType()"
+          autocomplete="username"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>密码</mat-label>
+        <input matInput formControlName="password" type="password" autocomplete="current-password" />
+      </mat-form-field>
+
+      @if (showCaptcha()) {
+        <sh-captcha-field
+          [control]="captchaControl"
+          [captchaId]="form.value.principal ?? ''"
+        />
+      }
+
+      <sh-loading-button
+        [loading]="loading()"
+        [disabled]="form.invalid || showCooldown()"
+        (clicked)="onSubmit()"
+        class="submit-btn"
+      >
+        登录
+      </sh-loading-button>
+    </form>
+
+    <div class="auth-links">
+      <a routerLink="/register">注册账号</a>
+      <a routerLink="/reset-password">忘记密码？</a>
+    </div>
+  </mat-card-content>
+</mat-card>
