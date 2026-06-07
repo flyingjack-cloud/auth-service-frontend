@@ -22,5 +22,19 @@
     "typeCheckHostBindings": true,
     "strictTemplates": true
   },
-  "files": []
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/auth-portal/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/auth-portal/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/admin-portal/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/admin-portal/tsconfig.spec.json"
+    }
+  ]
 }
