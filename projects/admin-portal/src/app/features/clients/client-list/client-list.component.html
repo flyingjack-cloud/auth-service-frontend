@@ -1,0 +1,40 @@
+<div class="list-header">
+  <h2>客户端管理</h2>
+  <button mat-raised-button color="primary" (click)="goToNew()">
+    <mat-icon>add</mat-icon>
+    新建客户端
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="loading-center">
+    <mat-spinner diameter="40" />
+  </div>
+}
+
+@if (!loading()) {
+  <div class="client-grid">
+    @for (client of clients(); track client.clientId) {
+      <mat-card class="client-card" (click)="goToClient(client.clientId)">
+        <mat-card-header>
+          @if (client.avatarUrl) {
+            <img mat-card-avatar [src]="client.avatarUrl" [alt]="client.clientName" />
+          } @else {
+            <div mat-card-avatar class="default-avatar">
+              <mat-icon>apps</mat-icon>
+            </div>
+          }
+          <mat-card-title>{{ client.clientName }}</mat-card-title>
+          <mat-card-subtitle>{{ client.clientId }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="scope-label">Scopes: {{ client.scopes }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (clients().length === 0) {
+      <p class="empty-hint">暂无客户端，点击"新建客户端"创建第一个</p>
+    }
+  </div>
+}
