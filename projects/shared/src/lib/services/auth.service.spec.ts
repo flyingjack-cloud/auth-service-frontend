@@ -55,12 +55,30 @@ describe('AuthService', () => {
   });
 
   it('logout clears currentUser', (done) => {
-    service['currentUser'].set(MOCK_USER);
-    service.logout().subscribe(() => {
-      expect(service.currentUser()).toBeNull();
-      expect(service.isLoggedIn()).toBeFalse();
-      done();
+    // Pre-seed: log in first
+    service.login({ loginType: 'username', principal: 'alice', password: 'pw' }).subscribe(() => {
+      // Now log out
+      service.logout().subscribe(() => {
+        expect(service.currentUser()).toBeNull();
+        expect(service.isLoggedIn()).toBeFalse();
+        done();
+      });
+      mock.expectOne('/account/logout').flush(null);
     });
-    mock.expectOne('/account/logout').flush(null);
+    mock.expectOne('/account/login').flush(MOCK_USER);
+  });
+
+  it('checkLogin leaves currentUser null on 401', (done) => {
+    service.checkLogin().subscribe({
+      error: () => {
+        expect(service.currentUser()).toBeNull();
+        expect(service.isLoggedIn()).toBeFalse();
+        done();
+      }
+    });
+    mock.expectOne('/account/check-login').flush(
+      { code: 401, message: '用户未登录', data: null },
+      { status: 401, statusText: 'Unauthorized' }
+    );
   });
 });

@@ -7,12 +7,13 @@ import { User, LoginRequest, CaptchaCredentials } from '../models/user.model';
 export class AuthService {
   private readonly http = inject(HttpClient);
 
-  readonly currentUser = signal<User | null>(null);
+  private readonly _currentUser = signal<User | null>(null);
+  readonly currentUser = this._currentUser.asReadonly();
   readonly isLoggedIn = computed(() => this.currentUser() !== null);
 
   checkLogin() {
     return this.http.get<User>('/account/check-login').pipe(
-      tap(user => this.currentUser.set(user))
+      tap(user => this._currentUser.set(user))
     );
   }
 
@@ -24,13 +25,13 @@ export class AuthService {
         .set('X-Captcha-Token', captcha.token);
     }
     return this.http.post<User>('/account/login', payload, { headers }).pipe(
-      tap(user => this.currentUser.set(user))
+      tap(user => this._currentUser.set(user))
     );
   }
 
   logout() {
     return this.http.post<null>('/account/logout', {}).pipe(
-      tap(() => this.currentUser.set(null))
+      tap(() => this._currentUser.set(null))
     );
   }
 }
