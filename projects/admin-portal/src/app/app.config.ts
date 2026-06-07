@@ -2,13 +2,17 @@ import { ApplicationConfig, APP_INITIALIZER, provideZoneChangeDetection, provide
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { catchError, of } from 'rxjs';
+import { catchError, of, switchMap } from 'rxjs';
 import { routes } from './app.routes';
 import { apiInterceptor, ENVIRONMENT, AuthService } from '@shared';
 import { environment } from '../environments/environment';
 
 function initAuth(authService: AuthService) {
-  return () => authService.checkLogin().pipe(catchError(() => of(null)));
+  return () =>
+    authService.checkLogin().pipe(
+      switchMap(() => authService.checkAdminAccess()),
+      catchError(() => of(null))
+    );
 }
 
 export const appConfig: ApplicationConfig = {

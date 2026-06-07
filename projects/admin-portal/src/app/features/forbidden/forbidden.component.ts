@@ -1,16 +1,17 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '@shared';
 
 @Component({
   selector: 'admin-forbidden',
   standalone: true,
-  imports: [RouterLink, MatButtonModule],
+  imports: [MatButtonModule],
   template: `
     <div class="forbidden-container">
       <h1>403</h1>
       <p>权限不足，您没有访问该页面的权限</p>
-      <a mat-stroked-button routerLink="/login">返回登录</a>
+      <button mat-stroked-button (click)="backToLogin()">返回登录</button>
     </div>
   `,
   styles: [`
@@ -26,4 +27,14 @@ import { MatButtonModule } from '@angular/material/button';
     p { font-size: 18px; color: #757575; }
   `],
 })
-export class ForbiddenComponent {}
+export class ForbiddenComponent {
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+
+  backToLogin(): void {
+    this.auth.logout().subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login']),
+    });
+  }
+}

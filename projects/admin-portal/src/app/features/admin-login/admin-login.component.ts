@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { switchMap } from 'rxjs';
 import { ApiError, AuthService, ErrorAlertComponent, LoadingButtonComponent } from '@shared';
 
 @Component({
@@ -40,6 +41,7 @@ export class AdminLoginComponent {
     const { username, password } = this.form.value;
     this.auth
       .login({ loginType: 'username', principal: username!, password: password! })
+      .pipe(switchMap(() => this.auth.checkAdminAccess()))
       .subscribe({
         next: () => this.router.navigate(['/users']),
         error: (err: ApiError) => {
