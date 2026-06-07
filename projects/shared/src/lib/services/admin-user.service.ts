@@ -25,6 +25,6 @@ export class AdminUserService {
   }
 
   deleteUser(id: string) {
-    return this.http.delete<null>(`/admin/users/${id}`);
+    return this.http.delete<void>(`/admin/users/${id}`);
   }
 }

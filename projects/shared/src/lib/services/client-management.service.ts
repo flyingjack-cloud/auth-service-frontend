@@ -23,6 +23,6 @@ export class ClientManagementService {
   }
 
   deleteClient(clientId: string) {
-    return this.http.delete<null>(`/clients/${clientId}`);
+    return this.http.delete<void>(`/clients/${clientId}`);
   }
 }
