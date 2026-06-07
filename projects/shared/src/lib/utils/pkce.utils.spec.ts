@@ -4,11 +4,15 @@ describe('PKCE Utils', () => {
   describe('generateCodeVerifier', () => {
     it('returns a Base64URL string with no +, /, = characters', () => {
       const v = generateCodeVerifier();
-      expect(v).toMatch(/^[A-Za-z0-9\-._~]+$/);
+      expect(v).toMatch(/^[A-Za-z0-9\-_]+$/);
     });
 
     it('returns at least 43 characters per RFC 7636', () => {
       expect(generateCodeVerifier().length).toBeGreaterThanOrEqual(43);
+    });
+
+    it('returns at most 128 characters per RFC 7636', () => {
+      expect(generateCodeVerifier().length).toBeLessThanOrEqual(128);
     });
 
     it('returns a different value on each call', () => {
@@ -34,7 +38,7 @@ describe('PKCE Utils', () => {
 
   describe('generateState', () => {
     it('returns a non-empty string', () => {
-      expect(generateState().length).toBeGreaterThan(0);
+      expect(generateState().length).toBeGreaterThanOrEqual(43);
     });
 
     it('returns a different value on each call', () => {

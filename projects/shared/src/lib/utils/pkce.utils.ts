@@ -1,5 +1,5 @@
 export function generateCodeVerifier(): string {
-  const array = new Uint8Array(96);
+  const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return base64UrlEncode(array);
 }
