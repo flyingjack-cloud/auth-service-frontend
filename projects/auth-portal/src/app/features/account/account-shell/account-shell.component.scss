@@ -4,11 +4,19 @@
   z-index: 100;
 
   .toolbar-logo {
-    margin-right: 8px;
+    margin-right: 10px;
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
   }
 
   .toolbar-title {
+    font-family: var(--font-display);
     font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #e0f2fe;
   }
 
   .spacer {
@@ -16,18 +24,42 @@
   }
 
   .toolbar-username {
-    font-size: 14px;
-    margin-right: 8px;
-    opacity: 0.9;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 4px;
+    opacity: 0.85;
+    color: #bae6fd;
+    letter-spacing: 0.3px;
   }
 }
 
 .account-nav {
-  background: var(--mat-sys-surface, #fff);
+  background: var(--tech-surface) !important;
+  border-bottom: 1px solid var(--tech-border-subtle);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
+
+  ::ng-deep .mat-mdc-tab-link {
+    font-family: var(--font-display) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.3px;
+    color: var(--tech-text-muted);
+    min-width: 120px;
+    opacity: 1;
+
+    &.mdc-tab--active {
+      color: var(--tech-primary);
+    }
+  }
+
+  ::ng-deep .mdc-tab-indicator__content--underline {
+    border-color: var(--tech-primary) !important;
+    border-top-width: 2.5px !important;
+  }
 }
 
 .account-content {
-  max-width: 720px;
-  margin: 32px auto;
+  max-width: 740px;
+  margin: 36px auto;
   padding: 0 24px;
 }

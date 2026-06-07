@@ -4,27 +4,72 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--mat-sys-surface-variant, #f3edf7);
-  padding: 24px;
+  padding: 32px 24px;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+
+  // Sky-blue gradient mesh base
+  background:
+    linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 40%, #c8eafa 70%, #d4f0fb 100%);
+
+  // isolation: isolate creates a stacking context so that pseudo-elements
+  // with negative z-index stay behind non-positioned child elements (the card)
+  isolation: isolate;
+
+  // Subtle circuit-grid overlay — z-index: -1 paints behind block descendants
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(2, 132, 199, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(2, 132, 199, 0.055) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  // Aurora glow blobs — z-index: -1 ensures they paint below the card
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 65% 55% at 15% 65%, rgba(6, 182, 212, 0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 65% at 85% 25%, rgba(14, 165, 233, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 40% at 50% 95%, rgba(56, 189, 248, 0.12) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+    animation: aurora-drift 14s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes aurora-drift {
+  0%   { opacity: 0.65; transform: scale(1) translateY(0); }
+  100% { opacity: 1;    transform: scale(1.06) translateY(-12px); }
 }
 
 .auth-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 10px;
+  margin-bottom: 28px;
+  position: relative;
 
   .brand-icon {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-    color: var(--mat-sys-primary, #6750a4);
+    font-size: 34px;
+    width: 34px;
+    height: 34px;
+    color: var(--tech-primary);
+    filter: drop-shadow(0 0 10px rgba(2, 132, 199, 0.5));
   }
 
   .brand-name {
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--mat-sys-on-surface, #1c1b1f);
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--tech-navy);
+    letter-spacing: 0.5px;
   }
 }

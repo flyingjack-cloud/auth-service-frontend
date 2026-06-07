@@ -41,17 +41,35 @@
 </mat-card>
 
 <style>
-  mat-card { max-width: 480px; }
+  mat-card { max-width: 520px; }
+
   .info-row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--mat-sys-outline-variant, #cac4d0);
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--tech-border-subtle, rgba(14, 165, 233, 0.1));
   }
   .info-row:last-child { border-bottom: none; }
-  .label { width: 80px; font-size: 13px; color: var(--mat-sys-on-surface-variant, #49454f); flex-shrink: 0; }
-  .value { flex: 1; font-size: 15px; }
+
+  .label {
+    width: 80px;
+    font-size: 12.5px;
+    font-family: var(--font-display, 'Exo 2', sans-serif);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--tech-text-muted, #475569);
+    flex-shrink: 0;
+  }
+
+  .value {
+    flex: 1;
+    font-size: 15px;
+    font-family: var(--font-body, 'DM Sans', sans-serif);
+    color: var(--tech-text, #0f172a);
+  }
+
   .inline-form { display: flex; align-items: center; gap: 8px; flex: 1; }
   .username-field { flex: 1; }
 </style>

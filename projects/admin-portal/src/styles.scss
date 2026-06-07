@@ -1,41 +1,288 @@
-
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
 html {
   @include mat.theme((
     color: (
       primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
+      tertiary: mat.$cyan-palette,
     ),
-    typography: Roboto,
+    typography: 'DM Sans',
     density: 0,
   ));
+
+  // Precise blue system color overrides
+  --mat-sys-primary: #0284c7;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-primary-container: #e0f2fe;
+  --mat-sys-on-primary-container: #0c4a6e;
+  --mat-sys-surface: #f0f9ff;
+  --mat-sys-surface-variant: #e0f2fe;
+  --mat-sys-on-surface: #0f172a;
+  --mat-sys-on-surface-variant: #475569;
+  --mat-sys-outline-variant: #bae6fd;
+  --mat-sys-secondary-container: #e0f2fe;
+  --mat-sys-on-secondary-container: #0c4a6e;
 }
 
+// ── Design tokens ──────────────────────────────────────
+:root {
+  --tech-primary:        #0284c7;
+  --tech-primary-light:  #0ea5e9;
+  --tech-primary-pale:   #38bdf8;
+  --tech-primary-glow:   rgba(2, 132, 199, 0.22);
+  --tech-accent:         #06b6d4;
+  --tech-navy:           #0c1a2e;
+  --tech-navy-mid:       #1e3a5f;
+  --tech-navy-light:     #162d4a;
+  --tech-surface:        #ffffff;
+  --tech-surface-tint:   #f0f9ff;
+  --tech-text:           #0f172a;
+  --tech-text-muted:     #475569;
+  --tech-border:         rgba(2, 132, 199, 0.18);
+  --tech-border-subtle:  rgba(14, 165, 233, 0.1);
+  --tech-shadow:         0 2px 16px rgba(2, 132, 199, 0.1), 0 1px 3px rgba(2, 132, 199, 0.06);
+  --tech-shadow-lg:      0 8px 40px rgba(2, 132, 199, 0.16), 0 2px 8px rgba(2, 132, 199, 0.08);
+  --tech-radius:         14px;
+  --tech-radius-sm:      8px;
+  --font-display:        'Exo 2', 'DM Sans', sans-serif;
+  --font-body:           'DM Sans', sans-serif;
+}
+
+// ── Base ────────────────────────────────────────────────
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+  background-color: var(--tech-surface-tint);
+  color: var(--tech-text);
+  font-family: var(--font-body);
   margin: 0;
 }
-/* You can add global styles to this file, and also import other style files */
 
-html, body {
-  height: 100%;
-  margin: 0;
+html, body { height: 100%; margin: 0; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--tech-text);
+}
+
+// ── Material card overrides ─────────────────────────────
+.mat-mdc-card {
+  border-radius: var(--tech-radius) !important;
+  box-shadow: var(--tech-shadow) !important;
+  border: 1px solid var(--tech-border-subtle) !important;
+  background-color: var(--tech-surface) !important;
+  position: relative;
+  overflow: visible;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent 2%,
+      var(--tech-primary-light) 25%,
+      var(--tech-primary-pale) 50%,
+      var(--tech-accent) 75%,
+      transparent 98%
+    );
+    border-radius: var(--tech-radius) var(--tech-radius) 0 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+.mat-mdc-card-title {
+  font-family: var(--font-display) !important;
+  font-weight: 600 !important;
+  color: var(--tech-navy) !important;
+}
+
+.mat-mdc-card-subtitle {
+  color: var(--tech-text-muted) !important;
+}
+
+// ── Material button overrides ───────────────────────────
+.mat-mdc-raised-button.mat-primary {
+  background: linear-gradient(135deg, var(--tech-primary) 0%, var(--tech-accent) 100%) !important;
+  box-shadow: 0 2px 12px var(--tech-primary-glow) !important;
+  font-family: var(--font-display) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.4px;
+  border-radius: var(--tech-radius-sm) !important;
+  transition: box-shadow 0.22s ease, transform 0.18s ease !important;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 4px 22px var(--tech-primary-glow) !important;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    background: rgba(2, 132, 199, 0.3) !important;
+  }
+}
+
+.mat-mdc-raised-button.mat-warn {
+  border-radius: var(--tech-radius-sm) !important;
+}
+
+.mat-mdc-outlined-button,
+.mat-mdc-stroked-button {
+  border-color: var(--tech-border) !important;
+  color: var(--tech-primary) !important;
+  border-radius: var(--tech-radius-sm) !important;
+  font-family: var(--font-display) !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-icon-button {
+  color: var(--tech-text-muted) !important;
+
+  &:hover {
+    color: var(--tech-primary) !important;
+    background: rgba(14, 165, 233, 0.08) !important;
+  }
+}
+
+// ── Material toolbar overrides ──────────────────────────
+.mat-toolbar {
+  font-family: var(--font-display) !important;
+}
+
+.mat-toolbar.mat-primary {
+  background: linear-gradient(135deg, var(--tech-navy) 0%, var(--tech-navy-mid) 100%) !important;
+  color: #e0f2fe !important;
+  box-shadow: 0 2px 20px rgba(12, 26, 46, 0.35) !important;
+}
+
+// ── Material sidenav overrides ──────────────────────────
+.mat-sidenav-container {
+  background: var(--tech-surface-tint) !important;
+}
+
+// ── Material form field overrides ───────────────────────
+.mat-mdc-form-field {
+  font-family: var(--font-body) !important;
+}
+
+.mdc-text-field--focused .mdc-notched-outline__leading,
+.mdc-text-field--focused .mdc-notched-outline__notch,
+.mdc-text-field--focused .mdc-notched-outline__trailing {
+  border-color: var(--tech-primary) !important;
+  border-width: 2px !important;
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: var(--tech-primary) !important;
+}
+
+// ── Material table overrides ────────────────────────────
+.mat-mdc-table {
+  background: var(--tech-surface) !important;
+  border-radius: var(--tech-radius) !important;
+  overflow: hidden !important;
+  box-shadow: var(--tech-shadow) !important;
+  border: 1px solid var(--tech-border-subtle) !important;
+  font-family: var(--font-body) !important;
+}
+
+.mat-mdc-header-row {
+  background: linear-gradient(135deg, var(--tech-navy) 0%, var(--tech-navy-mid) 100%) !important;
+}
+
+.mat-mdc-header-cell {
+  color: #bae6fd !important;
+  font-family: var(--font-display) !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.6px !important;
+  text-transform: uppercase !important;
+  border-bottom: none !important;
+}
+
+.mat-mdc-row {
+  border-bottom: 1px solid var(--tech-border-subtle) !important;
+  transition: background 0.15s ease;
+
+  &:last-child {
+    border-bottom: none !important;
+  }
+
+  &:hover {
+    background: rgba(14, 165, 233, 0.05) !important;
+  }
+}
+
+.mat-mdc-cell {
+  color: var(--tech-text) !important;
+  font-family: var(--font-body) !important;
+  border-bottom: none !important;
+}
+
+// ── Material tab overrides ──────────────────────────────
+.mat-mdc-tab .mdc-tab__text-label {
+  font-family: var(--font-display) !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-tab-group,
+.mat-mdc-tab-nav-bar {
+  --mat-tab-header-active-label-text-color: var(--tech-primary);
+  --mat-tab-header-active-indicator-color: var(--tech-primary);
+}
+
+// ── Material slide toggle ───────────────────────────────
+.mat-mdc-slide-toggle {
+  --mdc-switch-selected-track-color: var(--tech-primary-light);
+  --mdc-switch-selected-handle-color: var(--tech-primary);
+  --mdc-switch-selected-focus-track-color: var(--tech-primary);
+  --mdc-switch-selected-hover-track-color: var(--tech-primary-light);
+  --mdc-switch-selected-pressed-track-color: var(--tech-primary);
+}
+
+// ── Material checkbox ───────────────────────────────────
+.mat-mdc-checkbox {
+  --mdc-checkbox-selected-checkmark-color: white;
+  --mdc-checkbox-selected-icon-color: var(--tech-primary);
+  --mdc-checkbox-selected-focus-icon-color: var(--tech-primary);
+  --mdc-checkbox-selected-hover-icon-color: var(--tech-primary);
+  --mdc-checkbox-selected-pressed-icon-color: var(--tech-primary);
+}
+
+.mat-mdc-checkbox .mdc-label {
+  font-family: var(--font-body) !important;
+}
+
+// ── Material paginator ──────────────────────────────────
+.mat-mdc-paginator {
+  background: transparent !important;
+  font-family: var(--font-body) !important;
+  color: var(--tech-text-muted) !important;
+  border-top: 1px solid var(--tech-border-subtle);
+}
+
+// ── Material progress spinner ───────────────────────────
+.mat-mdc-progress-spinner circle,
+.mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: var(--tech-primary-light) !important;
+}
+
+// ── Material nav list ───────────────────────────────────
+.mat-mdc-nav-list .mat-mdc-list-item {
+  font-family: var(--font-display) !important;
+}
+
+// ── Scrollbar ───────────────────────────────────────────
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--tech-surface-tint); }
+::-webkit-scrollbar-thumb {
+  background: rgba(2, 132, 199, 0.28);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--tech-primary-light); }
+
+::selection {
+  background: rgba(14, 165, 233, 0.2);
+  color: var(--tech-navy);
 }

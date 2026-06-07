@@ -83,13 +83,72 @@
 }
 
 <style>
-  .loading-center { display: flex; justify-content: center; padding: 48px; }
-  .detail-layout { display: flex; flex-direction: column; gap: 16px; }
-  .detail-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .detail-header h2 { margin: 0; }
-  .info-row { display: flex; gap: 16px; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 14px; }
+  .loading-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 64px;
+  }
+
+  .detail-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .detail-header h2 {
+    margin: 0;
+    font-family: var(--font-display, 'Exo 2', sans-serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--tech-navy, #0c1a2e);
+  }
+
+  .info-row {
+    display: flex;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--tech-border-subtle, rgba(14, 165, 233, 0.1));
+    font-size: 14px;
+    align-items: center;
+  }
+
   .info-row:last-child { border-bottom: none; }
-  .label { width: 80px; color: #757575; flex-shrink: 0; }
-  .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
-  .checkbox-row { padding: 4px 0; }
+
+  .label {
+    width: 90px;
+    font-family: var(--font-display, 'Exo 2', sans-serif);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--tech-text-muted, #475569);
+    flex-shrink: 0;
+  }
+
+  .toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    font-family: var(--font-body, 'DM Sans', sans-serif);
+    color: var(--tech-text, #0f172a);
+    border-bottom: 1px solid var(--tech-border-subtle, rgba(14, 165, 233, 0.1));
+  }
+
+  .toggle-row:last-child { border-bottom: none; }
+
+  .checkbox-row {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--tech-border-subtle, rgba(14, 165, 233, 0.1));
+  }
+
+  .checkbox-row:last-child { border-bottom: none; }
 </style>

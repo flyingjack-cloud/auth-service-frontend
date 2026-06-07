@@ -1,44 +1,75 @@
 .login-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 430px;
+
+  // Elevate above the global card::after for top border
+  &::after {
+    z-index: 2;
+  }
 }
 
 .login-tabs {
   margin: 0 -16px;
+
+  // Force tab text to use display font
+  ::ng-deep .mdc-tab__text-label {
+    font-family: var(--font-display) !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.3px;
+  }
 }
 
 .full-width {
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .cooldown-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 12px 16px;
-  border-radius: 4px;
-  background: var(--mat-sys-error-container, #fce8e6);
-  color: var(--mat-sys-on-error-container, #410e0b);
+  border-radius: var(--tech-radius-sm);
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #991b1b;
   font-size: 14px;
+  font-family: var(--font-body);
   margin-bottom: 16px;
-  text-align: center;
 }
 
 .submit-btn {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 10px;
+
+  ::ng-deep button {
+    width: 100%;
+    height: 44px;
+    font-size: 15px;
+    letter-spacing: 0.8px;
+  }
 }
 
 .auth-links {
   display: flex;
   justify-content: space-between;
-  margin-top: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--tech-border-subtle);
 
   a {
-    font-size: 14px;
-    color: var(--mat-sys-primary, #6750a4);
+    font-size: 13.5px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--tech-primary);
     text-decoration: none;
+    letter-spacing: 0.2px;
+    transition: color 0.15s ease, opacity 0.15s ease;
 
     &:hover {
-      text-decoration: underline;
+      color: var(--tech-accent);
+      opacity: 0.85;
     }
   }
 }

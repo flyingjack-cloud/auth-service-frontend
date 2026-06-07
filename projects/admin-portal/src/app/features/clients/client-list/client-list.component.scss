@@ -6,27 +6,46 @@
 
   h2 {
     margin: 0;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--tech-navy);
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 22px;
+      background: linear-gradient(180deg, var(--tech-primary-light), var(--tech-accent));
+      border-radius: 2px;
+    }
   }
 }
 
 .loading-center {
   display: flex;
   justify-content: center;
-  padding: 48px;
+  align-items: center;
+  padding: 64px;
 }
 
 .client-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 18px;
 }
 
 .client-card {
   cursor: pointer;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.22s ease, transform 0.18s ease;
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--tech-shadow-lg) !important;
+    transform: translateY(-2px);
   }
 }
 
@@ -34,26 +53,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(103, 80, 164, 0.12);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(6, 182, 212, 0.1));
+  border: 1px solid var(--tech-border);
   border-radius: 50%;
   width: 40px;
   height: 40px;
 
   mat-icon {
-    color: var(--mat-sys-primary, #6750a4);
+    color: var(--tech-primary);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 }
 
 .scope-label {
   font-size: 12px;
-  color: #757575;
-  margin: 0;
+  font-family: var(--font-body);
+  color: var(--tech-text-muted);
+  margin: 4px 0 0;
+  letter-spacing: 0.2px;
 }
 
 .empty-hint {
-  color: #9e9e9e;
+  color: var(--tech-text-muted);
   font-size: 14px;
-  padding: 48px;
+  font-family: var(--font-body);
+  padding: 64px 48px;
   text-align: center;
   grid-column: 1 / -1;
+  border: 1.5px dashed var(--tech-border);
+  border-radius: var(--tech-radius);
+  background: rgba(14, 165, 233, 0.03);
 }

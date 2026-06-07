@@ -2,31 +2,51 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 
   h2 {
     margin: 0;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--tech-navy);
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 22px;
+      background: linear-gradient(180deg, var(--tech-primary-light), var(--tech-accent));
+      border-radius: 2px;
+    }
   }
 }
 
 .search-field {
-  width: 280px;
+  width: 300px;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
 }
 
 .loading-center {
   display: flex;
   justify-content: center;
-  padding: 48px;
+  align-items: center;
+  padding: 64px;
 }
 
 .user-table {
   width: 100%;
+  // Table styling handled globally in styles.scss
 }
 
 .clickable-row {
   cursor: pointer;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.04);
-  }
+  transition: background 0.15s ease;
 }

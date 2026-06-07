@@ -110,13 +110,47 @@
 }
 
 <style>
-  .loading-center { display: flex; justify-content: center; padding: 48px; }
-  .form-layout { display: flex; flex-direction: column; gap: 16px; }
-  .form-header { display: flex; align-items: center; gap: 8px; }
-  .form-header h2 { margin: 0; }
-  .tab-content { padding: 20px 0; display: flex; flex-direction: column; gap: 4px; }
+  .loading-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 64px;
+  }
+
+  .form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .form-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-header h2 {
+    margin: 0;
+    font-family: var(--font-display, 'Exo 2', sans-serif);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--tech-navy, #0c1a2e);
+  }
+
+  .tab-content {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
   .full-width { width: 100%; }
-  .checkbox-row { padding: 8px 0; }
+
+  .checkbox-row {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--tech-border-subtle, rgba(14, 165, 233, 0.1));
+  }
+
   .ttl-row { display: flex; gap: 16px; }
   .ttl-row mat-form-field { flex: 1; }
 </style>

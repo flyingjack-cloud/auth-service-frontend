@@ -3,22 +3,70 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
-  padding: 24px;
+  padding: 32px 24px;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+
+  // Dark-navy tech background for admin
+  background: linear-gradient(145deg, #0c1a2e 0%, #0f2744 45%, #0e2236 100%);
+
+  isolation: isolate;
+
+  // Subtle circuit grid
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(14, 165, 233, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  // Aurora glows
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 70%, rgba(6, 182, 212, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 30%, rgba(14, 165, 233, 0.1) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: -1;
+    animation: admin-aurora 16s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes admin-aurora {
+  0%   { opacity: 0.6; }
+  100% { opacity: 1; }
 }
 
 .login-card {
   width: 100%;
-  max-width: 380px;
+  max-width: 390px;
+
+  // Override for dark background context — more contrast
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(56, 189, 248, 0.2) !important;
 }
 
 .full-width {
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .submit-btn {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 12px;
+
+  ::ng-deep button {
+    width: 100%;
+    height: 44px;
+    font-size: 15px;
+    letter-spacing: 0.8px;
+  }
 }
