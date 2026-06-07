@@ -65,7 +65,7 @@ describe('apiInterceptor', () => {
       },
     });
     mock.expectOne('http://localhost:9001/account/profile').flush(
-      {},
+      { code: 500, message: '系统错误', data: null },
       { status: 500, statusText: 'Server Error' }
     );
   });

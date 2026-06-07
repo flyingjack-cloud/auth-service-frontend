@@ -10,7 +10,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const env = inject(ENVIRONMENT);
 
   const apiReq = req.clone({
-    url: `${env.apiBaseUrl}${req.url}`,
+    url: `${env.apiBaseUrl.replace(/\/$/, '')}${req.url}`,
     withCredentials: true,
   });
 
@@ -24,7 +24,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
     }),
     catchError(error => {
       const err = error.error ?? {};
-      const errorId: string = err['errorId'] ?? err['message'] ?? 'error.system.fail';
+      const errorId: string = err['errorId'] ?? 'error.system.fail';
       const message: string = err['message'] ?? 'An unexpected error occurred';
       return throwError(() => new ApiError(errorId, message, error.status ?? 0));
     })
