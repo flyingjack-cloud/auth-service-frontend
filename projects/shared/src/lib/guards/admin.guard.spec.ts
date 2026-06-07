@@ -8,7 +8,7 @@ import { adminGuard } from './admin.guard';
 const ROUTE = {} as ActivatedRouteSnapshot;
 const STATE = { url: '/users' } as RouterStateSnapshot;
 
-function makeAuthService(loggedIn: boolean, roles: string[] = []) {
+function mockAuthService(loggedIn: boolean, roles: string[] = []) {
   const user: User | null = loggedIn
     ? { id: '1', username: 'u', phone: null, email: null, roles }
     : null;
@@ -18,33 +18,56 @@ function makeAuthService(loggedIn: boolean, roles: string[] = []) {
 describe('adminGuard', () => {
   let router: jasmine.SpyObj<Router>;
 
-  beforeEach(() => {
-    router = jasmine.createSpyObj('Router', ['createUrlTree']);
-    router.createUrlTree.and.callFake((cmds: string[]) => cmds[0] as any);
-  });
-
-  function run(authService: ReturnType<typeof makeAuthService>) {
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: AuthService, useValue: authService },
-        { provide: Router, useValue: router },
-      ],
+  describe('when user is not logged in', () => {
+    beforeEach(() => {
+      router = jasmine.createSpyObj('Router', ['createUrlTree']);
+      router.createUrlTree.and.returnValue('/login' as any);
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: AuthService, useValue: mockAuthService(false) },
+          { provide: Router, useValue: router },
+        ],
+      });
     });
-    return TestBed.runInInjectionContext(() => adminGuard(ROUTE, STATE));
-  }
 
-  it('redirects to /login when not logged in', () => {
-    run(makeAuthService(false));
-    expect(router.createUrlTree).toHaveBeenCalledWith(['/login']);
+    it('redirects to /login', () => {
+      TestBed.runInInjectionContext(() => adminGuard(ROUTE, STATE));
+      expect(router.createUrlTree).toHaveBeenCalledWith(['/login']);
+    });
   });
 
-  it('returns true when user has ROLE_ADMIN', () => {
-    const result = run(makeAuthService(true, ['ROLE_ADMIN']));
-    expect(result).toBeTrue();
+  describe('when user is logged in with ROLE_ADMIN', () => {
+    beforeEach(() => {
+      router = jasmine.createSpyObj('Router', ['createUrlTree']);
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: AuthService, useValue: mockAuthService(true, ['ROLE_ADMIN']) },
+          { provide: Router, useValue: router },
+        ],
+      });
+    });
+
+    it('returns true', () => {
+      const result = TestBed.runInInjectionContext(() => adminGuard(ROUTE, STATE));
+      expect(result).toBeTrue();
+    });
   });
 
-  it('redirects to /403 when logged in without ROLE_ADMIN', () => {
-    run(makeAuthService(true, ['ROLE_USER']));
-    expect(router.createUrlTree).toHaveBeenCalledWith(['/403']);
+  describe('when user is logged in without ROLE_ADMIN', () => {
+    beforeEach(() => {
+      router = jasmine.createSpyObj('Router', ['createUrlTree']);
+      router.createUrlTree.and.returnValue('/403' as any);
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: AuthService, useValue: mockAuthService(true, ['ROLE_USER']) },
+          { provide: Router, useValue: router },
+        ],
+      });
+    });
+
+    it('redirects to /403', () => {
+      TestBed.runInInjectionContext(() => adminGuard(ROUTE, STATE));
+      expect(router.createUrlTree).toHaveBeenCalledWith(['/403']);
+    });
   });
 });
