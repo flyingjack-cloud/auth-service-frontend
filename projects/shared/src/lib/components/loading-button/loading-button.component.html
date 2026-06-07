@@ -1,0 +1,12 @@
+<button
+  mat-raised-button
+  [color]="color()"
+  [disabled]="loading() || disabled()"
+  (click)="clicked.emit()"
+>
+  @if (loading()) {
+    <mat-spinner diameter="20" />
+  } @else {
+    <ng-content />
+  }
+</button>
