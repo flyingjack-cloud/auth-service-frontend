@@ -1,0 +1,71 @@
+<mat-card class="register-card">
+  <mat-card-header>
+    <mat-card-title>注册账号</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <sh-error-alert [message]="errorMessage()" />
+
+    <div class="type-toggle">
+      <mat-button-toggle-group [value]="registerType()" (change)="registerType.set($event.value)">
+        <mat-button-toggle value="email">邮箱注册</mat-button-toggle>
+        <mat-button-toggle value="phone">手机注册</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="code-row">
+        <mat-form-field appearance="outline" class="principal-field">
+          <mat-label>{{ principalLabel }}</mat-label>
+          <input
+            matInput
+            formControlName="principal"
+            [type]="registerType() === 'email' ? 'email' : 'tel'"
+          />
+          @if (principalControl.hasError('taken')) {
+            <mat-error>该{{ principalLabel }}已被注册</mat-error>
+          }
+        </mat-form-field>
+
+        <button
+          mat-stroked-button
+          type="button"
+          [disabled]="!canSendCode() || principalControl.invalid"
+          (click)="sendCode()"
+          class="send-code-btn"
+        >
+          {{ codeCountdown() > 0 ? codeCountdown() + 's' : '发送验证码' }}
+        </button>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>验证码</mat-label>
+        <input matInput formControlName="code" maxlength="6" autocomplete="one-time-code" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>用户名（5-15位小写字母或数字）</mat-label>
+        <input matInput formControlName="username" autocomplete="username" />
+        @if (usernameControl.hasError('taken')) {
+          <mat-error>用户名已被占用</mat-error>
+        }
+        @if (usernameControl.hasError('pattern')) {
+          <mat-error>用户名须为5-15位小写字母或数字</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>密码（8-16位）</mat-label>
+        <input matInput formControlName="password" type="password" autocomplete="new-password" />
+      </mat-form-field>
+
+      <sh-loading-button [loading]="loading()" [disabled]="form.invalid" (clicked)="onSubmit()" class="submit-btn">
+        注册
+      </sh-loading-button>
+    </form>
+
+    <div class="auth-links">
+      <a routerLink="/login">已有账号？去登录</a>
+    </div>
+  </mat-card-content>
+</mat-card>

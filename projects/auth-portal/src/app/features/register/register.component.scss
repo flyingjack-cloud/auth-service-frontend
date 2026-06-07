@@ -1,0 +1,52 @@
+.register-card {
+  width: 100%;
+  max-width: 480px;
+}
+
+.type-toggle {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.code-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 4px;
+
+  .principal-field {
+    flex: 1;
+  }
+
+  .send-code-btn {
+    margin-top: 4px;
+    white-space: nowrap;
+    min-width: 96px;
+  }
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.auth-links {
+  margin-top: 16px;
+  text-align: center;
+
+  a {
+    font-size: 14px;
+    color: var(--mat-sys-primary, #6750a4);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
