@@ -41,6 +41,9 @@
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>验证码</mat-label>
         <input matInput formControlName="code" maxlength="6" autocomplete="one-time-code" />
+        @if (form.get('code')?.hasError('minlength') || form.get('code')?.hasError('maxlength')) {
+          <mat-error>验证码须为6位</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
