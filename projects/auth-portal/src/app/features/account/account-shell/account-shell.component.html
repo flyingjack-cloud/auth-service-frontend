@@ -1,36 +1,42 @@
-<mat-toolbar color="primary" class="shell-toolbar">
-  <mat-icon class="toolbar-logo">shield</mat-icon>
-  <span class="toolbar-title">个人中心</span>
-  <span class="spacer"></span>
-  <span class="toolbar-username">{{ currentUser()?.username }}</span>
-  <button mat-icon-button (click)="logout()" aria-label="退出登录">
-    <mat-icon>logout</mat-icon>
-  </button>
-</mat-toolbar>
+<div class="shell-wrapper">
+  <header class="top-bar">
+    <div class="bar-brand">
+      <mat-icon class="brand-icon">shield</mat-icon>
+      <span class="brand-name">{{ 'common.brand' | translate }}</span>
+    </div>
+    <div class="bar-actions">
+      <span class="bar-username">{{ currentUser()?.username }}</span>
+      <button class="icon-btn" (click)="logout()" [title]="'account.logout' | translate">
+        <mat-icon>logout</mat-icon>
+      </button>
+      <button class="lang-btn" (click)="langService.toggle()">
+        {{ 'common.langToggle' | translate }}
+      </button>
+    </div>
+  </header>
 
-<nav mat-tab-nav-bar [tabPanel]="tabPanel" class="account-nav">
-  <a
-    mat-tab-link
-    routerLink="/account/profile"
-    routerLinkActive
-    #rlaProfile="routerLinkActive"
-    [active]="rlaProfile.isActive"
-  >
-    个人资料
-  </a>
-  <a
-    mat-tab-link
-    routerLink="/account/security"
-    routerLinkActive
-    #rlaSecurity="routerLinkActive"
-    [active]="rlaSecurity.isActive"
-  >
-    安全设置
-  </a>
-</nav>
+  <div class="page-body">
+    <nav class="sidebar">
+      <a
+        class="nav-item"
+        routerLink="/account/profile"
+        routerLinkActive="active"
+      >
+        <mat-icon>person</mat-icon>
+        <span>{{ 'account.profile' | translate }}</span>
+      </a>
+      <a
+        class="nav-item"
+        routerLink="/account/security"
+        routerLinkActive="active"
+      >
+        <mat-icon>lock</mat-icon>
+        <span>{{ 'account.security' | translate }}</span>
+      </a>
+    </nav>
 
-<mat-tab-nav-panel #tabPanel>
-  <div class="account-content">
-    <router-outlet />
+    <main class="main-area">
+      <router-outlet />
+    </main>
   </div>
-</mat-tab-nav-panel>
+</div>
