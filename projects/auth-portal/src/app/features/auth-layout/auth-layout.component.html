@@ -1,7 +1,15 @@
-<div class="auth-container">
-  <div class="auth-brand">
-    <mat-icon class="brand-icon">shield</mat-icon>
-    <span class="brand-name">flyingjack cloud</span>
+<div class="auth-page">
+  <div class="auth-header">
+    <div class="brand">
+      <mat-icon class="brand-icon">shield</mat-icon>
+      <span class="brand-name">{{ 'common.brand' | translate }}</span>
+    </div>
+    <button class="lang-btn" (click)="langService.toggle()">
+      {{ 'common.langToggle' | translate }}
+    </button>
   </div>
-  <router-outlet />
+
+  <div class="auth-slot">
+    <router-outlet />
+  </div>
 </div>
