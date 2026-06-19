@@ -1,74 +1,100 @@
-<mat-card class="register-card">
-  <mat-card-header>
-    <mat-card-title>注册账号</mat-card-title>
-  </mat-card-header>
+<div class="auth-card">
+  <div class="icon-circle">
+    <mat-icon>person_add</mat-icon>
+  </div>
+  <h1 class="card-title">{{ 'register.title' | translate }}</h1>
+  <p class="card-subtitle">{{ ('register.subtitle.' + registerType()) | translate }}</p>
 
-  <mat-card-content>
-    <sh-error-alert [message]="errorMessage()" />
+  @if (errorMessage()) {
+    <sh-error-alert [message]="errorMessage()! | translate" />
+  }
 
-    <div class="type-toggle">
-      <mat-button-toggle-group [value]="registerType()" (change)="registerType.set($event.value)">
-        <mat-button-toggle value="email">邮箱注册</mat-button-toggle>
-        <mat-button-toggle value="phone">手机注册</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label class="field-label">{{ ('register.label.' + registerType()) | translate }}</label>
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="code-row">
-        <mat-form-field appearance="outline" class="principal-field">
-          <mat-label>{{ principalLabel }}</mat-label>
-          <input
-            matInput
-            formControlName="principal"
-            [type]="registerType() === 'email' ? 'email' : 'tel'"
-          />
-          @if (principalControl.hasError('taken')) {
-            <mat-error>该{{ principalLabel }}已被注册</mat-error>
-          }
-        </mat-form-field>
-
-        <button
-          mat-stroked-button
-          type="button"
-          [disabled]="!canSendCode() || principalControl.invalid"
-          (click)="sendCode()"
-          class="send-code-btn"
-        >
-          {{ codeCountdown() > 0 ? codeCountdown() + 's' : '发送验证码' }}
-        </button>
+    @if (registerType() === 'phone') {
+      <div class="phone-row">
+        <select class="country-select">
+          <option>+86</option>
+          <option>+1</option>
+          <option>+44</option>
+          <option>+65</option>
+        </select>
+        <input class="text-input" formControlName="principal" type="tel" placeholder="138 0000 0000" />
       </div>
+    } @else {
+      <div class="field-row">
+        <input class="text-input" formControlName="principal" type="email" placeholder="you@example.com" />
+      </div>
+    }
 
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>验证码</mat-label>
-        <input matInput formControlName="code" maxlength="6" autocomplete="one-time-code" />
-        @if (form.get('code')?.hasError('minlength') || form.get('code')?.hasError('maxlength')) {
-          <mat-error>验证码须为6位</mat-error>
+    @if (principalControl.hasError('taken')) {
+      <p class="field-error">{{ 'register.error.taken' | translate }}</p>
+    }
+
+    <label class="field-label">{{ 'register.label.code' | translate }}</label>
+    <div class="field-code-row" style="margin-bottom: 4px;">
+      <input class="text-input" formControlName="code" maxlength="6"
+             autocomplete="one-time-code" placeholder="6-digit code" style="flex:1;min-width:0;" />
+      <button
+        class="send-code-btn"
+        type="button"
+        [disabled]="!canSendCode() || principalControl.invalid"
+        (click)="sendCode()"
+      >
+        @if (codeCountdown() > 0) {
+          {{ 'register.resendCode' | translate: { count: codeCountdown() } }}
+        } @else {
+          {{ 'register.sendCode' | translate }}
         }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>用户名（5-15位小写字母或数字）</mat-label>
-        <input matInput formControlName="username" autocomplete="username" />
-        @if (usernameControl.hasError('taken')) {
-          <mat-error>用户名已被占用</mat-error>
-        }
-        @if (usernameControl.hasError('pattern')) {
-          <mat-error>用户名须为5-15位小写字母或数字</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>密码（8-16位）</mat-label>
-        <input matInput formControlName="password" type="password" autocomplete="new-password" />
-      </mat-form-field>
-
-      <sh-loading-button [loading]="loading()" [disabled]="form.invalid" (clicked)="onSubmit()" class="submit-btn">
-        注册
-      </sh-loading-button>
-    </form>
-
-    <div class="auth-links">
-      <a routerLink="/login">已有账号？去登录</a>
+      </button>
     </div>
-  </mat-card-content>
-</mat-card>
+    <p class="field-hint">{{ 'register.codeHint' | translate }}</p>
+
+    <label class="field-label">{{ 'register.label.username' | translate }}</label>
+    <div class="field-row">
+      <input class="text-input" formControlName="username" autocomplete="username" placeholder="e.g. user123" />
+    </div>
+    @if (usernameControl.hasError('taken')) {
+      <p class="field-error">{{ 'register.error.usernameTaken' | translate }}</p>
+    } @else if (usernameControl.hasError('pattern')) {
+      <p class="field-error">{{ 'register.error.usernamePattern' | translate }}</p>
+    } @else {
+      <p class="field-hint">{{ 'register.usernameHint' | translate }}</p>
+    }
+
+    <label class="field-label">{{ 'register.label.password' | translate }}</label>
+    <div class="field-row">
+      <input class="text-input" formControlName="password" type="password"
+             autocomplete="new-password" placeholder="••••••••" />
+    </div>
+    <p class="field-hint">{{ 'register.passwordHint' | translate }}</p>
+
+    <button class="btn-primary" type="submit" [disabled]="form.invalid || loading()">
+      @if (loading()) {
+        <mat-spinner diameter="18" />
+      } @else {
+        {{ 'register.submit' | translate }}
+      }
+    </button>
+  </form>
+
+  <div class="divider">
+    <span class="divider-line"></span>
+    <span class="divider-text">{{ 'register.orWith' | translate }}</span>
+    <span class="divider-line"></span>
+  </div>
+
+  <div class="alt-row">
+    <button class="btn-alt" type="button" (click)="switchMode()">
+      {{ ('register.label.' + (registerType() === 'email' ? 'phone' : 'email')) | translate }}
+    </button>
+    <button class="btn-alt" type="button" (click)="onSocialLogin('google')">Google</button>
+    <button class="btn-alt" type="button" (click)="onSocialLogin('github')">GitHub</button>
+  </div>
+
+  <p class="bottom-link">
+    {{ 'register.hasAccount' | translate }}
+    <a routerLink="/login" class="link">{{ 'register.signIn' | translate }}</a>
+  </p>
+</div>

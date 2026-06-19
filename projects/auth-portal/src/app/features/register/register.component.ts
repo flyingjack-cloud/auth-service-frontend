@@ -1,19 +1,12 @@
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  FormBuilder,
-  FormControl,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslatePipe } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, interval, take } from 'rxjs';
-import { AccountService, ApiError, ErrorAlertComponent, LoadingButtonComponent } from '@shared';
+import { AccountService, ApiError, ErrorAlertComponent } from '@shared';
 
 @Component({
   selector: 'auth-register',
@@ -21,12 +14,9 @@ import { AccountService, ApiError, ErrorAlertComponent, LoadingButtonComponent }
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    LoadingButtonComponent,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    TranslatePipe,
     ErrorAlertComponent,
   ],
   templateUrl: './register.component.html',
@@ -55,31 +45,13 @@ export class RegisterComponent {
   });
 
   constructor() {
-    this.form
-      .get('principal')!
-      .valueChanges.pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(v => {
-        if (v) this.checkPrincipal(v);
-      });
+    this.form.get('principal')!.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(v => { if (v) this.checkPrincipal(v); });
 
-    this.form
-      .get('username')!
-      .valueChanges.pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(v => {
-        if (v && /^[a-z0-9]{5,15}$/.test(v)) this.checkUsername(v);
-      });
-  }
-
-  get principalLabel(): string {
-    return this.registerType() === 'email' ? '邮箱' : '手机号';
+    this.form.get('username')!.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(v => { if (v && /^[a-z0-9]{5,15}$/.test(v)) this.checkUsername(v); });
   }
 
   get principalControl(): FormControl {
@@ -90,19 +62,26 @@ export class RegisterComponent {
     return this.form.get('username') as FormControl;
   }
 
+  switchMode(): void {
+    this.registerType.update(t => t === 'email' ? 'phone' : 'email');
+    this.form.patchValue({ principal: '' });
+    this.errorMessage.set(null);
+  }
+
+  onSocialLogin(provider: string): void {
+    console.warn(`not implemented: social login (${provider})`);
+  }
+
   sendCode(): void {
     const principal = this.form.value.principal;
     if (!principal || !this.canSendCode()) return;
 
     this.codeSending.set(true);
     this.account.sendVerificationCode(this.registerType(), principal).subscribe({
-      next: () => {
-        this.codeSending.set(false);
-        this.startCountdown();
-      },
+      next: () => { this.codeSending.set(false); this.startCountdown(); },
       error: () => {
         this.codeSending.set(false);
-        this.errorMessage.set('发送验证码失败，请稍后重试');
+        this.errorMessage.set('register.error.sendFailed');
       },
     });
   }
@@ -120,10 +99,10 @@ export class RegisterComponent {
         error: (err: ApiError) => {
           this.loading.set(false);
           const map: Record<string, string> = {
-            'error.business.conflict': '该账号已注册，请直接登录',
-            'error.common.param.invalid': '验证码错误，请重试',
+            'error.business.conflict': 'register.error.conflict',
+            'error.common.param.invalid': 'register.error.invalidCode',
           };
-          this.errorMessage.set(map[err.errorId] ?? '注册失败，请稍后重试');
+          this.errorMessage.set(map[err.errorId] ?? 'register.error.default');
         },
       });
   }
@@ -136,19 +115,15 @@ export class RegisterComponent {
   }
 
   private checkPrincipal(value: string): void {
-    const check$ =
-      this.registerType() === 'email'
-        ? this.account.checkEmail(value)
-        : this.account.checkPhone(value);
-
-    check$.subscribe({ next: taken => {
-      if (taken) this.principalControl.setErrors({ taken: true });
-    }});
+    const check$ = this.registerType() === 'email'
+      ? this.account.checkEmail(value)
+      : this.account.checkPhone(value);
+    check$.subscribe({ next: taken => { if (taken) this.principalControl.setErrors({ taken: true }); } });
   }
 
   private checkUsername(value: string): void {
-    this.account.checkUsername(value).subscribe({ next: taken => {
-      if (taken) this.usernameControl.setErrors({ taken: true });
-    }});
+    this.account.checkUsername(value).subscribe({
+      next: taken => { if (taken) this.usernameControl.setErrors({ taken: true }); },
+    });
   }
 }
