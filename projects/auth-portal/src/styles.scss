@@ -1,244 +1,522 @@
 @use '@angular/material' as mat;
 
+// ── Material theme ──────────────────────────────────────
 html {
   @include mat.theme((
     color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$cyan-palette,
+      primary: mat.$violet-palette,
     ),
-    typography: 'DM Sans',
+    typography: 'system-ui',
     density: 0,
   ));
 
-  // Precise blue system color overrides
-  --mat-sys-primary: #0284c7;
+  --mat-sys-primary: #534AB7;
   --mat-sys-on-primary: #ffffff;
-  --mat-sys-primary-container: #e0f2fe;
-  --mat-sys-on-primary-container: #0c4a6e;
-  --mat-sys-surface: #f0f9ff;
-  --mat-sys-surface-variant: #e0f2fe;
-  --mat-sys-on-surface: #0f172a;
-  --mat-sys-on-surface-variant: #475569;
-  --mat-sys-outline-variant: #bae6fd;
-  --mat-sys-secondary-container: #e0f2fe;
-  --mat-sys-on-secondary-container: #0c4a6e;
+  --mat-sys-primary-container: #EEEDFE;
+  --mat-sys-on-primary-container: #3C3489;
+  --mat-sys-surface: #ffffff;
+  --mat-sys-surface-variant: #F2F2F5;
+  --mat-sys-on-surface: #1C1C21;
+  --mat-sys-on-surface-variant: #65656E;
+  --mat-sys-outline-variant: #E8E8ED;
+  --mat-sys-secondary-container: #EEEDFE;
+  --mat-sys-on-secondary-container: #3C3489;
 }
 
-// ── Design tokens ──────────────────────────────────────
+// ── Design tokens ───────────────────────────────────────
 :root {
-  --tech-primary:        #0284c7;
-  --tech-primary-light:  #0ea5e9;
-  --tech-primary-pale:   #38bdf8;
-  --tech-primary-glow:   rgba(2, 132, 199, 0.22);
-  --tech-accent:         #06b6d4;
-  --tech-navy:           #0c1a2e;
-  --tech-navy-mid:       #1e3a5f;
-  --tech-surface:        #ffffff;
-  --tech-surface-tint:   #f0f9ff;
-  --tech-text:           #0f172a;
-  --tech-text-muted:     #475569;
-  --tech-border:         rgba(2, 132, 199, 0.18);
-  --tech-border-subtle:  rgba(14, 165, 233, 0.1);
-  --tech-shadow:         0 2px 16px rgba(2, 132, 199, 0.1), 0 1px 3px rgba(2, 132, 199, 0.06);
-  --tech-shadow-lg:      0 8px 40px rgba(2, 132, 199, 0.16), 0 2px 8px rgba(2, 132, 199, 0.08);
-  --tech-radius:         14px;
-  --tech-radius-sm:      8px;
-  --font-display:        'Exo 2', 'DM Sans', sans-serif;
-  --font-body:           'DM Sans', sans-serif;
+  --auth-primary:        #534AB7;
+  --auth-primary-dark:   #3C3489;
+  --auth-primary-bg:     #EEEDFE;
+  --auth-page-bg:        #F2F2F5;
+  --auth-card-border:    #E8E8ED;
+  --auth-input-border:   #C9C9D1;
+  --auth-border-mid:     #DCDCE2;
+  --auth-text-primary:   #1C1C21;
+  --auth-text-secondary: #65656E;
+  --auth-text-tertiary:  #94949D;
+  --auth-success-bg:     #E1F5EE;
+  --auth-success-text:   #0F6E56;
+  --auth-warning-bg:     #FCF0DB;
+  --auth-warning-text:   #8A5A00;
+  --auth-danger-bg:      #FDECEA;
+  --auth-danger-text:    #C4314B;
 }
 
 // ── Base ────────────────────────────────────────────────
-body {
-  color-scheme: light;
-  background-color: var(--tech-surface-tint);
-  color: var(--tech-text);
-  font-family: var(--font-body);
-  margin: 0;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
 html, body { height: 100%; margin: 0; }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  color: var(--tech-text);
+body {
+  color-scheme: light;
+  background: var(--auth-page-bg);
+  color: var(--auth-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-// ── Material card overrides ─────────────────────────────
+// ── Material card override ──────────────────────────────
 .mat-mdc-card {
-  border-radius: var(--tech-radius) !important;
-  box-shadow: var(--tech-shadow) !important;
-  border: 1px solid var(--tech-border-subtle) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  border: 0.5px solid var(--auth-card-border) !important;
   background-color: #ffffff !important;
-  position: relative;
-  overflow: visible;
 
-  // Gradient accent line at top of card using ::before
-  // Using ::before avoids conflicts with Angular Material's ::after state-layer
-  // pointer-events: none + height: 2px ensures it never covers card content
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg,
-      transparent 2%,
-      var(--tech-primary-light) 25%,
-      var(--tech-primary-pale) 50%,
-      var(--tech-accent) 75%,
-      transparent 98%
-    );
-    border-radius: var(--tech-radius) var(--tech-radius) 0 0;
-    pointer-events: none;
-    z-index: 0;
-  }
+  &::before { display: none; }
 }
 
 .mat-mdc-card-title {
-  font-family: var(--font-display) !important;
-  font-weight: 600 !important;
-  color: var(--tech-navy) !important;
-}
-
-.mat-mdc-card-subtitle {
-  color: var(--tech-text-muted) !important;
+  font-weight: 500 !important;
+  color: var(--auth-text-primary) !important;
 }
 
 // ── Material button overrides ───────────────────────────
 .mat-mdc-raised-button.mat-primary {
-  background: linear-gradient(135deg, var(--tech-primary) 0%, var(--tech-accent) 100%) !important;
-  box-shadow: 0 2px 12px var(--tech-primary-glow) !important;
-  font-family: var(--font-display) !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.4px;
-  border-radius: var(--tech-radius-sm) !important;
-  transition: box-shadow 0.22s ease, transform 0.18s ease !important;
+  background: var(--auth-primary) !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  font-family: inherit !important;
+  font-weight: 500 !important;
 
-  &:hover:not(:disabled) {
-    box-shadow: 0 4px 22px var(--tech-primary-glow) !important;
-    transform: translateY(-1px);
-  }
-
-  &:disabled {
-    background: rgba(2, 132, 199, 0.3) !important;
-  }
+  &:hover:not(:disabled) { background: var(--auth-primary-dark) !important; }
+  &:disabled { background: rgba(83, 74, 183, 0.4) !important; }
 }
 
 .mat-mdc-outlined-button,
 .mat-mdc-stroked-button {
-  border-color: var(--tech-border) !important;
-  color: var(--tech-primary) !important;
-  border-radius: var(--tech-radius-sm) !important;
-  font-family: var(--font-display) !important;
-  font-weight: 500 !important;
+  border-color: var(--auth-input-border) !important;
+  color: var(--auth-text-primary) !important;
+  border-radius: 8px !important;
+  font-family: inherit !important;
 }
 
-.mat-mdc-icon-button {
-  color: var(--tech-primary) !important;
-}
-
-// ── Material toolbar overrides ──────────────────────────
-.mat-toolbar {
-  font-family: var(--font-display) !important;
-}
-
-.mat-toolbar.mat-primary {
-  background: linear-gradient(135deg, var(--tech-navy) 0%, var(--tech-navy-mid) 100%) !important;
-  color: #e0f2fe !important;
-  box-shadow: 0 2px 16px rgba(12, 26, 46, 0.3) !important;
-}
+.mat-mdc-icon-button { color: var(--auth-primary) !important; }
 
 // ── Material form field overrides ───────────────────────
-.mat-mdc-form-field {
-  font-family: var(--font-body) !important;
-}
-
-.mat-mdc-form-field-focus-overlay {
-  background-color: rgba(14, 165, 233, 0.04) !important;
-}
+.mat-mdc-form-field { font-family: inherit !important; }
 
 .mdc-text-field--focused .mdc-notched-outline__leading,
 .mdc-text-field--focused .mdc-notched-outline__notch,
 .mdc-text-field--focused .mdc-notched-outline__trailing {
-  border-color: var(--tech-primary) !important;
+  border-color: var(--auth-primary) !important;
   border-width: 2px !important;
 }
 
 .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
-  color: var(--tech-primary) !important;
+  color: var(--auth-primary) !important;
 }
 
 // ── Material tab overrides ──────────────────────────────
 .mat-mdc-tab-group,
 .mat-mdc-tab-nav-bar {
-  --mat-tab-header-active-label-text-color: var(--tech-primary);
-  --mat-tab-header-active-ripple-color: var(--tech-primary-glow);
-  --mat-tab-header-inactive-ripple-color: var(--tech-primary-glow);
-  --mat-tab-header-active-focus-label-text-color: var(--tech-primary);
-  --mat-tab-header-active-hover-label-text-color: var(--tech-primary);
-  --mat-tab-header-active-indicator-color: var(--tech-primary);
-}
-
-.mat-mdc-tab .mdc-tab__text-label {
-  font-family: var(--font-display) !important;
-  font-weight: 500 !important;
+  --mat-tab-header-active-label-text-color: var(--auth-primary);
+  --mat-tab-header-active-indicator-color: var(--auth-primary);
+  --mat-tab-header-active-focus-label-text-color: var(--auth-primary);
+  --mat-tab-header-active-hover-label-text-color: var(--auth-primary);
 }
 
 // ── Material slide toggle ───────────────────────────────
 .mat-mdc-slide-toggle {
-  --mdc-switch-selected-track-color: var(--tech-primary-light);
-  --mdc-switch-selected-handle-color: var(--tech-primary);
-  --mdc-switch-selected-focus-track-color: var(--tech-primary);
-  --mdc-switch-selected-hover-track-color: var(--tech-primary-light);
-  --mdc-switch-selected-pressed-track-color: var(--tech-primary);
+  --mdc-switch-selected-track-color: var(--auth-primary-bg);
+  --mdc-switch-selected-handle-color: var(--auth-primary);
+  --mdc-switch-selected-focus-track-color: var(--auth-primary);
+  --mdc-switch-selected-hover-track-color: var(--auth-primary-bg);
 }
 
 // ── Material checkbox ───────────────────────────────────
 .mat-mdc-checkbox {
   --mdc-checkbox-selected-checkmark-color: white;
-  --mdc-checkbox-selected-focus-icon-color: var(--tech-primary);
-  --mdc-checkbox-selected-hover-icon-color: var(--tech-primary);
-  --mdc-checkbox-selected-icon-color: var(--tech-primary);
-  --mdc-checkbox-selected-pressed-icon-color: var(--tech-primary);
-}
-
-// ── Material paginator ──────────────────────────────────
-.mat-mdc-paginator {
-  background: transparent !important;
-  font-family: var(--font-body) !important;
-  color: var(--tech-text-muted) !important;
+  --mdc-checkbox-selected-icon-color: var(--auth-primary);
+  --mdc-checkbox-selected-focus-icon-color: var(--auth-primary);
+  --mdc-checkbox-selected-hover-icon-color: var(--auth-primary);
+  --mdc-checkbox-selected-pressed-icon-color: var(--auth-primary);
 }
 
 // ── Material progress spinner ───────────────────────────
 .mat-mdc-progress-spinner circle,
 .mat-mdc-progress-spinner .mdc-circular-progress__determinate-circle,
 .mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
-  stroke: var(--tech-primary-light) !important;
+  stroke: var(--auth-primary) !important;
 }
 
-// ── Material button toggle ──────────────────────────────
-.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
-  font-family: var(--font-display) !important;
+// ── Shared component overrides ──────────────────────────
+sh-error-alert .error-alert {
+  background: var(--auth-danger-bg);
+  color: var(--auth-danger-text);
+  border-radius: 8px;
+  border: 0.5px solid rgba(196, 49, 75, 0.2);
+}
+
+sh-loading-button button.mat-mdc-raised-button {
+  width: 100%;
+  height: 40px;
+  font-family: inherit !important;
   font-weight: 500 !important;
+  font-size: 14px !important;
+  letter-spacing: 0 !important;
 }
 
-.mat-button-toggle-checked {
-  background-color: var(--tech-primary-container, #e0f2fe) !important;
-  color: var(--tech-primary) !important;
+// ── Auth card (login / register / reset-password) ───────
+.auth-card {
+  background: #ffffff;
+  border: 0.5px solid var(--auth-card-border);
+  border-radius: 16px;
+  padding: 2rem 1.75rem;
+  width: 100%;
+}
+
+.auth-card-wide {
+  max-width: 380px;
+}
+
+// ── Icon circle ─────────────────────────────────────────
+.icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--auth-primary-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    color: var(--auth-primary);
+  }
+}
+
+// ── Typography ──────────────────────────────────────────
+.card-title {
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0 0 4px;
+  color: var(--auth-text-primary);
+}
+
+.card-subtitle {
+  font-size: 13px;
+  text-align: center;
+  color: var(--auth-text-secondary);
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+// ── Form primitives ─────────────────────────────────────
+.field-label {
+  display: block;
+  font-size: 12px;
+  color: var(--auth-text-secondary);
+  margin: 0 0 4px;
+}
+
+.text-input {
+  padding: 9px 12px;
+  border: 0.5px solid var(--auth-input-border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #ffffff;
+  color: var(--auth-text-primary);
+  width: 100%;
+
+  &:focus {
+    outline: 2px solid var(--auth-primary);
+    outline-offset: -1px;
+  }
+
+  &::placeholder { color: var(--auth-text-tertiary); }
+}
+
+.country-select {
+  width: 86px;
+  flex-shrink: 0;
+  padding: 9px 8px;
+  border: 0.5px solid var(--auth-input-border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #ffffff;
+  color: var(--auth-text-primary);
+
+  &:focus {
+    outline: 2px solid var(--auth-primary);
+    outline-offset: -1px;
+  }
+}
+
+.phone-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.field-row {
+  margin-bottom: 12px;
+}
+
+// ── Buttons ─────────────────────────────────────────────
+.btn-primary {
+  width: 100%;
+  background: var(--auth-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:hover:not(:disabled) { background: var(--auth-primary-dark); }
+}
+
+.btn-alt {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: #ffffff;
+  border: 0.5px solid var(--auth-input-border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--auth-text-primary);
+  cursor: pointer;
+
+  &:hover { border-color: var(--auth-primary); color: var(--auth-primary); }
+}
+
+.btn-outline {
+  flex: 1;
+  background: #ffffff;
+  border: 0.5px solid var(--auth-input-border);
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--auth-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover { border-color: var(--auth-primary); color: var(--auth-primary); }
+}
+
+.send-code-btn {
+  background: #ffffff;
+  border: 0.5px solid var(--auth-input-border);
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--auth-text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  height: 40px;
+  flex-shrink: 0;
+
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+  &:hover:not(:disabled) { border-color: var(--auth-primary); color: var(--auth-primary); }
+}
+
+.small-btn {
+  background: #ffffff;
+  border: 0.5px solid var(--auth-input-border);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--auth-text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { border-color: var(--auth-primary); color: var(--auth-primary); }
+}
+
+// ── Divider ─────────────────────────────────────────────
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 1.25rem 0;
+
+  .divider-line { flex: 1; height: 0.5px; background: var(--auth-border-mid); }
+  .divider-text { font-size: 12px; color: var(--auth-text-tertiary); }
+}
+
+// ── Alt-method button rows ──────────────────────────────
+.alt-row {
+  display: flex;
+  gap: 8px;
+
+  & + .alt-row { margin-top: 8px; }
+}
+
+// ── Hints and messages ──────────────────────────────────
+.field-hint {
+  font-size: 12px;
+  color: var(--auth-text-tertiary);
+  margin: 4px 0 12px;
+  min-height: 16px;
+  line-height: 1.4;
+}
+
+.field-error {
+  font-size: 12px;
+  color: var(--auth-danger-text);
+  margin: 4px 0 8px;
+}
+
+.field-success {
+  font-size: 12px;
+  color: var(--auth-success-text);
+  margin: 4px 0 8px;
+}
+
+.cooldown-notice {
+  font-size: 13px;
+  color: var(--auth-danger-text);
+  background: var(--auth-danger-bg);
+  border: 0.5px solid rgba(196, 49, 75, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.success-notice {
+  font-size: 13px;
+  color: var(--auth-success-text);
+  background: var(--auth-success-bg);
+  border: 0.5px solid rgba(15, 110, 86, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+// ── Links ───────────────────────────────────────────────
+.link {
+  color: var(--auth-primary);
+  cursor: pointer;
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+.forgot-row {
+  text-align: right;
+  margin: 6px 0 1.25rem;
+}
+
+.bottom-link {
+  font-size: 12px;
+  text-align: center;
+  color: var(--auth-text-secondary);
+  margin: 1.25rem 0 0;
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 12px;
+  margin: 1.25rem 0 0;
+  color: var(--auth-primary);
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover { text-decoration: underline; }
+}
+
+// ── Account info cards ──────────────────────────────────
+.info-card {
+  background: #ffffff;
+  border: 0.5px solid var(--auth-card-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.info-card-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 2px;
+  color: var(--auth-text-primary);
+}
+
+.info-card-subtitle {
+  font-size: 12px;
+  color: var(--auth-text-secondary);
+  margin: 0 0 12px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+
+  & + .info-row { border-top: 0.5px solid var(--auth-card-border); }
+}
+
+.info-row-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+  color: var(--auth-text-secondary);
+  flex-shrink: 0;
+}
+
+.info-row-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.info-row-label {
+  font-size: 13px;
+  margin: 0;
+  color: var(--auth-text-primary);
+}
+
+.info-row-value {
+  font-size: 12px;
+  margin: 0;
+  color: var(--auth-text-secondary);
+}
+
+// ── Badges ──────────────────────────────────────────────
+.badge {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+
+  &.badge-success {
+    background: var(--auth-success-bg);
+    color: var(--auth-success-text);
+  }
+
+  &.badge-warning {
+    background: var(--auth-warning-bg);
+    color: var(--auth-warning-text);
+  }
 }
 
 // ── Scrollbar ───────────────────────────────────────────
 ::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: var(--tech-surface-tint); }
-::-webkit-scrollbar-thumb {
-  background: rgba(2, 132, 199, 0.28);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover { background: var(--tech-primary-light); }
-
-// ── Selection ───────────────────────────────────────────
-::selection {
-  background: rgba(14, 165, 233, 0.2);
-  color: var(--tech-navy);
-}
+::-webkit-scrollbar-track { background: var(--auth-page-bg); }
+::-webkit-scrollbar-thumb { background: rgba(83, 74, 183, 0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--auth-primary); }
