@@ -149,6 +149,7 @@
     },
     "error": {
       "conflict": "Username is already taken",
+      "usernamePattern": "5–15 lowercase letters or numbers only",
       "default": "Update failed, please try again"
     }
   },

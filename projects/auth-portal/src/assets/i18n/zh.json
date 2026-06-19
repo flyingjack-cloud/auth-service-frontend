@@ -149,6 +149,7 @@
     },
     "error": {
       "conflict": "用户名已被占用",
+      "usernamePattern": "须为 5-15 位小写字母或数字",
       "default": "更新失败，请稍后重试"
     }
   },

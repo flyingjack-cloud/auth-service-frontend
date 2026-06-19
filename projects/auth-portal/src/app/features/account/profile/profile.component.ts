@@ -16,6 +16,7 @@ import { AccountService, ApiError, AuthService, ErrorAlertComponent, LoadingButt
     ErrorAlertComponent,
   ],
   templateUrl: './profile.component.html',
+  styleUrl: './profile.component.scss',
 })
 export class ProfileComponent {
   private readonly auth = inject(AuthService);

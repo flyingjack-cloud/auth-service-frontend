@@ -68,6 +68,10 @@ export class RegisterComponent {
     this.errorMessage.set(null);
   }
 
+  onPhoneSelector(): void {
+    console.warn('not implemented: phone country selector');
+  }
+
   onSocialLogin(provider: string): void {
     console.warn(`not implemented: social login (${provider})`);
   }

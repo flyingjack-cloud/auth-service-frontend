@@ -10,6 +10,7 @@ export class LangService {
   );
 
   constructor() {
+    this.translate.setFallbackLang('zh').subscribe();
     this.translate.use(this.currentLang());
   }
 

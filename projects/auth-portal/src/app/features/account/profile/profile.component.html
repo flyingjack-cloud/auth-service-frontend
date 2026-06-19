@@ -42,7 +42,7 @@
           </button>
         </form>
         @if (form.get('username')?.hasError('pattern')) {
-          <p class="field-error">{{ 'register.error.usernamePattern' | translate }}</p>
+          <p class="field-error">{{ 'profile.error.usernamePattern' | translate }}</p>
         }
       }
     </div>
@@ -118,19 +118,3 @@
     </button>
   </div>
 </div>
-
-<style>
-  .avatar-circle {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: #EEEDFE;
-    color: #534AB7;
-    font-size: 17px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-</style>

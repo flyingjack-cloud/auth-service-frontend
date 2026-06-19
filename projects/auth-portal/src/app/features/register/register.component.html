@@ -14,7 +14,7 @@
 
     @if (registerType() === 'phone') {
       <div class="phone-row">
-        <select class="country-select">
+        <select class="country-select" (change)="onPhoneSelector()">
           <option>+86</option>
           <option>+1</option>
           <option>+44</option>

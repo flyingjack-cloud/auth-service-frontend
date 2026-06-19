@@ -15,6 +15,7 @@ interface AuthorizeResponse {
   standalone: true,
   imports: [MatIconModule, MatProgressSpinnerModule, TranslatePipe, ErrorAlertComponent],
   templateUrl: './oauth2-consent.component.html',
+  styleUrl: './oauth2-consent.component.scss',
 })
 export class OAuth2ConsentComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
