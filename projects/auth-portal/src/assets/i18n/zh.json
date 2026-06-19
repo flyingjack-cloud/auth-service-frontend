@@ -1,0 +1,178 @@
+{
+  "common": {
+    "brand": "flyingjack cloud",
+    "langToggle": "EN"
+  },
+  "login": {
+    "title": "登录",
+    "subtitle": {
+      "phone": "使用手机号登录",
+      "email": "使用邮箱登录",
+      "username": "使用用户名登录"
+    },
+    "label": {
+      "phone": "手机号",
+      "email": "邮箱",
+      "username": "用户名",
+      "password": "密码"
+    },
+    "forgotPassword": "忘记密码？",
+    "submit": "登录",
+    "orWith": "或使用以下方式登录",
+    "altMethod": {
+      "phone": "手机号",
+      "email": "邮箱",
+      "username": "用户名"
+    },
+    "noAccount": "还没有账号？",
+    "createOne": "立即注册",
+    "cooldown": "登录尝试次数过多，请 {{time}} 后再试",
+    "captcha": "图形验证码",
+    "error": {
+      "badCredential": "用户名或密码错误",
+      "invalidAccount": "账号已被禁用或锁定",
+      "expiredCredential": "密码已过期，请重置密码",
+      "missCaptcha": "验证码错误，请重新输入",
+      "overAttempt": "登录失败次数过多",
+      "default": "登录失败，请稍后重试"
+    }
+  },
+  "register": {
+    "title": "注册账号",
+    "subtitle": {
+      "phone": "使用手机号注册",
+      "email": "使用邮箱注册"
+    },
+    "label": {
+      "phone": "手机号",
+      "email": "邮箱",
+      "code": "验证码",
+      "username": "用户名",
+      "password": "密码"
+    },
+    "sendCode": "发送验证码",
+    "resendCode": "重新发送 {{count}}s",
+    "codeHint": "验证码 10 分钟内有效",
+    "passwordHint": "8-16 位字符",
+    "usernameHint": "5-15 位小写字母或数字",
+    "terms": "我同意",
+    "termsLink": "服务条款",
+    "and": "和",
+    "privacyLink": "隐私政策",
+    "submit": "验证并创建账号",
+    "orWith": "或使用以下方式注册",
+    "hasAccount": "已有账号？",
+    "signIn": "去登录",
+    "error": {
+      "conflict": "该账号已注册，请直接登录",
+      "invalidCode": "验证码错误，请重试",
+      "sendFailed": "发送验证码失败，请稍后重试",
+      "taken": "已被注册",
+      "usernameTaken": "用户名已被占用",
+      "usernamePattern": "须为 5-15 位小写字母或数字",
+      "default": "注册失败，请稍后重试"
+    }
+  },
+  "reset": {
+    "title": "重置密码",
+    "subtitle": "我们将向您的邮箱或手机发送验证码",
+    "label": {
+      "principal": "邮箱或手机号",
+      "code": "验证码",
+      "newPassword": "新密码",
+      "confirmPassword": "确认新密码"
+    },
+    "sendCode": "发送验证码",
+    "resendCode": "重新发送 {{count}}s",
+    "codeHint": "验证码 10 分钟内有效",
+    "codeSent": "验证码已发送，请查收",
+    "passwordHint": "8-16 位字符",
+    "passwordMatch": "密码一致",
+    "passwordMismatch": "密码不一致",
+    "submit": "重置密码",
+    "backToSignIn": "返回登录",
+    "success": "密码已重置，请使用新密码登录",
+    "error": {
+      "invalidCode": "验证码错误，请重试",
+      "notFound": "该账号不存在",
+      "sendFailed": "发送验证码失败，请稍后重试",
+      "default": "重置失败，请稍后重试"
+    }
+  },
+  "consent": {
+    "title": "{{clientId}} 请求访问您的账号",
+    "signedInAs": "当前登录：{{identifier}}",
+    "permissionsIntro": "这将允许 {{clientId}}：",
+    "scope": {
+      "openid": "查看您的基本资料",
+      "profile": "查看您的姓名和头像",
+      "email": "查看您的邮箱地址",
+      "phone": "查看您的手机号"
+    },
+    "footer": "继续即表示您将被重定向到 {{clientId}}，您可随时在账号设置中撤销授权。",
+    "deny": "取消",
+    "allow": "授权",
+    "error": {
+      "default": "授权失败，请稍后重试"
+    }
+  },
+  "account": {
+    "profile": "个人资料",
+    "security": "安全设置",
+    "logout": "退出登录"
+  },
+  "profile": {
+    "memberSince": "注册于 {{year}}",
+    "edit": "编辑",
+    "save": "保存",
+    "cancel": "取消",
+    "notBound": "未绑定",
+    "identifiers": {
+      "title": "登录凭证",
+      "subtitle": "任意已验证凭证均可用于登录",
+      "username": "用户名",
+      "email": "邮箱",
+      "phone": "手机号",
+      "change": "修改",
+      "verify": "验证"
+    },
+    "badge": {
+      "verified": "已验证",
+      "unverified": "未验证"
+    },
+    "linkedAccounts": {
+      "title": "关联账号",
+      "notConnected": "未关联",
+      "connectedAs": "已关联 {{email}}",
+      "connect": "关联",
+      "connected": "已关联"
+    },
+    "error": {
+      "conflict": "用户名已被占用",
+      "default": "更新失败，请稍后重试"
+    }
+  },
+  "security": {
+    "sessions": {
+      "label": "活跃会话",
+      "description": "2 个设备已登录",
+      "manage": "管理"
+    },
+    "password": {
+      "label": "密码",
+      "lastChanged": "3 个月前修改过",
+      "change": "修改"
+    },
+    "changePassword": {
+      "title": "修改密码",
+      "oldPassword": "当前密码",
+      "newPassword": "新密码（8-16 位）",
+      "submit": "修改密码"
+    },
+    "success": "密码修改成功",
+    "error": {
+      "wrongPassword": "旧密码不正确，请重新输入",
+      "default": "修改失败，请稍后重试"
+    }
+  }
+}
