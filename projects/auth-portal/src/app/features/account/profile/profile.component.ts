@@ -1,10 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { TranslatePipe } from '@ngx-translate/core';
 import { switchMap } from 'rxjs';
 import { AccountService, ApiError, AuthService, ErrorAlertComponent, LoadingButtonComponent } from '@shared';
 
@@ -13,11 +10,8 @@ import { AccountService, ApiError, AuthService, ErrorAlertComponent, LoadingButt
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
+    TranslatePipe,
     LoadingButtonComponent,
     ErrorAlertComponent,
   ],
@@ -36,6 +30,16 @@ export class ProfileComponent {
     username: ['', [Validators.required, Validators.pattern(/^[a-z0-9]{5,15}$/)]],
   });
 
+  memberYear(): string {
+    const d = this.user()?.createdAt;
+    return d ? new Date(d).getFullYear().toString() : '';
+  }
+
+  initials(): string {
+    const u = this.user()?.username ?? '';
+    return u.slice(0, 2).toUpperCase();
+  }
+
   startEdit(): void {
     this.form.patchValue({ username: this.user()?.username ?? '' });
     this.editing.set(true);
@@ -46,6 +50,10 @@ export class ProfileComponent {
     this.editing.set(false);
   }
 
+  onSocialAction(action: string): void {
+    console.warn(`not implemented: ${action}`);
+  }
+
   save(): void {
     if (this.loading() || this.form.invalid) return;
     this.loading.set(true);
@@ -54,14 +62,11 @@ export class ProfileComponent {
       .updateProfile({ username: this.form.value.username! })
       .pipe(switchMap(() => this.auth.checkLogin()))
       .subscribe({
-        next: () => {
-          this.loading.set(false);
-          this.editing.set(false);
-        },
+        next: () => { this.loading.set(false); this.editing.set(false); },
         error: (err: ApiError) => {
           this.loading.set(false);
           this.errorMessage.set(
-            err.errorId === 'error.business.conflict' ? '用户名已被占用' : '更新失败，请稍后重试',
+            err.errorId === 'error.business.conflict' ? 'profile.error.conflict' : 'profile.error.default',
           );
         },
       });

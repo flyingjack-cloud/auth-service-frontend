@@ -1,75 +1,136 @@
-<mat-card>
-  <mat-card-header>
-    <mat-icon mat-card-avatar>account_circle</mat-icon>
-    <mat-card-title>个人资料</mat-card-title>
-  </mat-card-header>
+@if (errorMessage()) {
+  <sh-error-alert [message]="errorMessage()! | translate" />
+}
 
-  <mat-card-content>
-    <sh-error-alert [message]="errorMessage()" />
-
-    <div class="info-row">
-      <span class="label">用户名</span>
-      @if (!editing()) {
-        <span class="value">{{ user()?.username }}</span>
-        <button mat-icon-button (click)="startEdit()" aria-label="修改用户名">
-          <mat-icon>edit</mat-icon>
-        </button>
-      } @else {
-        <form [formGroup]="form" (ngSubmit)="save()" class="inline-form">
-          <mat-form-field appearance="outline" class="username-field">
-            <input matInput formControlName="username" placeholder="5-15位小写字母或数字" />
-            @if (form.get('username')?.hasError('pattern')) {
-              <mat-error>须为5-15位小写字母或数字</mat-error>
-            }
-          </mat-form-field>
-          <sh-loading-button [loading]="loading()" [disabled]="form.invalid" (clicked)="save()">保存</sh-loading-button>
-          <button mat-button type="button" (click)="cancelEdit()">取消</button>
-        </form>
+<!-- Avatar card -->
+<div class="info-card">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <div class="avatar-circle">{{ initials() }}</div>
+    <div style="flex:1;">
+      <p style="font-size:16px;font-weight:500;margin:0;">{{ user()?.username }}</p>
+      @if (memberYear()) {
+        <p style="font-size:13px;color:#65656E;margin:0;">
+          {{ 'profile.memberSince' | translate: { year: memberYear() } }}
+        </p>
       }
     </div>
+  </div>
+</div>
 
-    <div class="info-row">
-      <span class="label">邮箱</span>
-      <span class="value">{{ user()?.email ?? '未绑定' }}</span>
-    </div>
+<!-- Sign-in identifiers card -->
+<div class="info-card">
+  <p class="info-card-title">{{ 'profile.identifiers.title' | translate }}</p>
+  <p class="info-card-subtitle">{{ 'profile.identifiers.subtitle' | translate }}</p>
 
-    <div class="info-row">
-      <span class="label">手机号</span>
-      <span class="value">{{ user()?.phone ?? '未绑定' }}</span>
+  <!-- Username row -->
+  <div class="info-row">
+    <mat-icon class="info-row-icon">alternate_email</mat-icon>
+    <div class="info-row-body">
+      <p class="info-row-label">{{ 'profile.identifiers.username' | translate }}</p>
+      @if (!editing()) {
+        <p class="info-row-value">{{ user()?.username }}</p>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="save()" style="display:flex;align-items:flex-start;gap:8px;margin-top:4px;">
+          <input class="text-input" formControlName="username"
+                 placeholder="5-15 lowercase letters or numbers"
+                 style="flex:1;min-width:0;" />
+          <sh-loading-button [loading]="loading()" [disabled]="form.invalid" (clicked)="save()">
+            {{ 'profile.save' | translate }}
+          </sh-loading-button>
+          <button class="small-btn" type="button" (click)="cancelEdit()">
+            {{ 'profile.cancel' | translate }}
+          </button>
+        </form>
+        @if (form.get('username')?.hasError('pattern')) {
+          <p class="field-error">{{ 'register.error.usernamePattern' | translate }}</p>
+        }
+      }
     </div>
-  </mat-card-content>
-</mat-card>
+    @if (!editing()) {
+      <button class="small-btn" (click)="startEdit()">
+        {{ 'profile.identifiers.change' | translate }}
+      </button>
+    }
+  </div>
+
+  <!-- Email row -->
+  <div class="info-row">
+    <mat-icon class="info-row-icon">mail</mat-icon>
+    <div class="info-row-body">
+      <p class="info-row-label">{{ 'profile.identifiers.email' | translate }}</p>
+      <p class="info-row-value">{{ user()?.email ?? ('profile.notBound' | translate) }}</p>
+    </div>
+    @if (user()?.email) {
+      <span class="badge badge-success">{{ 'profile.badge.verified' | translate }}</span>
+      <button class="small-btn" (click)="onSocialAction('change-email')">
+        {{ 'profile.identifiers.change' | translate }}
+      </button>
+    } @else {
+      <button class="small-btn" (click)="onSocialAction('bind-email')">
+        {{ 'profile.identifiers.verify' | translate }}
+      </button>
+    }
+  </div>
+
+  <!-- Phone row -->
+  <div class="info-row">
+    <mat-icon class="info-row-icon">phone_iphone</mat-icon>
+    <div class="info-row-body">
+      <p class="info-row-label">{{ 'profile.identifiers.phone' | translate }}</p>
+      <p class="info-row-value">{{ user()?.phone ?? ('profile.notBound' | translate) }}</p>
+    </div>
+    @if (user()?.phone) {
+      <span class="badge badge-warning">{{ 'profile.badge.unverified' | translate }}</span>
+      <button class="small-btn" (click)="onSocialAction('verify-phone')">
+        {{ 'profile.identifiers.verify' | translate }}
+      </button>
+    } @else {
+      <button class="small-btn" (click)="onSocialAction('bind-phone')">
+        {{ 'profile.identifiers.verify' | translate }}
+      </button>
+    }
+  </div>
+</div>
+
+<!-- Linked accounts card -->
+<div class="info-card">
+  <p class="info-card-title">{{ 'profile.linkedAccounts.title' | translate }}</p>
+
+  <div class="info-row" style="padding-top:0;">
+    <mat-icon class="info-row-icon">account_circle</mat-icon>
+    <div class="info-row-body">
+      <p class="info-row-label">Google</p>
+      <p class="info-row-value">{{ 'profile.linkedAccounts.notConnected' | translate }}</p>
+    </div>
+    <button class="small-btn" (click)="onSocialAction('connect-google')">
+      {{ 'profile.linkedAccounts.connect' | translate }}
+    </button>
+  </div>
+
+  <div class="info-row">
+    <mat-icon class="info-row-icon">code</mat-icon>
+    <div class="info-row-body">
+      <p class="info-row-label">GitHub</p>
+      <p class="info-row-value">{{ 'profile.linkedAccounts.notConnected' | translate }}</p>
+    </div>
+    <button class="small-btn" (click)="onSocialAction('connect-github')">
+      {{ 'profile.linkedAccounts.connect' | translate }}
+    </button>
+  </div>
+</div>
 
 <style>
-  mat-card { max-width: 520px; }
-
-  .info-row {
+  .avatar-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #EEEDFE;
+    color: #534AB7;
+    font-size: 17px;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--tech-border-subtle, rgba(14, 165, 233, 0.1));
-  }
-  .info-row:last-child { border-bottom: none; }
-
-  .label {
-    width: 80px;
-    font-size: 12.5px;
-    font-family: var(--font-display, 'Exo 2', sans-serif);
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--tech-text-muted, #475569);
+    justify-content: center;
     flex-shrink: 0;
   }
-
-  .value {
-    flex: 1;
-    font-size: 15px;
-    font-family: var(--font-body, 'DM Sans', sans-serif);
-    color: var(--tech-text, #0f172a);
-  }
-
-  .inline-form { display: flex; align-items: center; gap: 8px; flex: 1; }
-  .username-field { flex: 1; }
 </style>
