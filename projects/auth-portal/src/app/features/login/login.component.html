@@ -1,59 +1,86 @@
-<mat-card class="login-card">
-  <mat-card-header>
-    <mat-card-title>登录</mat-card-title>
-  </mat-card-header>
+<div class="auth-card">
+  <div class="icon-circle">
+    <mat-icon>lock</mat-icon>
+  </div>
+  <h1 class="card-title">{{ 'login.title' | translate }}</h1>
+  <p class="card-subtitle">{{ ('login.subtitle.' + loginType()) | translate }}</p>
 
-  <mat-tab-group (selectedTabChange)="onTabChange($event)" class="login-tabs">
-    <mat-tab label="用户名" />
-    <mat-tab label="手机号" />
-    <mat-tab label="邮箱" />
-  </mat-tab-group>
+  @if (errorMessage()) {
+    <sh-error-alert [message]="errorMessage()! | translate" />
+  }
 
-  <mat-card-content>
-    <sh-error-alert [message]="errorMessage()" />
+  @if (showCooldown()) {
+    <div class="cooldown-notice">
+      {{ 'login.cooldown' | translate: { time: cooldownDisplay() } }}
+    </div>
+  }
 
-    @if (showCooldown()) {
-      <div class="cooldown-notice">
-        登录尝试次数过多，请 {{ cooldownDisplay() }} 后再试
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label class="field-label">{{ ('login.label.' + loginType()) | translate }}</label>
+
+    @if (loginType() === 'phone') {
+      <div class="phone-row">
+        <select class="country-select">
+          <option>+86</option>
+          <option>+1</option>
+          <option>+44</option>
+          <option>+65</option>
+        </select>
+        <input class="text-input" formControlName="principal" type="tel" placeholder="138 0000 0000" />
+      </div>
+    } @else {
+      <div class="field-row">
+        <input
+          class="text-input"
+          formControlName="principal"
+          [type]="principalInputType()"
+          [placeholder]="loginType() === 'email' ? 'you@example.com' : 'username'"
+        />
       </div>
     }
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ principalLabel() }}</mat-label>
-        <input
-          matInput
-          formControlName="principal"
-          [type]="principalInputType()"
-          autocomplete="username"
-        />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>密码</mat-label>
-        <input matInput formControlName="password" type="password" autocomplete="current-password" />
-      </mat-form-field>
-
-      @if (showCaptcha()) {
-        <sh-captcha-field
-          [control]="captchaControl"
-          [captchaId]="form.value.principal ?? ''"
-        />
-      }
-
-      <sh-loading-button
-        [loading]="loading()"
-        [disabled]="form.invalid || showCooldown()"
-        (clicked)="onSubmit()"
-        class="submit-btn"
-      >
-        登录
-      </sh-loading-button>
-    </form>
-
-    <div class="auth-links">
-      <a routerLink="/register">注册账号</a>
-      <a routerLink="/reset-password">忘记密码？</a>
+    <label class="field-label">{{ 'login.label.password' | translate }}</label>
+    <div class="field-row">
+      <input class="text-input" formControlName="password" type="password" placeholder="••••••••" />
     </div>
-  </mat-card-content>
-</mat-card>
+
+    <div class="forgot-row">
+      <a routerLink="/reset-password" class="link">{{ 'login.forgotPassword' | translate }}</a>
+    </div>
+
+    @if (showCaptcha()) {
+      <sh-captcha-field [control]="captchaControl" [captchaId]="form.value.principal ?? ''" />
+    }
+
+    <button class="btn-primary" type="submit" [disabled]="form.invalid || showCooldown() || loading()">
+      @if (loading()) {
+        <mat-spinner diameter="18" />
+      } @else {
+        {{ 'login.submit' | translate }}
+      }
+    </button>
+  </form>
+
+  <div class="divider">
+    <span class="divider-line"></span>
+    <span class="divider-text">{{ 'login.orWith' | translate }}</span>
+    <span class="divider-line"></span>
+  </div>
+
+  <div class="alt-row">
+    @for (method of altMethods(); track method) {
+      <button class="btn-alt" type="button" (click)="setMethod(method)">
+        {{ ('login.altMethod.' + method) | translate }}
+      </button>
+    }
+  </div>
+  <div class="alt-row">
+    <button class="btn-alt" type="button" (click)="onSocialLogin('google')">Google</button>
+    <button class="btn-alt" type="button" (click)="onSocialLogin('github')">GitHub</button>
+  </div>
+
+  <p class="bottom-link">
+    {{ 'login.noAccount' | translate }}
+    <a routerLink="/register" class="link">{{ 'login.createOne' | translate }}</a>
+  </p>
+</div>

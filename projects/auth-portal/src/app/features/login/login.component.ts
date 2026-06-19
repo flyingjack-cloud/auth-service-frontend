@@ -2,18 +2,11 @@ import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslatePipe } from '@ngx-translate/core';
 import { interval, take } from 'rxjs';
-import {
-  ApiError,
-  AuthService,
-  CaptchaFieldComponent,
-  ErrorAlertComponent,
-  LoadingButtonComponent,
-} from '@shared';
+import { ApiError, AuthService, CaptchaFieldComponent, ErrorAlertComponent } from '@shared';
 
 @Component({
   selector: 'auth-login',
@@ -21,11 +14,9 @@ import {
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTabsModule,
-    LoadingButtonComponent,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    TranslatePipe,
     ErrorAlertComponent,
     CaptchaFieldComponent,
   ],
@@ -54,19 +45,15 @@ export class LoginComponent {
     return `${m}:${sec.toString().padStart(2, '0')}`;
   });
 
-  readonly principalLabel = computed(() => {
-    const labels: Record<string, string> = {
-      username: '用户名',
-      phone: '手机号',
-      email: '邮箱',
-    };
-    return labels[this.loginType()];
-  });
-
   readonly principalInputType = computed(() => {
     if (this.loginType() === 'email') return 'email';
     if (this.loginType() === 'phone') return 'tel';
     return 'text';
+  });
+
+  readonly altMethods = computed(() => {
+    const all = ['username', 'phone', 'email'] as const;
+    return all.filter(m => m !== this.loginType());
   });
 
   readonly form = inject(FormBuilder).group({
@@ -79,11 +66,14 @@ export class LoginComponent {
     return this.form.get('captchaToken') as FormControl;
   }
 
-  onTabChange(event: MatTabChangeEvent): void {
-    const types = ['username', 'phone', 'email'] as const;
-    this.loginType.set(types[event.index]);
+  setMethod(method: 'username' | 'phone' | 'email'): void {
+    this.loginType.set(method);
     this.form.patchValue({ principal: '', captchaToken: '' });
     this.errorMessage.set(null);
+  }
+
+  onSocialLogin(provider: string): void {
+    console.warn(`not implemented: social login (${provider})`);
   }
 
   onSubmit(): void {
@@ -112,9 +102,7 @@ export class LoginComponent {
         error: (err: ApiError) => {
           this.loading.set(false);
           this.failCount.update(c => c + 1);
-          if (this.failCount() >= 10) {
-            this.startCooldown();
-          }
+          if (this.failCount() >= 10) this.startCooldown();
           this.form.patchValue({ captchaToken: '' });
           this.errorMessage.set(this.mapError(err.errorId));
         },
@@ -127,20 +115,18 @@ export class LoginComponent {
       .pipe(take(600), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.cooldownSeconds.update(s => Math.max(0, s - 1));
-        if (this.cooldownSeconds() === 0) {
-          this.failCount.set(0);
-        }
+        if (this.cooldownSeconds() === 0) this.failCount.set(0);
       });
   }
 
   private mapError(errorId: string): string {
     const map: Record<string, string> = {
-      'error.security.authenticated.bad-credential': '用户名或密码错误',
-      'error.security.authenticated.invalid-account': '账号已被禁用或锁定',
-      'error.security.authenticated.expired-credential': '密码已过期，请重置密码',
-      'error.common.param.miss-captcha': '验证码错误，请重新输入',
-      'error.security.authenticated.authenticated.over-attempt': '登录失败次数过多',
+      'error.security.authenticated.bad-credential': 'login.error.badCredential',
+      'error.security.authenticated.invalid-account': 'login.error.invalidAccount',
+      'error.security.authenticated.expired-credential': 'login.error.expiredCredential',
+      'error.common.param.miss-captcha': 'login.error.missCaptcha',
+      'error.security.authenticated.authenticated.over-attempt': 'login.error.overAttempt',
     };
-    return map[errorId] ?? '登录失败，请稍后重试';
+    return map[errorId] ?? 'login.error.default';
   }
 }
