@@ -1,12 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ErrorAlertComponent } from '@shared';
+import { TranslatePipe } from '@ngx-translate/core';
+import { AuthService, ErrorAlertComponent } from '@shared';
 
 interface AuthorizeResponse {
   code: string;
@@ -15,22 +13,17 @@ interface AuthorizeResponse {
 @Component({
   selector: 'auth-oauth2-consent',
   standalone: true,
-  imports: [
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    MatListModule,
-    MatProgressSpinnerModule,
-    ErrorAlertComponent,
-  ],
+  imports: [MatIconModule, MatProgressSpinnerModule, TranslatePipe, ErrorAlertComponent],
   templateUrl: './oauth2-consent.component.html',
 })
 export class OAuth2ConsentComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
+  private readonly auth = inject(AuthService);
 
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly currentUser = this.auth.currentUser;
 
   clientId = '';
   redirectUri = '';
@@ -41,6 +34,26 @@ export class OAuth2ConsentComponent implements OnInit {
 
   get scopeList(): string[] {
     return this.scope.split(/\s+/).filter(Boolean);
+  }
+
+  get userIdentifier(): string {
+    const u = this.currentUser();
+    return u?.email ?? u?.phone ?? u?.username ?? '';
+  }
+
+  scopeIcon(scope: string): string {
+    const icons: Record<string, string> = {
+      openid: 'person',
+      profile: 'account_circle',
+      email: 'mail',
+      phone: 'phone',
+    };
+    return icons[scope] ?? 'check_circle';
+  }
+
+  scopeKey(scope: string): string {
+    const known = ['openid', 'profile', 'email', 'phone'];
+    return known.includes(scope) ? `consent.scope.${scope}` : scope;
   }
 
   ngOnInit(): void {
@@ -80,7 +93,7 @@ export class OAuth2ConsentComponent implements OnInit {
         },
         error: () => {
           this.loading.set(false);
-          this.errorMessage.set('授权失败，请稍后重试');
+          this.errorMessage.set('consent.error.default');
         },
       });
   }

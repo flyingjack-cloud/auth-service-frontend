@@ -1,78 +1,121 @@
-<div class="consent-container">
-  <mat-card class="consent-card">
-    <mat-card-header>
-      <mat-icon mat-card-avatar>apps</mat-icon>
-      <mat-card-title>授权请求</mat-card-title>
-      <mat-card-subtitle>{{ clientId }}</mat-card-subtitle>
-    </mat-card-header>
+<div class="consent-page">
+  <div class="auth-card auth-card-wide">
+    <div class="app-connect-row">
+      <div class="connect-icon" style="background:#E1F5EE;">
+        <mat-icon style="color:#0F6E56;">apps</mat-icon>
+      </div>
+      <mat-icon class="connect-arrow">swap_horiz</mat-icon>
+      <div class="connect-icon" style="background:#EEEDFE;">
+        <mat-icon style="color:#534AB7;">shield</mat-icon>
+      </div>
+    </div>
 
-    <mat-card-content>
-      <sh-error-alert [message]="errorMessage()" />
+    <h1 class="card-title" style="font-size:18px;">
+      {{ 'consent.title' | translate: { clientId: clientId } }}
+    </h1>
+    <p class="card-subtitle">
+      {{ 'consent.signedInAs' | translate: { identifier: userIdentifier } }}
+    </p>
 
-      <p class="consent-intro">
-        <strong>{{ clientId }}</strong> 请求访问您的账号，包含以下权限：
-      </p>
+    @if (errorMessage()) {
+      <sh-error-alert [message]="errorMessage()! | translate" />
+    }
 
-      <mat-list>
-        @for (s of scopeList; track s) {
-          <mat-list-item>
-            <mat-icon matListItemIcon>check_circle</mat-icon>
-            <span matListItemTitle>{{ s }}</span>
-          </mat-list-item>
-        }
-      </mat-list>
-    </mat-card-content>
+    <p class="scope-intro">{{ 'consent.permissionsIntro' | translate: { clientId: clientId } }}</p>
 
-    <mat-card-actions align="end">
-      <button mat-stroked-button (click)="deny()" [disabled]="loading()">
-        拒绝
+    <div class="scope-list">
+      @for (s of scopeList; track s; let last = $last) {
+        <div class="scope-item" [class.last]="last">
+          <mat-icon class="info-row-icon">{{ scopeIcon(s) }}</mat-icon>
+          <span class="scope-text">{{ scopeKey(s) | translate }}</span>
+        </div>
+      }
+    </div>
+
+    <p class="consent-footer">
+      {{ 'consent.footer' | translate: { clientId: clientId } }}
+    </p>
+
+    <div class="consent-actions">
+      <button class="btn-outline" type="button" [disabled]="loading()" (click)="deny()">
+        {{ 'consent.deny' | translate }}
       </button>
-      <button mat-raised-button color="primary" (click)="authorize()" [disabled]="loading()">
+      <button class="btn-primary" style="flex:1;" type="button"
+              [disabled]="loading()" (click)="authorize()">
         @if (loading()) {
           <mat-spinner diameter="18" />
         } @else {
-          授权
+          {{ 'consent.allow' | translate }}
         }
       </button>
-    </mat-card-actions>
-  </mat-card>
+    </div>
+  </div>
 </div>
 
 <style>
-  .consent-container {
+  .consent-page {
     min-height: 100vh;
+    background: #F2F2F5;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 32px 24px;
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-    background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 40%, #c8eafa 100%);
+    padding: 2.5rem 1rem;
+    box-sizing: border-box;
   }
 
-  .consent-container::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(2, 132, 199, 0.055) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(2, 132, 199, 0.055) 1px, transparent 1px);
-    background-size: 44px 44px;
-    pointer-events: none;
-    z-index: -1;
+  .app-connect-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 1rem;
   }
 
-  .consent-card {
-    width: 100%;
-    max-width: 440px;
+  .connect-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .consent-intro {
-    margin: 0 0 10px;
-    font-size: 14px;
-    font-family: var(--font-body, 'DM Sans', sans-serif);
-    color: var(--tech-text-muted, #475569);
-    line-height: 1.6;
+  .connect-arrow { font-size: 16px; color: #94949D; }
+
+  .scope-intro {
+    font-size: 12px;
+    color: #65656E;
+    margin: 0 0 8px;
+  }
+
+  .scope-list {
+    border: 0.5px solid #E8E8ED;
+    border-radius: 8px;
+    padding: 4px 14px;
+    margin-bottom: 1rem;
+  }
+
+  .scope-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 0.5px solid #E8E8ED;
+
+    &.last { border-bottom: none; }
+  }
+
+  .scope-text { font-size: 13px; color: #1C1C21; }
+
+  .consent-footer {
+    font-size: 12px;
+    color: #94949D;
+    line-height: 1.5;
+    margin: 0 0 1.25rem;
+  }
+
+  .consent-actions {
+    display: flex;
+    gap: 10px;
   }
 </style>
