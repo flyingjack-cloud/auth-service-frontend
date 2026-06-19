@@ -1,0 +1,179 @@
+{
+  "common": {
+    "brand": "flyingjack cloud",
+    "langToggle": "中"
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": {
+      "phone": "Sign in with your phone number",
+      "email": "Sign in with your email",
+      "username": "Sign in with your username"
+    },
+    "label": {
+      "phone": "Phone number",
+      "email": "Email",
+      "username": "Username",
+      "password": "Password"
+    },
+    "forgotPassword": "Forgot password?",
+    "submit": "Sign in",
+    "orWith": "or sign in with",
+    "altMethod": {
+      "phone": "Phone",
+      "email": "Email",
+      "username": "Username"
+    },
+    "noAccount": "No account?",
+    "createOne": "Create one",
+    "cooldown": "Too many attempts. Try again in {{time}}",
+    "captcha": "Captcha",
+    "error": {
+      "badCredential": "Incorrect username or password",
+      "invalidAccount": "Account is disabled or locked",
+      "expiredCredential": "Password expired, please reset",
+      "missCaptcha": "Invalid captcha, please try again",
+      "overAttempt": "Too many failed login attempts",
+      "default": "Login failed, please try again"
+    }
+  },
+  "register": {
+    "title": "Create your account",
+    "subtitle": {
+      "phone": "Sign up with your phone number",
+      "email": "Sign up with your email"
+    },
+    "label": {
+      "phone": "Phone number",
+      "email": "Email",
+      "code": "Verification code",
+      "username": "Username",
+      "password": "Password"
+    },
+    "sendCode": "Send code",
+    "resendCode": "Resend {{count}}s",
+    "codeHint": "The code expires in 10 minutes",
+    "passwordHint": "8–16 characters",
+    "usernameHint": "5–15 lowercase letters or numbers",
+    "terms": "I agree to the",
+    "termsLink": "terms of service",
+    "and": "and",
+    "privacyLink": "privacy policy",
+    "submit": "Verify & create account",
+    "orWith": "or sign up with",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "error": {
+      "conflict": "This account is already registered",
+      "invalidCode": "Invalid code, please retry",
+      "sendFailed": "Failed to send code, please try again",
+      "taken": "Already registered",
+      "usernameTaken": "Username is already taken",
+      "usernamePattern": "5–15 lowercase letters or numbers only",
+      "default": "Registration failed, please try again"
+    }
+  },
+  "reset": {
+    "title": "Reset your password",
+    "subtitle": "We'll send a verification code to your email or phone",
+    "label": {
+      "principal": "Email or phone number",
+      "code": "Verification code",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password"
+    },
+    "sendCode": "Send code",
+    "resendCode": "Resend {{count}}s",
+    "codeHint": "The code expires in 10 minutes",
+    "codeSent": "Code sent — check your inbox",
+    "passwordHint": "8–16 characters",
+    "passwordMatch": "Passwords match",
+    "passwordMismatch": "Passwords do not match",
+    "submit": "Reset password",
+    "backToSignIn": "Back to sign in",
+    "success": "Password reset. Please sign in with your new password.",
+    "error": {
+      "invalidCode": "Invalid code, please retry",
+      "notFound": "Account not found",
+      "sendFailed": "Failed to send code, please try again",
+      "default": "Reset failed, please try again"
+    }
+  },
+  "consent": {
+    "title": "{{clientId}} wants to access your account",
+    "signedInAs": "Signed in as {{identifier}}",
+    "permissionsIntro": "This will allow {{clientId}} to:",
+    "scope": {
+      "openid": "View your basic profile",
+      "profile": "View your name and profile picture",
+      "email": "View your email address",
+      "phone": "View your phone number"
+    },
+    "footer": "By continuing, you'll be redirected to {{clientId}}. You can revoke access anytime in your account settings.",
+    "deny": "Cancel",
+    "allow": "Allow",
+    "error": {
+      "default": "Authorization failed, please try again"
+    }
+  },
+  "account": {
+    "profile": "Profile",
+    "security": "Security",
+    "logout": "Sign out"
+  },
+  "profile": {
+    "memberSince": "Member since {{year}}",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "notBound": "Not set",
+    "identifiers": {
+      "title": "Sign-in identifiers",
+      "subtitle": "Any verified identifier can be used to sign in",
+      "username": "Username",
+      "email": "Email",
+      "phone": "Phone",
+      "change": "Change",
+      "verify": "Verify"
+    },
+    "badge": {
+      "verified": "Verified",
+      "unverified": "Unverified"
+    },
+    "linkedAccounts": {
+      "title": "Linked accounts",
+      "notConnected": "Not connected",
+      "connectedAs": "Connected as {{email}}",
+      "connect": "Connect",
+      "connected": "Connected"
+    },
+    "error": {
+      "conflict": "Username is already taken",
+      "usernamePattern": "5–15 lowercase letters or numbers only",
+      "default": "Update failed, please try again"
+    }
+  },
+  "security": {
+    "sessions": {
+      "label": "Active sessions",
+      "description": "2 devices signed in",
+      "manage": "Manage"
+    },
+    "password": {
+      "label": "Password",
+      "lastChanged": "Last changed 3 months ago",
+      "change": "Change"
+    },
+    "changePassword": {
+      "title": "Change Password",
+      "oldPassword": "Current password",
+      "newPassword": "New password (8–16 characters)",
+      "submit": "Change password"
+    },
+    "success": "Password changed successfully",
+    "error": {
+      "wrongPassword": "Current password is incorrect",
+      "default": "Change failed, please try again"
+    }
+  }
+}
