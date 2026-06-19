@@ -1,8 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 import { AccountService, ApiError, ErrorAlertComponent, LoadingButtonComponent } from '@shared';
 
 @Component({
@@ -10,9 +9,8 @@ import { AccountService, ApiError, ErrorAlertComponent, LoadingButtonComponent }
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
+    MatIconModule,
+    TranslatePipe,
     LoadingButtonComponent,
     ErrorAlertComponent,
   ],
@@ -30,6 +28,10 @@ export class SecurityComponent {
     newPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
   });
 
+  onManageSessions(): void {
+    console.warn('not implemented: manage sessions');
+  }
+
   onSubmit(): void {
     if (this.loading() || this.form.invalid) return;
     this.loading.set(true);
@@ -40,15 +42,15 @@ export class SecurityComponent {
     this.account.changePassword({ oldPassword: oldPassword!, newPassword: newPassword! }).subscribe({
       next: () => {
         this.loading.set(false);
-        this.successMessage.set('密码修改成功');
+        this.successMessage.set('security.success');
         this.form.reset();
       },
       error: (err: ApiError) => {
         this.loading.set(false);
         this.errorMessage.set(
           err.errorId === 'error.user.wrong-password'
-            ? '旧密码不正确，请重新输入'
-            : '修改失败，请稍后重试',
+            ? 'security.error.wrongPassword'
+            : 'security.error.default',
         );
       },
     });

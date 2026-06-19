@@ -1,52 +1,52 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>修改密码</mat-card-title>
-  </mat-card-header>
+<!-- Sessions card -->
+<div class="info-card">
+  <div class="info-row" style="padding-top:0;">
+    <mat-icon class="info-row-icon">devices</mat-icon>
+    <div class="info-row-body">
+      <p class="info-row-label">{{ 'security.sessions.label' | translate }}</p>
+      <p class="info-row-value">{{ 'security.sessions.description' | translate }}</p>
+    </div>
+    <button class="small-btn" (click)="onManageSessions()">
+      {{ 'security.sessions.manage' | translate }}
+    </button>
+  </div>
+</div>
 
-  <mat-card-content>
-    <sh-error-alert [message]="errorMessage()" />
+<!-- Change password card -->
+<div class="info-card">
+  <p class="info-card-title">{{ 'security.changePassword.title' | translate }}</p>
 
-    @if (successMessage()) {
-      <div class="success-notice">{{ successMessage() }}</div>
+  @if (errorMessage()) {
+    <sh-error-alert [message]="errorMessage()! | translate" />
+  }
+
+  @if (successMessage()) {
+    <div class="success-notice">{{ successMessage()! | translate }}</div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label class="field-label">{{ 'security.changePassword.oldPassword' | translate }}</label>
+    <div class="field-row">
+      <input class="text-input" formControlName="oldPassword" type="password"
+             autocomplete="current-password" placeholder="••••••••" />
+    </div>
+
+    <label class="field-label">{{ 'security.changePassword.newPassword' | translate }}</label>
+    <div class="field-row">
+      <input class="text-input" formControlName="newPassword" type="password"
+             autocomplete="new-password" placeholder="••••••••" />
+    </div>
+    @if (form.get('newPassword')?.hasError('minlength')) {
+      <p class="field-error">{{ 'register.passwordHint' | translate }}</p>
     }
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>当前密码</mat-label>
-        <input matInput formControlName="oldPassword" type="password" autocomplete="current-password" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>新密码（8-16位）</mat-label>
-        <input matInput formControlName="newPassword" type="password" autocomplete="new-password" />
-        @if (form.get('newPassword')?.hasError('minlength')) {
-          <mat-error>密码须至少8位</mat-error>
-        }
-      </mat-form-field>
-
-      <sh-loading-button [loading]="loading()" [disabled]="form.invalid" (clicked)="onSubmit()" class="submit-btn">
-        修改密码
-      </sh-loading-button>
-    </form>
-  </mat-card-content>
-</mat-card>
-
-<style>
-  mat-card { max-width: 520px; }
-  .full-width { width: 100%; margin-bottom: 6px; }
-  .submit-btn { margin-top: 10px; }
-
-  .success-notice {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 16px;
-    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-    border: 1px solid rgba(34, 197, 94, 0.2);
-    color: #15803d;
-    font-size: 14px;
-    font-family: var(--font-body, 'DM Sans', sans-serif);
-  }
-</style>
+    <sh-loading-button
+      [loading]="loading()"
+      [disabled]="form.invalid"
+      (clicked)="onSubmit()"
+      style="display:block;margin-top:12px;"
+    >
+      {{ 'security.changePassword.submit' | translate }}
+    </sh-loading-button>
+  </form>
+</div>
