@@ -8,17 +8,23 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TranslateLoader, TranslationObject, provideTranslateService } from '@ngx-translate/core';
-import { Observable, from } from 'rxjs';
-import { catchError, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs';
 import { routes } from './app.routes';
 import { apiInterceptor, ENVIRONMENT, AuthService } from '@shared';
 import { environment } from '../environments/environment';
+import zhTranslations from '../assets/i18n/zh.json';
+import enTranslations from '../assets/i18n/en.json';
 
-// Uses fetch instead of HttpClient so the apiInterceptor (which prepends
-// apiBaseUrl to every request) does not intercept translation file loads.
-class AssetTranslateLoader implements TranslateLoader {
+// Inline loader — bundles translations at build time so no HTTP request is
+// needed and the apiInterceptor cannot interfere.
+class InlineTranslateLoader implements TranslateLoader {
+  private readonly map: Record<string, TranslationObject> = {
+    zh: zhTranslations as TranslationObject,
+    en: enTranslations as TranslationObject,
+  };
   getTranslation(lang: string): Observable<TranslationObject> {
-    return from(fetch(`assets/i18n/${lang}.json`).then(r => r.json()));
+    return of(this.map[lang] ?? this.map['zh']);
   }
 }
 
@@ -38,7 +44,7 @@ export const appConfig: ApplicationConfig = {
     provideTranslateService({
       fallbackLang: 'zh',
       lang: 'zh',
-      loader: { provide: TranslateLoader, useClass: AssetTranslateLoader },
+      loader: { provide: TranslateLoader, useClass: InlineTranslateLoader },
     }),
   ],
 };
