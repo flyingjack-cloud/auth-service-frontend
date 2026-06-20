@@ -108,7 +108,7 @@ export class LoginComponent {
           this.failCount.update(c => c + 1);
           if (this.failCount() >= 10) this.startCooldown();
           this.form.patchValue({ captchaToken: '' });
-          this.errorMessage.set(this.mapError(err.errorId));
+          this.errorMessage.set(this.mapError(err.errorId, err.httpStatus));
         },
       });
   }
@@ -123,7 +123,7 @@ export class LoginComponent {
       });
   }
 
-  private mapError(errorId: string): string {
+  private mapError(errorId: string, httpStatus: number): string {
     const map: Record<string, string> = {
       'error.security.authenticated.bad-credential': 'login.error.badCredential',
       'error.security.authenticated.invalid-account': 'login.error.invalidAccount',
@@ -131,6 +131,10 @@ export class LoginComponent {
       'error.common.param.miss-captcha': 'login.error.missCaptcha',
       'error.security.authenticated.authenticated.over-attempt': 'login.error.overAttempt',
     };
-    return map[errorId] ?? 'login.error.default';
+    if (map[errorId]) return map[errorId];
+    // 401 on the login endpoint means bad credentials even when the backend
+    // does not include a structured errorId (e.g. Spring Security default handler).
+    if (httpStatus === 401) return 'login.error.badCredential';
+    return 'login.error.default';
   }
 }

@@ -195,23 +195,34 @@ describe('LoginComponent', () => {
 
   // ── error mapping ──────────────────────────────────────────────────────────
 
-  const errorMappings: [string, string][] = [
-    ['error.security.authenticated.bad-credential',       'login.error.badCredential'],
-    ['error.security.authenticated.invalid-account',      'login.error.invalidAccount'],
-    ['error.security.authenticated.expired-credential',   'login.error.expiredCredential'],
-    ['error.common.param.miss-captcha',                   'login.error.missCaptcha'],
-    ['error.security.authenticated.authenticated.over-attempt', 'login.error.overAttempt'],
-    ['error.totally.unknown',                             'login.error.default'],
+  // errorId-based mappings — all use a non-401 status so the 401 fallback
+  // does not interfere with the default case.
+  const errorMappings: [string, string, number][] = [
+    ['error.security.authenticated.bad-credential',            'login.error.badCredential',  401],
+    ['error.security.authenticated.invalid-account',           'login.error.invalidAccount', 401],
+    ['error.security.authenticated.expired-credential',        'login.error.expiredCredential', 401],
+    ['error.common.param.miss-captcha',                        'login.error.missCaptcha',    400],
+    ['error.security.authenticated.authenticated.over-attempt','login.error.overAttempt',    429],
+    ['error.totally.unknown',                                  'login.error.default',         500],
   ];
 
-  errorMappings.forEach(([errorId, expectedKey]) => {
-    it(`maps ${errorId} → ${expectedKey}`, () => {
+  errorMappings.forEach(([errorId, expectedKey, status]) => {
+    it(`maps ${errorId} (${status}) → ${expectedKey}`, () => {
       mockAuthService.login.and.returnValue(
-        throwError(() => new ApiError(errorId, 'msg', 401)),
+        throwError(() => new ApiError(errorId, 'msg', status)),
       );
       component.form.patchValue({ principal: 'alice', password: 'pw' });
       component.onSubmit();
       expect(component.errorMessage()).toBe(expectedKey);
     });
+  });
+
+  it('maps unrecognized errorId with 401 → login.error.badCredential', () => {
+    mockAuthService.login.and.returnValue(
+      throwError(() => new ApiError('error.system.fail', 'Bad authentication information', 401)),
+    );
+    component.form.patchValue({ principal: 'alice', password: 'pw' });
+    component.onSubmit();
+    expect(component.errorMessage()).toBe('login.error.badCredential');
   });
 });
