@@ -5,7 +5,7 @@ import { apiInterceptor } from './api.interceptor';
 import { ENVIRONMENT } from '../tokens/environment.token';
 import { ApiError } from '../models/api-error.model';
 
-const ENV = { apiBaseUrl: 'http://localhost:9001' };
+const ENV_AUTH = { apiBaseUrl: 'http://localhost:9001' };
 
 describe('apiInterceptor', () => {
   let http: HttpClient;
@@ -16,7 +16,7 @@ describe('apiInterceptor', () => {
       providers: [
         provideHttpClient(withInterceptors([apiInterceptor])),
         provideHttpClientTesting(),
-        { provide: ENVIRONMENT, useValue: ENV },
+        { provide: ENVIRONMENT, useValue: ENV_AUTH },
       ],
     });
     http = TestBed.inject(HttpClient);
@@ -68,5 +68,59 @@ describe('apiInterceptor', () => {
       { code: 500, message: '系统错误', data: null },
       { status: 500, statusText: 'Server Error' }
     );
+  });
+});
+
+const ENV_FULL = {
+  apiBaseUrl: 'http://localhost:9001',
+  thirdPartyBaseUrl: 'http://localhost:7100',
+};
+
+describe('apiInterceptor — third-party routing', () => {
+  let http: HttpClient;
+  let mock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([apiInterceptor])),
+        provideHttpClientTesting(),
+        { provide: ENVIRONMENT, useValue: ENV_FULL },
+      ],
+    });
+    http = TestBed.inject(HttpClient);
+    mock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => mock.verify());
+
+  it('routes /captcha/ paths to thirdPartyBaseUrl', () => {
+    http.get('/captcha/generate/image').subscribe();
+    const req = mock.expectOne('http://localhost:7100/captcha/generate/image');
+    expect(req.request.withCredentials).toBeTrue();
+    req.flush({ code: 200, message: 'OK', data: { uuid: 'u', base64Image: 'b' }, timestamp: 0 });
+  });
+
+  it('still routes non-captcha paths to apiBaseUrl', () => {
+    http.get('/account/profile').subscribe();
+    const req = mock.expectOne('http://localhost:9001/account/profile');
+    req.flush({ code: 200, message: 'OK', data: null, timestamp: 0 });
+  });
+
+  it('falls back to apiBaseUrl for /captcha/ when thirdPartyBaseUrl is absent', () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([apiInterceptor])),
+        provideHttpClientTesting(),
+        { provide: ENVIRONMENT, useValue: { apiBaseUrl: 'http://localhost:9001' } },
+      ],
+    });
+    const h = TestBed.inject(HttpClient);
+    const m = TestBed.inject(HttpTestingController);
+    h.get('/captcha/generate/image').subscribe();
+    const req = m.expectOne('http://localhost:9001/captcha/generate/image');
+    req.flush({ code: 200, message: 'OK', data: null, timestamp: 0 });
+    m.verify();
   });
 });

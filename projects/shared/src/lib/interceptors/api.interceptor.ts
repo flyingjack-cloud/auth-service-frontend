@@ -9,8 +9,11 @@ import { ApiError } from '../models/api-error.model';
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const env = inject(ENVIRONMENT);
 
+  const isThirdParty = req.url.startsWith('/captcha/') && !!env.thirdPartyBaseUrl;
+  const baseUrl = isThirdParty ? env.thirdPartyBaseUrl! : env.apiBaseUrl;
+
   const apiReq = req.clone({
-    url: `${env.apiBaseUrl.replace(/\/$/, '')}${req.url}`,
+    url: `${baseUrl.replace(/\/$/, '')}${req.url}`,
     withCredentials: true,
   });
 
