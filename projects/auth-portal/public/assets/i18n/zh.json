@@ -41,6 +41,7 @@
     "refresh": "刷新验证码",
     "imagePlaceholder": "请输入图中文字",
     "loadFailed": "加载失败，点击刷新",
+    "codePlaceholder": "请输入6位验证码",
     "sendCode": "发送验证码",
     "resend": "重新发送 ({{s}}s)",
     "sendFailed": "发送失败，请重试",
@@ -59,8 +60,6 @@
       "username": "用户名",
       "password": "密码"
     },
-    "sendCode": "发送验证码",
-    "resendCode": "重新发送 {{count}}s",
     "codeHint": "验证码 10 分钟内有效",
     "passwordHint": "8-16 位字符",
     "usernameHint": "5-15 位小写字母或数字",
@@ -75,7 +74,6 @@
     "error": {
       "conflict": "该账号已注册，请直接登录",
       "invalidCode": "验证码错误，请重试",
-      "sendFailed": "发送验证码失败，请稍后重试",
       "taken": "已被注册",
       "usernameTaken": "用户名已被占用",
       "usernamePattern": "须为 5-15 位小写字母或数字",
@@ -91,10 +89,7 @@
       "newPassword": "新密码",
       "confirmPassword": "确认新密码"
     },
-    "sendCode": "发送验证码",
-    "resendCode": "重新发送 {{count}}s",
     "codeHint": "验证码 10 分钟内有效",
-    "codeSent": "验证码已发送，请查收",
     "passwordHint": "8-16 位字符",
     "passwordMatch": "密码一致",
     "passwordMismatch": "密码不一致",
@@ -104,7 +99,6 @@
     "error": {
       "invalidCode": "验证码错误，请重试",
       "notFound": "该账号不存在",
-      "sendFailed": "发送验证码失败，请稍后重试",
       "default": "重置失败，请稍后重试"
     }
   },

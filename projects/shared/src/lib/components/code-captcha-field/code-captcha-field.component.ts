@@ -22,8 +22,9 @@ import { CaptchaService } from '../../services/captcha.service';
         class="text-input"
         [formControl]="control()"
         maxlength="6"
+        inputmode="numeric"
         autocomplete="one-time-code"
-        placeholder="6-digit code"
+        [placeholder]="'captcha.codePlaceholder' | translate"
         style="flex:1;min-width:0;"
       />
       <button

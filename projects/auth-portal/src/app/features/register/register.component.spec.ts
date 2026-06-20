@@ -88,6 +88,18 @@ describe('RegisterComponent', () => {
     expect(component.form.valid).toBeTrue();
   });
 
+  it('form is invalid when code is more than 6 chars', () => {
+    component.form.patchValue({
+      principal: 'user@example.com', code: '1234567', username: 'alice1', password: 'pass1234',
+    });
+    expect(component.form.invalid).toBeTrue();
+  });
+
+  it('username control rejects values longer than 15 chars', () => {
+    component.form.patchValue({ username: 'averylongusername' });
+    expect(component.form.get('username')!.invalid).toBeTrue();
+  });
+
   it('username control rejects values shorter than 5 chars', () => {
     component.form.patchValue({ username: 'abc' });
     expect(component.form.get('username')!.invalid).toBeTrue();

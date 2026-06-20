@@ -41,6 +41,7 @@
     "refresh": "Refresh captcha",
     "imagePlaceholder": "Enter the text shown",
     "loadFailed": "Load failed — click to retry",
+    "codePlaceholder": "Enter 6-digit code",
     "sendCode": "Send code",
     "resend": "Resend ({{s}}s)",
     "sendFailed": "Send failed, please retry",
@@ -59,8 +60,6 @@
       "username": "Username",
       "password": "Password"
     },
-    "sendCode": "Send code",
-    "resendCode": "Resend {{count}}s",
     "codeHint": "The code expires in 10 minutes",
     "passwordHint": "8–16 characters",
     "usernameHint": "5–15 lowercase letters or numbers",
@@ -75,7 +74,6 @@
     "error": {
       "conflict": "This account is already registered",
       "invalidCode": "Invalid code, please retry",
-      "sendFailed": "Failed to send code, please try again",
       "taken": "Already registered",
       "usernameTaken": "Username is already taken",
       "usernamePattern": "5–15 lowercase letters or numbers only",
@@ -91,10 +89,7 @@
       "newPassword": "New password",
       "confirmPassword": "Confirm new password"
     },
-    "sendCode": "Send code",
-    "resendCode": "Resend {{count}}s",
     "codeHint": "The code expires in 10 minutes",
-    "codeSent": "Code sent — check your inbox",
     "passwordHint": "8–16 characters",
     "passwordMatch": "Passwords match",
     "passwordMismatch": "Passwords do not match",
@@ -104,7 +99,6 @@
     "error": {
       "invalidCode": "Invalid code, please retry",
       "notFound": "Account not found",
-      "sendFailed": "Failed to send code, please try again",
       "default": "Reset failed, please try again"
     }
   },
