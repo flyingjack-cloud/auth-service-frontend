@@ -1,12 +1,10 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import { interval, take } from 'rxjs';
-import { AccountService, ApiError, ErrorAlertComponent } from '@shared';
+import { AccountService, ApiError, CodeCaptchaFieldComponent, ErrorAlertComponent } from '@shared';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const pw = group.get('password')?.value;
@@ -24,22 +22,17 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
     MatProgressSpinnerModule,
     TranslatePipe,
     ErrorAlertComponent,
+    CodeCaptchaFieldComponent,
   ],
   templateUrl: './reset-password.component.html',
 })
 export class ResetPasswordComponent {
   private readonly account = inject(AccountService);
   private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(false);
-  readonly codeSending = signal(false);
-  readonly codeCountdown = signal(0);
   readonly errorMessage = signal<string | null>(null);
   readonly successMessage = signal<string | null>(null);
-  readonly codeSent = signal(false);
-
-  readonly canSendCode = computed(() => this.codeCountdown() === 0 && !this.codeSending());
 
   readonly form = inject(FormBuilder).group(
     {
@@ -53,6 +46,10 @@ export class ResetPasswordComponent {
 
   get principalControl(): FormControl {
     return this.form.get('principal') as FormControl;
+  }
+
+  get codeControl(): FormControl {
+    return this.form.get('code') as FormControl;
   }
 
   get resetType(): 'email' | 'phone' {
@@ -69,24 +66,6 @@ export class ResetPasswordComponent {
     const pw = this.form.value.password;
     const confirm = this.form.value.confirmPassword;
     return !!(pw && confirm && pw !== confirm);
-  }
-
-  sendCode(): void {
-    const principal = this.form.value.principal;
-    if (!principal || !this.canSendCode()) return;
-
-    this.codeSending.set(true);
-    this.account.sendVerificationCode(this.resetType, principal).subscribe({
-      next: () => {
-        this.codeSending.set(false);
-        this.codeSent.set(true);
-        this.startCountdown();
-      },
-      error: () => {
-        this.codeSending.set(false);
-        this.errorMessage.set('reset.error.sendFailed');
-      },
-    });
   }
 
   onSubmit(): void {
@@ -112,12 +91,5 @@ export class ResetPasswordComponent {
           this.errorMessage.set(map[err.errorId] ?? 'reset.error.default');
         },
       });
-  }
-
-  private startCountdown(): void {
-    this.codeCountdown.set(60);
-    interval(1000)
-      .pipe(take(60), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.codeCountdown.update(s => Math.max(0, s - 1)));
   }
 }

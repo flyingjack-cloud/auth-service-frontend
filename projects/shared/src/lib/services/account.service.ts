@@ -41,7 +41,4 @@ export class AccountService {
     return this.http.post<null>('/account/change-password', payload);
   }
 
-  sendVerificationCode(type: 'phone' | 'email', principal: string) {
-    return this.http.post<null>('/account/send-code', { type, principal });
-  }
 }
