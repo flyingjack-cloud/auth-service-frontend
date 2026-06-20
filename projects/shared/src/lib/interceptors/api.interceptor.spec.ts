@@ -104,6 +104,7 @@ describe('apiInterceptor — third-party routing', () => {
   it('still routes non-captcha paths to apiBaseUrl', () => {
     http.get('/account/profile').subscribe();
     const req = mock.expectOne('http://localhost:9001/account/profile');
+    expect(req.request.withCredentials).toBeTrue();
     req.flush({ code: 200, message: 'OK', data: null, timestamp: 0 });
   });
 
@@ -120,6 +121,7 @@ describe('apiInterceptor — third-party routing', () => {
     const m = TestBed.inject(HttpTestingController);
     h.get('/captcha/generate/image').subscribe();
     const req = m.expectOne('http://localhost:9001/captcha/generate/image');
+    expect(req.request.withCredentials).toBeTrue();
     req.flush({ code: 200, message: 'OK', data: null, timestamp: 0 });
     m.verify();
   });
