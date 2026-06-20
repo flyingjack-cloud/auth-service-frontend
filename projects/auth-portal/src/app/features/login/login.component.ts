@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 import { interval, take } from 'rxjs';
-import { ApiError, AuthService, CaptchaFieldComponent, ErrorAlertComponent } from '@shared';
+import { ApiError, AuthService, ErrorAlertComponent, ImageCaptchaFieldComponent } from '@shared';
 
 @Component({
   selector: 'auth-login',
@@ -18,7 +18,7 @@ import { ApiError, AuthService, CaptchaFieldComponent, ErrorAlertComponent } fro
     MatProgressSpinnerModule,
     TranslatePipe,
     ErrorAlertComponent,
-    CaptchaFieldComponent,
+    ImageCaptchaFieldComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -34,6 +34,7 @@ export class LoginComponent {
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly cooldownSeconds = signal(0);
+  readonly captchaUuid = signal('');
 
   readonly showCaptcha = computed(() => this.failCount() >= 3 && this.failCount() < 10);
   readonly showCooldown = computed(() => this.failCount() >= 10);
@@ -89,7 +90,7 @@ export class LoginComponent {
     const { principal, password, captchaToken } = this.form.value;
     const captcha =
       this.showCaptcha() && principal
-        ? { id: principal, token: captchaToken ?? '' }
+        ? { id: this.captchaUuid(), token: captchaToken ?? '' }
         : undefined;
 
     this.auth
@@ -132,8 +133,6 @@ export class LoginComponent {
       'error.security.authenticated.authenticated.over-attempt': 'login.error.overAttempt',
     };
     if (map[errorId]) return map[errorId];
-    // 401 on the login endpoint means bad credentials even when the backend
-    // does not include a structured errorId (e.g. Spring Security default handler).
     if (httpStatus === 401) return 'login.error.badCredential';
     return 'login.error.default';
   }

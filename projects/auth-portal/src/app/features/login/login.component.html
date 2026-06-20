@@ -49,7 +49,10 @@
     </div>
 
     @if (showCaptcha()) {
-      <sh-captcha-field [control]="captchaControl" [captchaId]="form.value.principal ?? ''" />
+      <sh-image-captcha-field
+        [control]="captchaControl"
+        (captchaId)="captchaUuid.set($event)"
+      />
     }
 
     <button class="btn-primary" type="submit" [disabled]="form.invalid || showCooldown() || loading()">

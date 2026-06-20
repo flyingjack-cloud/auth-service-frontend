@@ -5,7 +5,7 @@ import { computed, signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { ApiError, AuthService } from '@shared';
+import { ApiError, AuthService, CaptchaService } from '@shared';
 import { LoginComponent } from './login.component';
 import { User } from '@shared';
 
@@ -27,6 +27,12 @@ describe('LoginComponent', () => {
       login: jasmine.createSpy('login'),
     };
 
+    const mockCaptchaService = {
+      getImageCaptcha: jasmine.createSpy('getImageCaptcha').and.returnValue(
+        of({ uuid: 'test-uuid', base64Image: 'abc=' })
+      ),
+    };
+
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
       providers: [
@@ -34,6 +40,7 @@ describe('LoginComponent', () => {
         provideAnimationsAsync(),
         provideTranslateService({ loader: { provide: TranslateLoader, useValue: dummyLoader } }),
         { provide: AuthService, useValue: mockAuthService },
+        { provide: CaptchaService, useValue: mockCaptchaService },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} } } },
       ],
     }).compileComponents();
@@ -191,6 +198,18 @@ describe('LoginComponent', () => {
     component.form.patchValue({ principal: 'alice', password: 'pw' });
     component.onSubmit();
     expect(component.failCount()).toBe(1);
+  });
+
+  it('onSubmit passes captchaUuid and captchaToken as captcha when showCaptcha is true', () => {
+    mockAuthService.login.and.returnValue(of(makeUser()));
+    component.failCount.set(3);
+    component.captchaUuid.set('test-uuid');
+    component.form.patchValue({ principal: 'alice', password: 'secret123', captchaToken: 'ABC123' });
+    component.onSubmit();
+    expect(mockAuthService.login).toHaveBeenCalledWith(
+      { loginType: 'username', principal: 'alice', password: 'secret123' },
+      { id: 'test-uuid', token: 'ABC123' },
+    );
   });
 
   // ── error mapping ──────────────────────────────────────────────────────────
