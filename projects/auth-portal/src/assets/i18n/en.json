@@ -37,6 +37,15 @@
       "default": "Login failed, please try again"
     }
   },
+  "captcha": {
+    "refresh": "Refresh captcha",
+    "imagePlaceholder": "Enter the text shown",
+    "loadFailed": "Load failed — click to retry",
+    "sendCode": "Send code",
+    "resend": "Resend ({{s}}s)",
+    "sendFailed": "Send failed, please retry",
+    "tooManyRequests": "Too many requests, please wait"
+  },
   "register": {
     "title": "Create your account",
     "subtitle": {
