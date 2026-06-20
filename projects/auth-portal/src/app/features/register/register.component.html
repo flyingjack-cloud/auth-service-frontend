@@ -33,22 +33,11 @@
     }
 
     <label class="field-label">{{ 'register.label.code' | translate }}</label>
-    <div class="field-code-row" style="margin-bottom: 4px;">
-      <input class="text-input" formControlName="code" maxlength="6"
-             autocomplete="one-time-code" placeholder="6-digit code" style="flex:1;min-width:0;" />
-      <button
-        class="send-code-btn"
-        type="button"
-        [disabled]="!canSendCode() || principalControl.invalid"
-        (click)="sendCode()"
-      >
-        @if (codeCountdown() > 0) {
-          {{ 'register.resendCode' | translate: { count: codeCountdown() } }}
-        } @else {
-          {{ 'register.sendCode' | translate }}
-        }
-      </button>
-    </div>
+    <sh-code-captcha-field
+      [control]="codeControl"
+      [type]="registerType()"
+      [principal]="form.value.principal ?? ''"
+    />
     <p class="field-hint">{{ 'register.codeHint' | translate }}</p>
 
     <label class="field-label">{{ 'register.label.username' | translate }}</label>

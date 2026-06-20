@@ -1,12 +1,12 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import { debounceTime, distinctUntilChanged, interval, take } from 'rxjs';
-import { AccountService, ApiError, ErrorAlertComponent } from '@shared';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { AccountService, ApiError, CodeCaptchaFieldComponent, ErrorAlertComponent } from '@shared';
 
 @Component({
   selector: 'auth-register',
@@ -18,6 +18,7 @@ import { AccountService, ApiError, ErrorAlertComponent } from '@shared';
     MatProgressSpinnerModule,
     TranslatePipe,
     ErrorAlertComponent,
+    CodeCaptchaFieldComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -29,13 +30,7 @@ export class RegisterComponent {
 
   readonly registerType = signal<'phone' | 'email'>('email');
   readonly loading = signal(false);
-  readonly codeSending = signal(false);
-  readonly codeCountdown = signal(0);
   readonly errorMessage = signal<string | null>(null);
-
-  readonly canSendCode = computed(
-    () => this.codeCountdown() === 0 && !this.codeSending(),
-  );
 
   readonly form = inject(FormBuilder).group({
     principal: ['', [Validators.required]],
@@ -62,6 +57,10 @@ export class RegisterComponent {
     return this.form.get('username') as FormControl;
   }
 
+  get codeControl(): FormControl {
+    return this.form.get('code') as FormControl;
+  }
+
   switchMode(): void {
     this.registerType.update(t => t === 'email' ? 'phone' : 'email');
     this.form.patchValue({ principal: '' });
@@ -74,20 +73,6 @@ export class RegisterComponent {
 
   onSocialLogin(provider: string): void {
     console.warn(`not implemented: social login (${provider})`);
-  }
-
-  sendCode(): void {
-    const principal = this.form.value.principal;
-    if (!principal || !this.canSendCode()) return;
-
-    this.codeSending.set(true);
-    this.account.sendVerificationCode(this.registerType(), principal).subscribe({
-      next: () => { this.codeSending.set(false); this.startCountdown(); },
-      error: () => {
-        this.codeSending.set(false);
-        this.errorMessage.set('register.error.sendFailed');
-      },
-    });
   }
 
   onSubmit(): void {
@@ -109,13 +94,6 @@ export class RegisterComponent {
           this.errorMessage.set(map[err.errorId] ?? 'register.error.default');
         },
       });
-  }
-
-  private startCountdown(): void {
-    this.codeCountdown.set(60);
-    interval(1000)
-      .pipe(take(60), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.codeCountdown.update(s => Math.max(0, s - 1)));
   }
 
   private checkPrincipal(value: string): void {

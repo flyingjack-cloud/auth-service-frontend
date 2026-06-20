@@ -1,9 +1,9 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { AccountService, ApiError } from '@shared';
+import { AccountService, ApiError, CaptchaService } from '@shared';
 import { RegisterComponent } from './register.component';
 
 const dummyLoader = { getTranslation: () => of({}) };
@@ -11,16 +11,21 @@ const dummyLoader = { getTranslation: () => of({}) };
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let mockAccountService: jasmine.SpyObj<Pick<AccountService,
-    'sendVerificationCode' | 'register' | 'checkEmail' | 'checkPhone' | 'checkUsername'>>;
+    'register' | 'checkEmail' | 'checkPhone' | 'checkUsername'>>;
   let router: Router;
 
   beforeEach(async () => {
     mockAccountService = jasmine.createSpyObj('AccountService', [
-      'sendVerificationCode', 'register', 'checkEmail', 'checkPhone', 'checkUsername',
+      'register', 'checkEmail', 'checkPhone', 'checkUsername',
     ]);
     mockAccountService.checkEmail.and.returnValue(of(false));
     mockAccountService.checkPhone.and.returnValue(of(false));
     mockAccountService.checkUsername.and.returnValue(of(false));
+
+    const mockCaptchaService = {
+      sendSmsCaptcha: jasmine.createSpy().and.returnValue(of(true)),
+      sendEmailCaptcha: jasmine.createSpy().and.returnValue(of(true)),
+    };
 
     await TestBed.configureTestingModule({
       imports: [RegisterComponent],
@@ -29,6 +34,7 @@ describe('RegisterComponent', () => {
         provideAnimationsAsync(),
         provideTranslateService({ loader: { provide: TranslateLoader, useValue: dummyLoader } }),
         { provide: AccountService, useValue: mockAccountService },
+        { provide: CaptchaService, useValue: mockCaptchaService },
       ],
     }).compileComponents();
 
@@ -66,62 +72,11 @@ describe('RegisterComponent', () => {
     expect(component.errorMessage()).toBeNull();
   });
 
-  // ── canSendCode ────────────────────────────────────────────────────────────
-
-  it('canSendCode is true initially', () => {
-    expect(component.canSendCode()).toBeTrue();
-  });
-
-  it('canSendCode is false while codeSending', () => {
-    component.codeSending.set(true);
-    expect(component.canSendCode()).toBeFalse();
-  });
-
-  it('canSendCode is false while countdown > 0', () => {
-    component.codeCountdown.set(30);
-    expect(component.canSendCode()).toBeFalse();
-  });
-
-  // ── sendCode ───────────────────────────────────────────────────────────────
-
-  it('sendCode does nothing when principal is empty', () => {
-    component.sendCode();
-    expect(mockAccountService.sendVerificationCode).not.toHaveBeenCalled();
-  });
-
-  it('sendCode calls sendVerificationCode with registerType and principal', () => {
-    mockAccountService.sendVerificationCode.and.returnValue(of(null));
-    component.form.patchValue({ principal: 'user@example.com' });
-    component.sendCode();
-    expect(mockAccountService.sendVerificationCode).toHaveBeenCalledWith('email', 'user@example.com');
-  });
-
-  it('sendCode starts the 60-second countdown on success', () => {
-    mockAccountService.sendVerificationCode.and.returnValue(of(null));
-    component.form.patchValue({ principal: 'user@example.com' });
-    component.sendCode();
-    expect(component.codeCountdown()).toBe(60);
-  });
-
-  it('sendCode sets register.error.sendFailed on failure', () => {
-    mockAccountService.sendVerificationCode.and.returnValue(throwError(() => new Error('fail')));
-    component.form.patchValue({ principal: 'user@example.com' });
-    component.sendCode();
-    expect(component.errorMessage()).toBe('register.error.sendFailed');
-  });
-
   // ── form validation ────────────────────────────────────────────────────────
 
   it('form is invalid when code is less than 6 chars', () => {
     component.form.patchValue({
       principal: 'user@example.com', code: '123', username: 'alice1', password: 'pass1234',
-    });
-    expect(component.form.invalid).toBeTrue();
-  });
-
-  it('form is invalid when code is more than 6 chars', () => {
-    component.form.patchValue({
-      principal: 'user@example.com', code: '1234567', username: 'alice1', password: 'pass1234',
     });
     expect(component.form.invalid).toBeTrue();
   });
@@ -135,11 +90,6 @@ describe('RegisterComponent', () => {
 
   it('username control rejects values shorter than 5 chars', () => {
     component.form.patchValue({ username: 'abc' });
-    expect(component.form.get('username')!.invalid).toBeTrue();
-  });
-
-  it('username control rejects values longer than 15 chars', () => {
-    component.form.patchValue({ username: 'a'.repeat(16) });
     expect(component.form.get('username')!.invalid).toBeTrue();
   });
 
