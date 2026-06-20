@@ -16,3 +16,4 @@ export * from './lib/components/loading-button/loading-button.component';
 export * from './lib/components/error-alert/error-alert.component';
 export * from './lib/components/captcha-field/captcha-field.component';
 export * from './lib/components/image-captcha-field/image-captcha-field.component';
+export * from './lib/components/code-captcha-field/code-captcha-field.component';
