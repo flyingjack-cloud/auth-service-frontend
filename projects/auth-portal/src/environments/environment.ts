@@ -1,3 +1,4 @@
 export const environment = {
-  apiBaseUrl: 'https://auth.example.com',
+  apiBaseUrl: 'https://auth.flyingjack.top',
+  apiPrefix: '/api',
 };

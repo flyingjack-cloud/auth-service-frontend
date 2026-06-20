@@ -12,6 +12,7 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs';
 import { routes } from './app.routes';
 import { apiInterceptor, ENVIRONMENT, AuthService } from '@shared';
+import { apiPrefixInterceptor } from './api-prefix.interceptor';
 import { environment } from '../environments/environment';
 import zhTranslations from '../assets/i18n/zh.json';
 import enTranslations from '../assets/i18n/en.json';
@@ -36,7 +37,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([apiInterceptor])),
+    provideHttpClient(withInterceptors([apiPrefixInterceptor, apiInterceptor])),
     provideAnimationsAsync(),
     provideBrowserGlobalErrorListeners(),
     { provide: ENVIRONMENT, useValue: environment },
