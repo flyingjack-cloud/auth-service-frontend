@@ -32,12 +32,6 @@ jobs:
           echo "PROFILE=prod" >> $GITHUB_ENV
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-
       - name: Install dependencies
         run: npm ci
 
