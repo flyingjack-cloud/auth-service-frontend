@@ -21,6 +21,43 @@ npm run build:auth     # 构建 auth-portal 生产包
 npm run build:admin    # 构建 admin-portal 生产包
 ```
 
+## 打包与部署
+
+```bash
+npm run build:auth     # 构建 auth-portal → dist/auth-portal/browser/
+npm run build:admin    # 构建 admin-portal → dist/admin-portal/browser/
+```
+
+部署时两个子项目挂载在不同路径下：
+
+| 子项目 | 部署路径 | 构建产物 |
+|--------|----------|----------|
+| auth-portal | `/` | `dist/auth-portal/browser/` |
+| admin-portal | `/admin` | `dist/admin-portal/browser/` |
+
+Nginx 配置示例：
+
+```nginx
+server {
+    # auth-portal 部署在根路径
+    location / {
+        root /var/www/auth-portal;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # admin-portal 部署在 /admin
+    location /admin {
+        alias /var/www/admin-portal;
+        try_files $uri $uri/ /admin/index.html;
+    }
+}
+```
+
+> admin-portal 构建时需指定 base-href：
+> ```bash
+> ng build admin-portal --configuration production --base-href /admin/
+> ```
+
 ## 测试
 
 测试框架：Jasmine + Karma（ChromeHeadless）
