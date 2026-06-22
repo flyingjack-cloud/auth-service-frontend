@@ -2,22 +2,35 @@ name: Build
 
 on:
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-
-env:
-  PROFILE: prod
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-and-push:
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: flyingjack-cloud
+          repositories: auth-service-frontend,k8s-gitops
 
-      - name: Set short SHA
-        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Set build variables
+        run: |
+          echo "PROFILE=prod" >> $GITHUB_ENV
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v4
         with:
@@ -34,21 +47,37 @@ jobs:
       - name: Build admin-portal
         run: npx ng build admin-portal --configuration production --base-href /admin/
 
-      - name: Build and push auth-portal image
-        env:
-          IMAGE: ${{ secrets.REGISTRY_URL }}/auth-portal:${{ env.PROFILE }}-${{ env.SHORT_SHA }}
+      - name: Docker build auth-portal
         run: |
-          docker build -f Dockerfile.auth-portal -t ${IMAGE} .
-          docker push ${IMAGE}
+          docker build \
+            -f Dockerfile.auth-portal \
+            -t ${{ secrets.REGISTRY_URL }}/auth-portal:${{ env.PROFILE }}-${{ env.SHORT_SHA }} \
+            .
 
-      - name: Build and push admin-portal image
-        env:
-          IMAGE: ${{ secrets.REGISTRY_URL }}/admin-portal:${{ env.PROFILE }}-${{ env.SHORT_SHA }}
+      - name: Docker build admin-portal
         run: |
-          docker build -f Dockerfile.admin-portal -t ${IMAGE} .
-          docker push ${IMAGE}
+          docker build \
+            -f Dockerfile.admin-portal \
+            -t ${{ secrets.REGISTRY_URL }}/admin-portal:${{ env.PROFILE }}-${{ env.SHORT_SHA }} \
+            .
 
-      # ---- Gitee ----
+      - name: Docker login
+        run: |
+          if [ -n "${{ secrets.REGISTRY_USERNAME }}" ]; then
+            echo "${{ secrets.REGISTRY_PASSWORD }}" | \
+              docker login ${{ secrets.REGISTRY_URL }} \
+              -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+          else
+            echo "REGISTRY_USERNAME not set, skipping login (unauthenticated registry)"
+          fi
+
+      - name: Docker push auth-portal
+        run: docker push ${{ secrets.REGISTRY_URL }}/auth-portal:${{ env.PROFILE }}-${{ env.SHORT_SHA }}
+
+      - name: Docker push admin-portal
+        run: docker push ${{ secrets.REGISTRY_URL }}/admin-portal:${{ env.PROFILE }}-${{ env.SHORT_SHA }}
+
+      # ---- Gitee（当前启用）----
       - name: Update gitops image tags (Gitee)
         env:
           GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
@@ -69,3 +98,25 @@ jobs:
             git commit -m "chore(auth-service-frontend): update images to ${{ env.PROFILE }}-${{ env.SHORT_SHA }}"
             git push
           fi
+
+      # ---- GitHub（备用，切回时取消注释）----
+      # - name: Update gitops image tags (GitHub)
+      #   env:
+      #     GITOPS_TOKEN: ${{ steps.app-token.outputs.token }}
+      #     AUTH_PORTAL_IMAGE: ${{ secrets.REGISTRY_URL }}/auth-portal:${{ env.PROFILE }}-${{ env.SHORT_SHA }}
+      #     ADMIN_PORTAL_IMAGE: ${{ secrets.REGISTRY_URL }}/admin-portal:${{ env.PROFILE }}-${{ env.SHORT_SHA }}
+      #     OVERLAY: frontend/auth-service-frontend/overlays/${{ env.PROFILE }}
+      #   run: |
+      #     git clone https://x-access-token:${GITOPS_TOKEN}@github.com/flyingjack-cloud/k8s-gitops.git
+      #     cd k8s-gitops
+      #     sed -i "s|image: .*auth-portal.*|image: ${AUTH_PORTAL_IMAGE}|" "${OVERLAY}/auth-portal-patch.yaml"
+      #     sed -i "s|image: .*admin-portal.*|image: ${ADMIN_PORTAL_IMAGE}|" "${OVERLAY}/admin-portal-patch.yaml"
+      #     git config user.email "ci@flyingjack.com"
+      #     git config user.name "CI Bot"
+      #     git add "${OVERLAY}/auth-portal-patch.yaml" "${OVERLAY}/admin-portal-patch.yaml"
+      #     if git diff --cached --quiet; then
+      #       echo "Image tags unchanged, nothing to push"
+      #     else
+      #       git commit -m "chore(auth-service-frontend): update images to ${{ env.PROFILE }}-${{ env.SHORT_SHA }}"
+      #       git push
+      #     fi
