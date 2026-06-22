@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create account — Auth UI Mockup</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#F2F2F5;
+  --color-border-primary:#C9C9D1;
+  --color-border-secondary:#DCDCE2;
+  --color-border-tertiary:#E8E8ED;
+  --color-text-primary:#1C1C21;
+  --color-text-secondary:#65656E;
+  --color-text-tertiary:#94949D;
+  --color-text-success:#0F6E56;
+  --color-text-danger:#C4314B;
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+  --border-radius-xl:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--color-background-primary);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--color-text-primary)}
+input,select{padding:9px 12px;border:0.5px solid var(--color-border-primary);border-radius:var(--border-radius-md);font-size:14px;font-family:inherit;background:var(--color-background-primary);color:var(--color-text-primary)}
+input:focus,select:focus{outline:2px solid #534AB7;outline-offset:-1px}
+button{font-family:inherit;background:var(--color-background-primary);border:0.5px solid var(--color-border-primary);border-radius:var(--border-radius-md);padding:8px 14px;font-size:14px;color:var(--color-text-primary);cursor:pointer}
+button:disabled{cursor:default;opacity:.6}
+.ralt{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;font-size:13px}
+.rlabel{display:block;font-size:12px;color:var(--color-text-secondary);margin:0 0 4px}
+</style>
+</head>
+<body>
+<div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 2.5rem 1rem; display: flex; justify-content: center;">
+  <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-xl); padding: 2rem 1.75rem; width: 100%; max-width: 360px;">
+    <div style="width: 48px; height: 48px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+      <i class="ti ti-user-plus" style="font-size: 22px; color: #534AB7;" aria-hidden="true"></i>
+    </div>
+    <p style="font-size: 20px; font-weight: 500; text-align: center; margin: 0 0 4px;">Create your account</p>
+    <p id="rsub" style="font-size: 13px; text-align: center; color: var(--color-text-secondary); margin: 0 0 1.5rem;">Sign up with your phone number</p>
+
+    <label class="rlabel" id="id-label">Phone number</label>
+    <div id="row-phone" style="display: flex; gap: 8px; margin-bottom: 12px;">
+      <select style="width: 86px;"><option>+65</option><option>+1</option><option>+44</option><option>+86</option></select>
+      <input id="ph" type="tel" placeholder="8123 4567" style="flex: 1; min-width: 0;">
+    </div>
+    <div id="row-email" style="display: none; margin-bottom: 12px;">
+      <input id="em" type="email" placeholder="you@example.com" style="width: 100%;">
+    </div>
+
+    <label class="rlabel" for="code">Verification code</label>
+    <div style="display: flex; gap: 8px; margin-bottom: 4px;">
+      <input id="code" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code" style="flex: 1; min-width: 0;">
+      <button id="sendbtn" onclick="sendCode()" style="font-size: 13px; padding: 0 14px; white-space: nowrap;">Send code</button>
+    </div>
+    <p id="vmsg" style="font-size: 12px; color: var(--color-text-tertiary); margin: 0 0 12px; min-height: 16px;">The code expires in 10 minutes</p>
+
+    <label class="rlabel" for="pw">Password</label>
+    <input id="pw" type="password" placeholder="••••••••" style="width: 100%; margin-bottom: 6px;">
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 1.25rem;">8+ characters, one number, one symbol</p>
+
+    <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--color-text-secondary); margin: 0 0 1.25rem; cursor: pointer;">
+      <input type="checkbox" style="margin-top: 2px;">
+      <span>I agree to the <span style="color: #534AB7;">terms of service</span> and <span style="color: #534AB7;">privacy policy</span></span>
+    </label>
+
+    <button style="width: 100%; background: #534AB7; color: #fff; border: none; padding: 10px 0; font-weight: 500;">Verify &amp; create account</button>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin: 1.25rem 0;">
+      <div style="flex: 1; height: 0.5px; background: var(--color-border-secondary);"></div>
+      <span style="font-size: 12px; color: var(--color-text-tertiary);">or sign up with</span>
+      <div style="flex: 1; height: 0.5px; background: var(--color-border-secondary);"></div>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <button class="ralt" id="ralt" onclick="switchMode()"></button>
+      <button class="ralt"><i class="ti ti-brand-google" style="font-size: 17px;" aria-hidden="true"></i> Google</button>
+      <button class="ralt"><i class="ti ti-brand-github" style="font-size: 17px;" aria-hidden="true"></i> GitHub</button>
+    </div>
+
+    <p style="font-size: 12px; text-align: center; color: var(--color-text-secondary); margin: 1.25rem 0 0;">Already have an account? <span style="color: #534AB7; cursor: pointer;">Sign in</span></p>
+  </div>
+</div>
+<script>
+const M = {
+  phone: { other: 'email', label: 'Phone number', sub: 'Sign up with your phone number' },
+  email: { other: 'phone', label: 'Email', sub: 'Sign up with your email' }
+};
+const BTN = {
+  phone: '<i class="ti ti-device-mobile" style="font-size: 17px;" aria-hidden="true"></i> Phone',
+  email: '<i class="ti ti-mail" style="font-size: 17px;" aria-hidden="true"></i> Email'
+};
+let mode = 'phone', cd = 0, civ;
+function renderR() {
+  document.getElementById('ralt').innerHTML = BTN[M[mode].other];
+  document.getElementById('id-label').textContent = M[mode].label;
+  document.getElementById('rsub').textContent = M[mode].sub;
+  document.getElementById('row-phone').style.display = mode === 'phone' ? 'flex' : 'none';
+  document.getElementById('row-email').style.display = mode === 'email' ? 'block' : 'none';
+  const msg = document.getElementById('vmsg');
+  msg.textContent = 'The code expires in 10 minutes';
+  msg.style.color = 'var(--color-text-tertiary)';
+}
+function switchMode() { mode = M[mode].other; renderR(); }
+function sendCode() {
+  if (cd > 0) return;
+  const msg = document.getElementById('vmsg');
+  const val = mode === 'email' ? document.getElementById('em').value.trim() : document.getElementById('ph').value.trim();
+  if (!val) {
+    msg.textContent = mode === 'email' ? 'Enter your email first' : 'Enter your phone number first';
+    msg.style.color = 'var(--color-text-danger)'; return;
+  }
+  msg.textContent = mode === 'email' ? 'Code sent to ' + val : 'Code sent to +65 ' + val;
+  msg.style.color = 'var(--color-text-success)';
+  const btn = document.getElementById('sendbtn');
+  cd = 30; btn.disabled = true; btn.textContent = 'Resend 30s';
+  civ = setInterval(() => {
+    cd--;
+    btn.textContent = cd > 0 ? 'Resend ' + cd + 's' : 'Send code';
+    if (cd <= 0) { btn.disabled = false; clearInterval(civ); }
+  }, 1000);
+}
+renderR();
+</script>
+</body>
+</html>

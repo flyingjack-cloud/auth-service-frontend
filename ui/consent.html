@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Authorize access — Auth UI Mockup</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#F2F2F5;
+  --color-border-primary:#C9C9D1;
+  --color-border-secondary:#DCDCE2;
+  --color-border-tertiary:#E8E8ED;
+  --color-text-primary:#1C1C21;
+  --color-text-secondary:#65656E;
+  --color-text-tertiary:#94949D;
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+  --border-radius-xl:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--color-background-primary);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--color-text-primary)}
+button{font-family:inherit;background:var(--color-background-primary);border:0.5px solid var(--color-border-primary);border-radius:var(--border-radius-md);padding:8px 14px;font-size:14px;color:var(--color-text-primary);cursor:pointer}
+</style>
+</head>
+<body>
+<div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 2.5rem 1rem; display: flex; justify-content: center;">
+  <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-xl); padding: 2rem 1.75rem; width: 100%; max-width: 380px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 1rem;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; background: #E1F5EE; display: flex; align-items: center; justify-content: center;"><i class="ti ti-apps" style="font-size: 18px; color: #0F6E56;" aria-hidden="true"></i></div>
+      <i class="ti ti-arrows-exchange" style="font-size: 16px; color: var(--color-text-tertiary);" aria-hidden="true"></i>
+      <div style="width: 40px; height: 40px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center;"><i class="ti ti-shield-check" style="font-size: 18px; color: #534AB7;" aria-hidden="true"></i></div>
+    </div>
+
+    <p style="font-size: 18px; font-weight: 500; text-align: center; margin: 0 0 4px;">Acme wants to access your account</p>
+    <p style="font-size: 13px; text-align: center; color: var(--color-text-secondary); margin: 0 0 1.5rem;">Signed in as maya@example.com</p>
+
+    <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 8px;">This will allow Acme to:</p>
+    <div style="border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 4px 14px; margin-bottom: 1rem;">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary);">
+        <i class="ti ti-user" style="font-size: 17px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <span style="font-size: 13px;">View your name and profile picture</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary);">
+        <i class="ti ti-mail" style="font-size: 17px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <span style="font-size: 13px;">View your email address</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0;">
+        <i class="ti ti-calendar" style="font-size: 17px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <span style="font-size: 13px;">Read your calendar events</span>
+      </div>
+    </div>
+
+    <p style="font-size: 12px; color: var(--color-text-tertiary); line-height: 1.5; margin: 0 0 1.25rem;">By continuing, you'll be redirected to Acme. You can revoke access anytime in your account settings.</p>
+
+    <div style="display: flex; gap: 10px;">
+      <button style="flex: 1;">Cancel</button>
+      <button style="flex: 1; background: #534AB7; color: #fff; border: none; padding: 10px 0; font-weight: 500;">Allow</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

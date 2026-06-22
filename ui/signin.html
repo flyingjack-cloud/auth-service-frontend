@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — Auth UI Mockup</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#F2F2F5;
+  --color-border-primary:#C9C9D1;
+  --color-border-secondary:#DCDCE2;
+  --color-border-tertiary:#E8E8ED;
+  --color-text-primary:#1C1C21;
+  --color-text-secondary:#65656E;
+  --color-text-tertiary:#94949D;
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+  --border-radius-xl:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--color-background-primary);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--color-text-primary)}
+input,select{padding:9px 12px;border:0.5px solid var(--color-border-primary);border-radius:var(--border-radius-md);font-size:14px;font-family:inherit;background:var(--color-background-primary);color:var(--color-text-primary)}
+input:focus,select:focus{outline:2px solid #534AB7;outline-offset:-1px}
+button{font-family:inherit;background:var(--color-background-primary);border:0.5px solid var(--color-border-primary);border-radius:var(--border-radius-md);padding:8px 14px;font-size:14px;color:var(--color-text-primary);cursor:pointer}
+.alt{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px}
+</style>
+</head>
+<body>
+<div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 2.5rem 1rem; display: flex; justify-content: center;">
+  <div style="background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-xl); padding: 2rem 1.75rem; width: 100%; max-width: 360px;">
+    <div style="width: 48px; height: 48px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+      <i class="ti ti-lock" style="font-size: 22px; color: #534AB7;" aria-hidden="true"></i>
+    </div>
+    <p style="font-size: 20px; font-weight: 500; text-align: center; margin: 0 0 4px;">Sign in</p>
+    <p id="sub" style="font-size: 13px; text-align: center; color: var(--color-text-secondary); margin: 0 0 1.5rem;">Sign in with your phone number</p>
+
+    <label id="p-label" style="display: block; font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">Phone number</label>
+    <div id="row-phone" style="display: flex; gap: 8px; margin-bottom: 12px;">
+      <select style="width: 86px;"><option>+65</option><option>+1</option><option>+44</option><option>+86</option></select>
+      <input type="tel" placeholder="8123 4567" style="flex: 1; min-width: 0;">
+    </div>
+    <div id="row-text" style="display: none; margin-bottom: 12px;">
+      <input id="p-input" type="email" placeholder="you@example.com" style="width: 100%;">
+    </div>
+
+    <label for="pw" style="display: block; font-size: 12px; color: var(--color-text-secondary); margin: 0 0 4px;">Password</label>
+    <input id="pw" type="password" placeholder="••••••••" style="width: 100%; margin-bottom: 6px;">
+    <p style="font-size: 12px; margin: 0 0 1.25rem; text-align: right;"><span style="color: #534AB7; cursor: pointer;">Forgot password?</span></p>
+
+    <button style="width: 100%; background: #534AB7; color: #fff; border: none; padding: 10px 0; font-weight: 500;">Sign in</button>
+
+    <div style="display: flex; align-items: center; gap: 10px; margin: 1.25rem 0;">
+      <div style="flex: 1; height: 0.5px; background: var(--color-border-secondary);"></div>
+      <span style="font-size: 12px; color: var(--color-text-tertiary);">or sign in with</span>
+      <div style="flex: 1; height: 0.5px; background: var(--color-border-secondary);"></div>
+    </div>
+
+    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+      <button class="alt" id="alt1" onclick="switchTo(this.dataset.k)"></button>
+      <button class="alt" id="alt2" onclick="switchTo(this.dataset.k)"></button>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="alt"><i class="ti ti-brand-google" style="font-size: 17px;" aria-hidden="true"></i> Google</button>
+      <button class="alt"><i class="ti ti-brand-github" style="font-size: 17px;" aria-hidden="true"></i> GitHub</button>
+    </div>
+
+    <p style="font-size: 12px; text-align: center; color: var(--color-text-secondary); margin: 1.25rem 0 0;">No account? <span style="color: #534AB7; cursor: pointer;">Create one</span></p>
+  </div>
+</div>
+<script>
+const P = {
+  phone: { name: 'Phone', icon: 'ti-device-mobile', label: 'Phone number', sub: 'Sign in with your phone number' },
+  email: { name: 'Email', icon: 'ti-mail', label: 'Email', sub: 'Sign in with your email', ph: 'you@example.com', type: 'email' },
+  username: { name: 'Username', icon: 'ti-at', label: 'Username', sub: 'Sign in with your username', ph: 'maya_r', type: 'text' }
+};
+let cur = 'phone';
+function render() {
+  const others = Object.keys(P).filter(k => k !== cur);
+  [['alt1', others[0]], ['alt2', others[1]]].forEach(([id, k]) => {
+    const b = document.getElementById(id);
+    b.dataset.k = k;
+    b.innerHTML = '<i class="ti ' + P[k].icon + '" style="font-size: 17px;" aria-hidden="true"></i> ' + P[k].name;
+  });
+  document.getElementById('p-label').textContent = P[cur].label;
+  document.getElementById('sub').textContent = P[cur].sub;
+  const isPhone = cur === 'phone';
+  document.getElementById('row-phone').style.display = isPhone ? 'flex' : 'none';
+  document.getElementById('row-text').style.display = isPhone ? 'none' : 'block';
+  if (!isPhone) {
+    const inp = document.getElementById('p-input');
+    inp.type = P[cur].type; inp.placeholder = P[cur].ph; inp.value = '';
+  }
+}
+function switchTo(k) { cur = k; render(); }
+render();
+</script>
+</body>
+</html>

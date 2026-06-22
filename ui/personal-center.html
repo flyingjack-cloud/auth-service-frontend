@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Personal center — Auth UI Mockup</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#F2F2F5;
+  --color-background-success:#E1F5EE;
+  --color-background-warning:#FCF0DB;
+  --color-border-primary:#C9C9D1;
+  --color-border-tertiary:#E8E8ED;
+  --color-text-primary:#1C1C21;
+  --color-text-secondary:#65656E;
+  --color-text-tertiary:#94949D;
+  --color-text-success:#0F6E56;
+  --color-text-warning:#8A5A00;
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+  --border-radius-xl:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;padding:24px;background:var(--color-background-primary);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--color-text-primary)}
+button{font-family:inherit;background:var(--color-background-primary);border:0.5px solid var(--color-border-primary);border-radius:var(--border-radius-md);padding:8px 14px;font-size:14px;color:var(--color-text-primary);cursor:pointer}
+.badge{font-size:12px;padding:3px 10px;border-radius:999px;margin-right:8px}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0}
+.row+.row,.row.b{border-top:0.5px solid var(--color-border-tertiary)}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem}
+.nav{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--border-radius-md);margin-bottom:4px;font-size:13px;color:var(--color-text-secondary)}
+.nav.on{background:#EEEDFE;color:#3C3489;font-weight:500}
+</style>
+</head>
+<body>
+<div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.5rem; display: flex; gap: 1.25rem; flex-wrap: wrap;">
+  <nav style="flex: 0 0 160px; min-width: 150px;">
+    <div class="nav on"><i class="ti ti-user" style="font-size: 17px; color: #534AB7;" aria-hidden="true"></i><span>Profile</span></div>
+    <div class="nav"><i class="ti ti-lock" style="font-size: 17px;" aria-hidden="true"></i><span>Security</span></div>
+    <div class="nav"><i class="ti ti-bell" style="font-size: 17px;" aria-hidden="true"></i><span>Notifications</span></div>
+    <div class="nav"><i class="ti ti-settings" style="font-size: 17px;" aria-hidden="true"></i><span>Preferences</span></div>
+  </nav>
+
+  <main style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 1rem;">
+    <div class="card">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div style="width: 52px; height: 52px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 500; color: #534AB7;">MR</div>
+        <div style="flex: 1;">
+          <p style="font-size: 16px; font-weight: 500; margin: 0;">Maya Rodriguez</p>
+          <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0;">Member since 2024</p>
+        </div>
+        <button style="font-size: 13px;"><i class="ti ti-edit" style="font-size: 15px; vertical-align: -2px; margin-right: 4px;" aria-hidden="true"></i>Edit</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="font-size: 14px; font-weight: 500; margin: 0 0 2px;">Sign-in identifiers</p>
+      <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0 0 12px;">Any verified identifier can be used to sign in</p>
+
+      <div class="row">
+        <i class="ti ti-at" style="font-size: 17px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <div style="flex: 1;"><p style="font-size: 13px; margin: 0;">Username</p><p style="font-size: 12px; margin: 0; color: var(--color-text-secondary);">maya_r</p></div>
+        <button style="font-size: 12px; padding: 4px 12px;">Change</button>
+      </div>
+      <div class="row">
+        <i class="ti ti-mail" style="font-size: 17px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <div style="flex: 1;"><p style="font-size: 13px; margin: 0;">Email</p><p style="font-size: 12px; margin: 0; color: var(--color-text-secondary);">maya@example.com</p></div>
+        <span class="badge" style="background: var(--color-background-success); color: var(--color-text-success);">Verified</span>
+        <button style="font-size: 12px; padding: 4px 12px;">Change</button>
+      </div>
+      <div class="row">
+        <i class="ti ti-device-mobile" style="font-size: 17px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <div style="flex: 1;"><p style="font-size: 13px; margin: 0;">Phone</p><p style="font-size: 12px; margin: 0; color: var(--color-text-secondary);">+65 8123 4567</p></div>
+        <span class="badge" style="background: var(--color-background-warning); color: var(--color-text-warning);">Unverified</span>
+        <button style="font-size: 12px; padding: 4px 12px;">Verify</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="font-size: 14px; font-weight: 500; margin: 0 0 12px;">Linked accounts</p>
+      <div class="row" style="padding-top: 0;">
+        <i class="ti ti-brand-google" style="font-size: 18px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <div style="flex: 1;"><p style="font-size: 13px; margin: 0;">Google</p><p style="font-size: 12px; margin: 0; color: var(--color-text-secondary);">Connected as maya@gmail.com</p></div>
+        <span class="badge" style="background: var(--color-background-success); color: var(--color-text-success); margin-right: 0;">Connected</span>
+      </div>
+      <div class="row">
+        <i class="ti ti-brand-github" style="font-size: 18px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <div style="flex: 1;"><p style="font-size: 13px; margin: 0;">GitHub</p><p style="font-size: 12px; margin: 0; color: var(--color-text-secondary);">Not connected</p></div>
+        <button style="font-size: 12px; padding: 4px 12px;">Connect</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="font-size: 14px; font-weight: 500; margin: 0 0 12px;">Security</p>
+      <div class="row" style="padding-top: 0;">
+        <i class="ti ti-key" style="font-size: 17px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <div style="flex: 1;"><p style="font-size: 13px; margin: 0;">Password</p><p style="font-size: 12px; margin: 0; color: var(--color-text-secondary);">Last changed 3 months ago</p></div>
+        <button style="font-size: 12px; padding: 4px 12px;">Change</button>
+      </div>
+      <div class="row">
+        <i class="ti ti-devices" style="font-size: 17px; color: var(--color-text-secondary);" aria-hidden="true"></i>
+        <div style="flex: 1;"><p style="font-size: 13px; margin: 0;">Active sessions</p><p style="font-size: 12px; margin: 0; color: var(--color-text-secondary);">2 devices signed in</p></div>
+        <button style="font-size: 12px; padding: 4px 12px;">Manage</button>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
