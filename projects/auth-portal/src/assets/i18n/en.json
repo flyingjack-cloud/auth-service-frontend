@@ -125,6 +125,7 @@
     "logout": "Sign out"
   },
   "profile": {
+    "notAvailable": "This feature is not yet available",
     "memberSince": "Member since {{year}}",
     "edit": "Edit",
     "save": "Save",
@@ -150,6 +151,16 @@
       "connect": "Connect",
       "connected": "Connected"
     },
+    "contact": {
+      "currentPassword": "Current password",
+      "error": {
+        "wrongPassword": "Current password is incorrect",
+        "invalidCode": "Invalid code or code has expired",
+        "emailConflict": "Email is already used by another account",
+        "phoneConflict": "Phone number is already used by another account",
+        "default": "Update failed, please try again"
+      }
+    },
     "error": {
       "conflict": "Username is already taken",
       "usernamePattern": "5–15 lowercase letters or numbers only",
@@ -171,11 +182,13 @@
       "title": "Change Password",
       "oldPassword": "Current password",
       "newPassword": "New password (8–16 characters)",
+      "confirmPassword": "Confirm new password",
       "submit": "Change password"
     },
     "success": "Password changed successfully",
     "error": {
       "wrongPassword": "Current password is incorrect",
+      "passwordsMismatch": "Passwords do not match",
       "default": "Change failed, please try again"
     }
   }

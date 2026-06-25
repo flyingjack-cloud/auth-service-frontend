@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AccountService, ApiError, ErrorAlertComponent, LoadingButtonComponent } from '@shared';
+import { AccountService, ApiError, ErrorAlertComponent } from '@shared';
 
 @Component({
   selector: 'auth-security',
@@ -11,7 +11,6 @@ import { AccountService, ApiError, ErrorAlertComponent, LoadingButtonComponent }
     ReactiveFormsModule,
     MatIconModule,
     TranslatePipe,
-    LoadingButtonComponent,
     ErrorAlertComponent,
   ],
   templateUrl: './security.component.html',
@@ -26,6 +25,13 @@ export class SecurityComponent {
   readonly form = inject(FormBuilder).group({
     oldPassword: ['', [Validators.required]],
     newPassword: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
+    confirmPassword: ['', [Validators.required]],
+  }, {
+    validators: (group) => {
+      const np = group.get('newPassword')?.value;
+      const cp = group.get('confirmPassword')?.value;
+      return cp && np !== cp ? { passwordsMismatch: true } : null;
+    },
   });
 
   onManageSessions(): void {

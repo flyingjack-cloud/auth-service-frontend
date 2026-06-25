@@ -125,6 +125,7 @@
     "logout": "退出登录"
   },
   "profile": {
+    "notAvailable": "该功能暂未开放",
     "memberSince": "注册于 {{year}}",
     "edit": "编辑",
     "save": "保存",
@@ -150,6 +151,16 @@
       "connect": "关联",
       "connected": "已关联"
     },
+    "contact": {
+      "currentPassword": "当前密码",
+      "error": {
+        "wrongPassword": "当前密码不正确",
+        "invalidCode": "验证码错误或已过期",
+        "emailConflict": "该邮箱已被其他账号使用",
+        "phoneConflict": "该手机号已被其他账号使用",
+        "default": "修改失败，请稍后重试"
+      }
+    },
     "error": {
       "conflict": "用户名已被占用",
       "usernamePattern": "须为 5-15 位小写字母或数字",
@@ -171,11 +182,13 @@
       "title": "修改密码",
       "oldPassword": "当前密码",
       "newPassword": "新密码（8-16 位）",
+      "confirmPassword": "确认新密码",
       "submit": "修改密码"
     },
     "success": "密码修改成功",
     "error": {
       "wrongPassword": "旧密码不正确，请重新输入",
+      "passwordsMismatch": "两次输入的密码不一致",
       "default": "修改失败，请稍后重试"
     }
   }

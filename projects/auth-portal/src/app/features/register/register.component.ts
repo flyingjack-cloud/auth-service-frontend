@@ -4,7 +4,8 @@ import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angu
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TranslatePipe } from '@ngx-translate/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { AccountService, ApiError, CodeCaptchaFieldComponent, ErrorAlertComponent } from '@shared';
 
@@ -27,6 +28,8 @@ export class RegisterComponent {
   private readonly account = inject(AccountService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   readonly registerType = signal<'phone' | 'email'>('email');
   readonly loading = signal(false);
@@ -71,8 +74,8 @@ export class RegisterComponent {
     console.warn('not implemented: phone country selector');
   }
 
-  onSocialLogin(provider: string): void {
-    console.warn(`not implemented: social login (${provider})`);
+  onSocialLogin(_provider: string): void {
+    this.snackBar.open(this.translate.instant('profile.notAvailable'), '', { duration: 2500 });
   }
 
   onSubmit(): void {

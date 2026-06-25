@@ -40,13 +40,22 @@
       <p class="field-error">{{ 'register.passwordHint' | translate }}</p>
     }
 
-    <sh-loading-button
-      [loading]="loading()"
-      [disabled]="form.invalid"
-      (clicked)="onSubmit()"
-      style="display:block;margin-top:12px;"
+    <label class="field-label">{{ 'security.changePassword.confirmPassword' | translate }}</label>
+    <div class="field-row">
+      <input class="text-input" formControlName="confirmPassword" type="password"
+             autocomplete="new-password" placeholder="••••••••" />
+    </div>
+    @if (form.get('confirmPassword')?.touched && form.hasError('passwordsMismatch')) {
+      <p class="field-error">{{ 'security.error.passwordsMismatch' | translate }}</p>
+    }
+
+    <button
+      class="btn-primary"
+      type="submit"
+      [disabled]="form.invalid || loading()"
+      style="margin-top:12px;"
     >
       {{ 'security.changePassword.submit' | translate }}
-    </sh-loading-button>
+    </button>
   </form>
 </div>

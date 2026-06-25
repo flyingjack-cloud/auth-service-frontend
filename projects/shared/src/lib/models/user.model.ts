@@ -47,6 +47,12 @@ export interface UpdateProfileRequest {
   username: string;
 }
 
+export interface UpdateContactRequest {
+  newContact: string;
+  code: string;
+  currentPassword: string;
+}
+
 export interface UserStatusUpdate {
   enabled?: boolean | null;
   accountNonLocked?: boolean | null;

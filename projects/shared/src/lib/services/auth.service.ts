@@ -45,6 +45,10 @@ export class AuthService {
     );
   }
 
+  setCurrentUser(user: User): void {
+    this._currentUser.set(user);
+  }
+
   logout() {
     return this.http.post<null>('/account/logout', {}).pipe(
       tap(() => {

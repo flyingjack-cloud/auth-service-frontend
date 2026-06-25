@@ -30,13 +30,13 @@
       @if (!editing()) {
         <p class="info-row-value">{{ user()?.username }}</p>
       } @else {
-        <form [formGroup]="form" (ngSubmit)="save()" style="display:flex;align-items:flex-start;gap:8px;margin-top:4px;">
+        <form [formGroup]="form" (ngSubmit)="save()" style="display:flex;align-items:center;gap:8px;margin-top:4px;">
           <input class="text-input" formControlName="username"
                  placeholder="5-15 lowercase letters or numbers"
                  style="flex:1;min-width:0;" />
-          <sh-loading-button [loading]="loading()" [disabled]="form.invalid" (clicked)="save()">
+          <button class="small-btn-primary" type="submit" [disabled]="form.invalid || loading()">
             {{ 'profile.save' | translate }}
-          </sh-loading-button>
+          </button>
           <button class="small-btn" type="button" (click)="cancelEdit()">
             {{ 'profile.cancel' | translate }}
           </button>
@@ -54,39 +54,91 @@
   </div>
 
   <!-- Email row -->
-  <div class="info-row">
-    <mat-icon class="info-row-icon">mail</mat-icon>
+  <div class="info-row" [style.align-items]="editingContact() === 'email' ? 'flex-start' : 'center'">
+    <mat-icon class="info-row-icon" [style.margin-top]="editingContact() === 'email' ? '2px' : '0'">mail</mat-icon>
     <div class="info-row-body">
       <p class="info-row-label">{{ 'profile.identifiers.email' | translate }}</p>
-      <p class="info-row-value">{{ user()?.email ?? ('profile.notBound' | translate) }}</p>
+      @if (editingContact() !== 'email') {
+        <p class="info-row-value">{{ user()?.email ?? ('profile.notBound' | translate) }}</p>
+      } @else {
+        <form [formGroup]="contactForm" (ngSubmit)="saveContact()" style="margin-top:6px;">
+          @if (contactError()) {
+            <sh-error-alert [message]="contactError()! | translate" />
+          }
+          <div class="field-row">
+            <input class="text-input" formControlName="newContact" type="email"
+                   placeholder="your@email.com" autocomplete="email" />
+          </div>
+          <sh-code-captcha-field
+            [control]="codeControl"
+            type="email"
+            [principal]="contactForm.value.newContact ?? ''"
+          />
+          <div class="field-row" style="margin-top:8px;">
+            <input class="text-input" formControlName="currentPassword" type="password"
+                   [placeholder]="'profile.contact.currentPassword' | translate"
+                   autocomplete="current-password" />
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="small-btn-primary" type="submit"
+                    [disabled]="contactForm.invalid || contactLoading()">
+              {{ 'profile.save' | translate }}
+            </button>
+            <button class="small-btn" type="button" (click)="cancelContactEdit()">
+              {{ 'profile.cancel' | translate }}
+            </button>
+          </div>
+        </form>
+      }
     </div>
-    @if (user()?.email) {
-      <span class="badge badge-success">{{ 'profile.badge.verified' | translate }}</span>
-      <button class="small-btn" (click)="onSocialAction('change-email')">
-        {{ 'profile.identifiers.change' | translate }}
-      </button>
-    } @else {
-      <button class="small-btn" (click)="onSocialAction('bind-email')">
-        {{ 'profile.identifiers.verify' | translate }}
+    @if (editingContact() !== 'email') {
+      <button class="small-btn" (click)="startContactEdit('email')">
+        {{ (user()?.email ? 'profile.identifiers.change' : 'profile.identifiers.verify') | translate }}
       </button>
     }
   </div>
 
   <!-- Phone row -->
-  <div class="info-row">
-    <mat-icon class="info-row-icon">phone_iphone</mat-icon>
+  <div class="info-row" [style.align-items]="editingContact() === 'phone' ? 'flex-start' : 'center'">
+    <mat-icon class="info-row-icon" [style.margin-top]="editingContact() === 'phone' ? '2px' : '0'">phone_iphone</mat-icon>
     <div class="info-row-body">
       <p class="info-row-label">{{ 'profile.identifiers.phone' | translate }}</p>
-      <p class="info-row-value">{{ user()?.phone ?? ('profile.notBound' | translate) }}</p>
+      @if (editingContact() !== 'phone') {
+        <p class="info-row-value">{{ user()?.phone ?? ('profile.notBound' | translate) }}</p>
+      } @else {
+        <form [formGroup]="contactForm" (ngSubmit)="saveContact()" style="margin-top:6px;">
+          @if (contactError()) {
+            <sh-error-alert [message]="contactError()! | translate" />
+          }
+          <div class="field-row">
+            <input class="text-input" formControlName="newContact" type="tel"
+                   placeholder="138 0000 0000" autocomplete="tel" />
+          </div>
+          <sh-code-captcha-field
+            [control]="codeControl"
+            type="phone"
+            [principal]="contactForm.value.newContact ?? ''"
+          />
+          <div class="field-row" style="margin-top:8px;">
+            <input class="text-input" formControlName="currentPassword" type="password"
+                   [placeholder]="'profile.contact.currentPassword' | translate"
+                   autocomplete="current-password" />
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="small-btn-primary" type="submit"
+                    [disabled]="contactForm.invalid || contactLoading()">
+              {{ 'profile.save' | translate }}
+            </button>
+            <button class="small-btn" type="button" (click)="cancelContactEdit()">
+              {{ 'profile.cancel' | translate }}
+            </button>
+          </div>
+        </form>
+      }
     </div>
-    @if (user()?.phone) {
-      <span class="badge badge-warning">{{ 'profile.badge.unverified' | translate }}</span>
-      <button class="small-btn" (click)="onSocialAction('verify-phone')">
-        {{ 'profile.identifiers.verify' | translate }}
-      </button>
-    } @else {
-      <button class="small-btn" (click)="onSocialAction('bind-phone')">
-        {{ 'profile.identifiers.verify' | translate }}
+    @if (editingContact() !== 'phone') {
+      <button class="small-btn" (click)="startContactEdit('phone')">
+        {{ (user()?.phone ? 'profile.identifiers.change' : 'profile.identifiers.verify') | translate }}
       </button>
     }
   </div>
@@ -102,7 +154,7 @@
       <p class="info-row-label">Google</p>
       <p class="info-row-value">{{ 'profile.linkedAccounts.notConnected' | translate }}</p>
     </div>
-    <button class="small-btn" (click)="onSocialAction('connect-google')">
+    <button class="small-btn" (click)="onSocialAction()">
       {{ 'profile.linkedAccounts.connect' | translate }}
     </button>
   </div>
@@ -113,7 +165,7 @@
       <p class="info-row-label">GitHub</p>
       <p class="info-row-value">{{ 'profile.linkedAccounts.notConnected' | translate }}</p>
     </div>
-    <button class="small-btn" (click)="onSocialAction('connect-github')">
+    <button class="small-btn" (click)="onSocialAction()">
       {{ 'profile.linkedAccounts.connect' | translate }}
     </button>
   </div>

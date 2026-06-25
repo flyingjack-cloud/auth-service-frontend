@@ -73,13 +73,18 @@
   <div class="alt-row">
     @for (method of altMethods(); track method) {
       <button class="btn-alt" type="button" (click)="setMethod(method)">
+        <mat-icon>{{ methodIcon(method) }}</mat-icon>
         {{ ('login.altMethod.' + method) | translate }}
       </button>
     }
   </div>
   <div class="alt-row">
-    <button class="btn-alt" type="button" (click)="onSocialLogin('google')">Google</button>
-    <button class="btn-alt" type="button" (click)="onSocialLogin('github')">GitHub</button>
+    <button class="btn-alt" type="button" (click)="onSocialLogin('google')">
+      <mat-icon svgIcon="google" />Google
+    </button>
+    <button class="btn-alt" type="button" (click)="onSocialLogin('github')">
+      <mat-icon svgIcon="github" />GitHub
+    </button>
   </div>
 
   <p class="bottom-link">

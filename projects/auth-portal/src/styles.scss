@@ -295,6 +295,14 @@ sh-loading-button button.mat-mdc-raised-button {
   cursor: pointer;
 
   &:hover { border-color: var(--auth-primary); color: var(--auth-primary); }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    flex-shrink: 0;
+  }
 }
 
 .btn-outline {
@@ -343,6 +351,21 @@ sh-loading-button button.mat-mdc-raised-button {
   white-space: nowrap;
 
   &:hover { border-color: var(--auth-primary); color: var(--auth-primary); }
+}
+
+.small-btn-primary {
+  background: var(--auth-primary);
+  border: 0.5px solid transparent;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) { background: var(--auth-primary-dark); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 // ── Divider ─────────────────────────────────────────────

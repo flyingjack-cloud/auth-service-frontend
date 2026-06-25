@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
   User, RegisterRequest, ResetPasswordRequest,
-  ChangePasswordRequest, UpdateProfileRequest,
+  ChangePasswordRequest, UpdateProfileRequest, UpdateContactRequest,
 } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
@@ -39,6 +39,14 @@ export class AccountService {
 
   changePassword(payload: ChangePasswordRequest) {
     return this.http.post<null>('/account/change-password', payload);
+  }
+
+  updateEmail(payload: UpdateContactRequest) {
+    return this.http.put<User>('/account/email', payload);
+  }
+
+  updatePhone(payload: UpdateContactRequest) {
+    return this.http.put<User>('/account/phone', payload);
   }
 
 }
