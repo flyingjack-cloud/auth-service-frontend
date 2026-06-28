@@ -52,6 +52,7 @@ export class AuthService {
           }
           const user = response.body as User;
           this._currentUser.set(user);
+          this.twoFaStatus.setEnabled(false);
           return { kind: 'ok', user };
         })
       );

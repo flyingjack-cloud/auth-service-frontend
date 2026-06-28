@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ApiError, AuthService, ErrorAlertComponent, TwoFaService } from '@shared';
+import { ApiError, AuthService, ErrorAlertComponent, TwoFaService, TwoFaStatusService } from '@shared';
 
 @Component({
   selector: 'auth-two-fa-verify',
@@ -16,6 +16,7 @@ export class TwoFaVerifyComponent {
   private readonly twoFa = inject(TwoFaService);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly twoFaStatus = inject(TwoFaStatusService);
 
   private readonly pendingToken: string;
   private readonly redirectUri: string | undefined;
@@ -47,6 +48,7 @@ export class TwoFaVerifyComponent {
     this.twoFa.verify({ pendingToken: this.pendingToken, code: code! }).subscribe({
       next: (user) => {
         this.auth.setCurrentUser(user);
+        this.twoFaStatus.setEnabled(true);
         if (this.redirectUri) {
           window.location.href = this.redirectUri;
         } else {
