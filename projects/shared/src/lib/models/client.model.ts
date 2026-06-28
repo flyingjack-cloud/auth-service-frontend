@@ -16,7 +16,7 @@ export interface OAuthClient {
 export interface CreateClientRequest {
   clientId: string;
   clientName: string;
-  clientSecret: string;
+  clientSecret?: string;
   authorizationGrantTypes: string;
   clientAuthenticationMethods: string;
   redirectUris: string;
@@ -27,6 +27,11 @@ export interface CreateClientRequest {
   description: string | null;
   avatarUrl: string | null;
   contactEmail: string | null;
+}
+
+export interface CreateClientResponse {
+  client: OAuthClient;
+  plainSecret: string;
 }
 
 export interface UpdateClientRequest {
