@@ -69,3 +69,25 @@ export interface PageResult<T> {
   size: number;
   number: number;
 }
+
+export interface PendingTokenResponse {
+  pendingToken: string;
+}
+
+export interface TwoFaVerifyRequest {
+  pendingToken: string;
+  code: string;
+}
+
+export interface TwoFaSetupResponse {
+  otpAuthUri: string;
+}
+
+export interface TwoFaDisableRequest {
+  password: string;
+  code: string;
+}
+
+export type LoginResult =
+  | { kind: 'ok'; user: User }
+  | { kind: '2fa'; pendingToken: string };
