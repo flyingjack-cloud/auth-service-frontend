@@ -59,3 +59,110 @@
     </button>
   </form>
 </div>
+
+<!-- 2FA card -->
+<div class="info-card">
+  <div class="info-row" style="padding-top:0;">
+    <mat-icon class="info-row-icon">shield</mat-icon>
+    <div class="info-row-body">
+      <p class="info-row-label">{{ 'twoFa.setup.title' | translate }}</p>
+      @if (twoFaStatus.enabled()) {
+        <p class="info-row-value">{{ 'twoFa.setup.enabledDescription' | translate }}</p>
+      } @else {
+        <p class="info-row-value">{{ 'twoFa.setup.disabledDescription' | translate }}</p>
+      }
+    </div>
+
+    @if (twoFaStatus.enabled()) {
+      <span style="display:inline-block;padding:2px 8px;background:#e8f5e9;color:#2e7d32;border-radius:4px;font-size:12px;font-weight:500;margin-right:8px;">
+        {{ 'twoFa.setup.enabledBadge' | translate }}
+      </span>
+      <button class="small-btn" (click)="onToggleDisableForm()">
+        {{ 'twoFa.setup.disableButton' | translate }}
+      </button>
+    } @else {
+      <button class="small-btn" (click)="onSetup2Fa()" [disabled]="twoFaSetupLoading()">
+        {{ 'twoFa.setup.enableButton' | translate }}
+      </button>
+    }
+  </div>
+
+  @if (twoFaSetupError()) {
+    <sh-error-alert [message]="twoFaSetupError()! | translate" />
+  }
+
+  @if (twoFaSuccessMessage()) {
+    <div class="success-notice">{{ twoFaSuccessMessage()! | translate }}</div>
+  }
+
+  <!-- Enable flow: QR code + confirm input -->
+  @if (!twoFaStatus.enabled() && twoFaSetupUri()) {
+    <div style="margin-top:16px;">
+      <p class="field-label">{{ 'twoFa.setup.scanInstruction' | translate }}</p>
+      <div style="display:flex;justify-content:center;margin:12px 0;">
+        <qrcode [qrdata]="twoFaSetupUri()!" [width]="180" [errorCorrectionLevel]="'M'" />
+      </div>
+      <form [formGroup]="setupForm" (ngSubmit)="onConfirm2Fa()">
+        <div class="field-row">
+          <input
+            class="text-input"
+            formControlName="confirmCode"
+            type="text"
+            inputmode="numeric"
+            maxlength="6"
+            [placeholder]="'twoFa.setup.codePlaceholder' | translate"
+          />
+        </div>
+        <button
+          class="btn-primary"
+          type="submit"
+          [disabled]="setupForm.invalid || twoFaSetupLoading()"
+          style="margin-top:8px;"
+        >
+          @if (twoFaSetupLoading()) {
+            <mat-spinner diameter="18" />
+          } @else {
+            {{ 'twoFa.setup.confirmButton' | translate }}
+          }
+        </button>
+      </form>
+    </div>
+  }
+
+  <!-- Disable flow: password + TOTP -->
+  @if (twoFaStatus.enabled() && showDisableForm()) {
+    <form [formGroup]="disableForm" (ngSubmit)="onDisable2Fa()" style="margin-top:12px;">
+      @if (twoFaDisableError()) {
+        <sh-error-alert [message]="twoFaDisableError()! | translate" />
+      }
+      <label class="field-label">{{ 'twoFa.setup.disablePasswordLabel' | translate }}</label>
+      <div class="field-row">
+        <input class="text-input" formControlName="password" type="password"
+               autocomplete="current-password" placeholder="••••••••" />
+      </div>
+      <label class="field-label">{{ 'twoFa.setup.disableTotpLabel' | translate }}</label>
+      <div class="field-row">
+        <input
+          class="text-input"
+          formControlName="code"
+          type="text"
+          inputmode="numeric"
+          maxlength="6"
+          [placeholder]="'twoFa.setup.codePlaceholder' | translate"
+        />
+      </div>
+      <button
+        class="btn-primary"
+        type="submit"
+        [disabled]="disableForm.invalid || twoFaDisableLoading()"
+        style="margin-top:8px;"
+      >
+        @if (twoFaDisableLoading()) {
+          <mat-spinner diameter="18" />
+        } @else {
+          {{ 'twoFa.setup.disableConfirmButton' | translate }}
+        }
+      </button>
+    </form>
+  }
+</div>
