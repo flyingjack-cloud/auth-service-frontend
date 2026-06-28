@@ -1,0 +1,36 @@
+<div class="auth-card">
+  <div class="icon-circle">
+    <mat-icon>lock</mat-icon>
+  </div>
+  <h1 class="card-title">{{ 'twoFa.verify.title' | translate }}</h1>
+  <p class="card-subtitle">{{ 'twoFa.verify.subtitle' | translate }}</p>
+
+  @if (errorMessage()) {
+    <sh-error-alert [message]="errorMessage()! | translate" />
+  }
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="field-row" style="margin-top:16px;">
+      <input
+        class="text-input"
+        formControlName="code"
+        type="text"
+        inputmode="numeric"
+        maxlength="6"
+        autocomplete="one-time-code"
+        [placeholder]="'twoFa.verify.codePlaceholder' | translate"
+      />
+    </div>
+    <button class="btn-primary" type="submit" [disabled]="form.invalid || loading()">
+      @if (loading()) {
+        <mat-spinner diameter="18" />
+      } @else {
+        {{ 'twoFa.verify.submit' | translate }}
+      }
+    </button>
+  </form>
+
+  <p class="bottom-link">
+    <a routerLink="/login" class="link">{{ 'twoFa.verify.back' | translate }}</a>
+  </p>
+</div>

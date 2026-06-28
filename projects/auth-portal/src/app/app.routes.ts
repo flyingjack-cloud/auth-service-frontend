@@ -33,6 +33,11 @@ export const routes: Routes = [
             m => m.ResetPasswordComponent,
           ),
       },
+      {
+        path: '2fa-verify',
+        loadComponent: () =>
+          import('./features/two-fa-verify/two-fa-verify.component').then(m => m.TwoFaVerifyComponent),
+      },
     ],
   },
   {
