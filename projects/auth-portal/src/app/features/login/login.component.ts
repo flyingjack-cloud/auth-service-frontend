@@ -116,12 +116,19 @@ export class LoginComponent {
     this.auth
       .login({ loginType: this.loginType(), principal: principal!, password: password! }, captcha)
       .subscribe({
-        next: () => {
-          const redirectUri = this.route.snapshot.queryParams['redirect_uri'];
-          if (redirectUri) {
-            window.location.href = redirectUri;
+        next: (result) => {
+          if (result.kind === '2fa') {
+            const redirectUri = this.route.snapshot.queryParams['redirect_uri'] as string | undefined;
+            this.router.navigate(['/2fa-verify'], {
+              state: { pendingToken: result.pendingToken, redirectUri },
+            });
           } else {
-            this.router.navigate(['/account']);
+            const redirectUri = this.route.snapshot.queryParams['redirect_uri'] as string | undefined;
+            if (redirectUri) {
+              window.location.href = redirectUri;
+            } else {
+              this.router.navigate(['/account']);
+            }
           }
         },
         error: (err: ApiError) => {
