@@ -60,7 +60,7 @@ export class UserListComponent implements OnInit {
     this.adminUser.getUsers(this.pageIndex, this.pageSize, search).subscribe({
       next: page => {
         this.users.set(page.content);
-        this.totalElements.set(page.totalElements);
+        this.totalElements.set(Number(page.totalElements));
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
