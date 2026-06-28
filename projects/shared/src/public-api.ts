@@ -9,6 +9,8 @@ export * from './lib/services/account.service';
 export * from './lib/services/admin-user.service';
 export * from './lib/services/client-management.service';
 export * from './lib/services/captcha.service';
+export * from './lib/services/two-fa.service';
+export * from './lib/services/two-fa-status.service';
 export * from './lib/guards/auth.guard';
 export * from './lib/guards/admin.guard';
 export * from './lib/utils/pkce.utils';
