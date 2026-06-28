@@ -62,7 +62,7 @@ export class ClientFormComponent implements OnInit {
   readonly form = inject(FormBuilder).group({
     clientId: ['', [Validators.required]],
     clientName: ['', [Validators.required]],
-    clientSecret: ['', [Validators.required]],
+    clientSecret: [''],
     redirectUris: ['', [Validators.required]],
     scopes: ['openid', [Validators.required]],
     description: [''],
@@ -80,9 +80,6 @@ export class ClientFormComponent implements OnInit {
     if (param) {
       this.isEdit.set(true);
       this.editClientId = param;
-      // clientSecret optional in edit mode
-      this.form.get('clientSecret')!.clearValidators();
-      this.form.get('clientSecret')!.updateValueAndValidity();
 
       this.loadingData.set(true);
       this.clientService.getClient(param).subscribe({
@@ -145,7 +142,7 @@ export class ClientFormComponent implements OnInit {
         .createClient({
           clientId: v.clientId!,
           clientName: v.clientName!,
-          clientSecret: v.clientSecret!,
+          ...(v.clientSecret ? { clientSecret: v.clientSecret } : {}),
           redirectUris: v.redirectUris!,
           scopes: v.scopes!,
           description: v.description || null,
@@ -158,7 +155,7 @@ export class ClientFormComponent implements OnInit {
           refreshTokenTtlDays: v.refreshTokenTtlDays!,
         })
         .subscribe({
-          next: () => {
+          next: (res) => {
             this.saving.set(false);
             this.router.navigate(['/clients']);
           },

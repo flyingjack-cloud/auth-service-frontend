@@ -30,8 +30,11 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>{{ isEdit() ? '新密钥（留空保持不变）' : '客户端密钥' }}</mat-label>
+                  <mat-label>{{ isEdit() ? '新密钥（留空保持不变）' : '客户端密钥（留空则自动生成）' }}</mat-label>
                   <input matInput formControlName="clientSecret" type="password" />
+                  @if (!isEdit()) {
+                    <mat-hint>留空则由系统自动生成安全密钥</mat-hint>
+                  }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
