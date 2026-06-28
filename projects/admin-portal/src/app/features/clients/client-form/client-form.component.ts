@@ -1,10 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -28,6 +28,73 @@ import { ApiError, ClientManagementService, ErrorAlertComponent, LoadingButtonCo
 class DeleteClientDialogComponent {}
 
 @Component({
+  selector: 'admin-secret-reveal-dialog',
+  standalone: true,
+  imports: [FormsModule, MatButtonModule, MatCheckboxModule, MatDialogModule, MatIconModule],
+  template: `
+    <h2 mat-dialog-title>密钥已生成</h2>
+    <mat-dialog-content>
+      <p class="warn-text">
+        <mat-icon>warning</mat-icon>
+        此密钥仅显示一次，关闭后将无法再次查看，请立即复制并安全保存。
+      </p>
+      <div class="secret-row">
+        <input class="secret-input" [value]="data.plainSecret" readonly />
+        <button mat-icon-button (click)="copy()" [title]="copied ? '已复制' : '复制密钥'">
+          <mat-icon>{{ copied ? 'check' : 'content_copy' }}</mat-icon>
+        </button>
+      </div>
+      <mat-checkbox [(ngModel)]="confirmed">我已将密钥保存至安全位置</mat-checkbox>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button color="primary" [disabled]="!confirmed" [mat-dialog-close]="true">
+        完成
+      </button>
+    </mat-dialog-actions>
+    <style>
+      .warn-text {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--mat-sys-error, #b00020);
+        font-size: 14px;
+        margin-bottom: 16px;
+      }
+      .warn-text mat-icon { font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
+      .secret-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 16px;
+      }
+      .secret-input {
+        flex: 1;
+        font-family: monospace;
+        font-size: 13px;
+        padding: 8px 10px;
+        border: 1px solid rgba(0,0,0,0.2);
+        border-radius: 4px;
+        background: #f5f5f5;
+        color: #333;
+        outline: none;
+      }
+    </style>
+  `,
+})
+class SecretRevealDialogComponent {
+  readonly data = inject<{ plainSecret: string }>(MAT_DIALOG_DATA);
+  confirmed = false;
+  copied = false;
+
+  copy(): void {
+    navigator.clipboard.writeText(this.data.plainSecret).then(() => {
+      this.copied = true;
+      setTimeout(() => (this.copied = false), 2000);
+    });
+  }
+}
+
+@Component({
   selector: 'admin-client-form',
   standalone: true,
   imports: [
@@ -35,7 +102,6 @@ class DeleteClientDialogComponent {}
     ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
-    MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -95,7 +161,6 @@ export class ClientFormComponent implements OnInit {
             authorizationGrantTypes: client.authorizationGrantTypes,
             clientAuthenticationMethods: client.clientAuthenticationMethods,
           });
-          // These fields cannot be changed after creation
           for (const f of ['clientId', 'scopes', 'authorizationGrantTypes', 'clientAuthenticationMethods', 'requireProofKey']) {
             this.form.get(f)!.disable();
           }
@@ -157,7 +222,14 @@ export class ClientFormComponent implements OnInit {
         .subscribe({
           next: (res) => {
             this.saving.set(false);
-            this.router.navigate(['/clients']);
+            const ref = this.dialog.open(SecretRevealDialogComponent, {
+              data: { plainSecret: res.plainSecret },
+              disableClose: true,
+              width: '480px',
+            });
+            ref.afterClosed().subscribe(() => {
+              this.router.navigate(['/clients']);
+            });
           },
           error: (err: ApiError) => {
             this.saving.set(false);
