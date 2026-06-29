@@ -4,6 +4,7 @@ export interface User {
   username: string;
   phone: string | null;
   email: string | null;
+  redirectTo?: string | null;
   createdAt?: string;
   enabled?: boolean;
   accountNonLocked?: boolean;
@@ -72,6 +73,7 @@ export interface PageResult<T> {
 
 export interface PendingTokenResponse {
   pendingToken: string;
+  redirectTo?: string | null;
 }
 
 export interface TwoFaVerifyRequest {
@@ -89,5 +91,5 @@ export interface TwoFaDisableRequest {
 }
 
 export type LoginResult =
-  | { kind: 'ok'; user: User }
-  | { kind: '2fa'; pendingToken: string };
+  | { kind: 'ok'; user: User; redirectTo?: string | null }
+  | { kind: '2fa'; pendingToken: string; redirectTo?: string | null };

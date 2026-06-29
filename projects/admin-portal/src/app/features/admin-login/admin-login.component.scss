@@ -70,3 +70,20 @@
     letter-spacing: 0.8px;
   }
 }
+
+.back-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--mat-sys-primary);
+  font-size: 14px;
+  text-align: center;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

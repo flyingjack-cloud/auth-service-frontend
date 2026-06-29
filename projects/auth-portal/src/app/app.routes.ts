@@ -41,7 +41,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'oauth2/consent',
+    path: 'consent',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/oauth2-consent/oauth2-consent.component').then(

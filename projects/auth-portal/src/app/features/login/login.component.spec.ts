@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { convertToParamMap } from '@angular/router';
 import { computed, signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
@@ -45,7 +46,7 @@ describe('LoginComponent', () => {
         provideTranslateService({ loader: { provide: TranslateLoader, useValue: dummyLoader } }),
         { provide: AuthService, useValue: mockAuthService },
         { provide: CaptchaService, useValue: mockCaptchaService },
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} } } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {}, queryParamMap: convertToParamMap({}) } } },
       ],
     }).compileComponents();
 

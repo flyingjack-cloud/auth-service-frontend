@@ -1,14 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService, ErrorAlertComponent } from '@shared';
-
-interface AuthorizeResponse {
-  code: string;
-}
 
 @Component({
   selector: 'auth-oauth2-consent',
@@ -19,7 +14,6 @@ interface AuthorizeResponse {
 })
 export class OAuth2ConsentComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
 
   readonly loading = signal(false);
@@ -29,8 +23,6 @@ export class OAuth2ConsentComponent implements OnInit {
   clientId = '';
   redirectUri = '';
   scope = '';
-  codeChallenge = '';
-  codeChallengeMethod = '';
   state = '';
 
   get scopeList(): string[] {
@@ -62,41 +54,38 @@ export class OAuth2ConsentComponent implements OnInit {
     this.clientId = p['client_id'] ?? '';
     this.redirectUri = p['redirect_uri'] ?? '';
     this.scope = p['scope'] ?? '';
-    this.codeChallenge = p['code_challenge'] ?? '';
-    this.codeChallengeMethod = p['code_challenge_method'] ?? 'S256';
     this.state = p['state'] ?? '';
   }
 
   authorize(): void {
     this.loading.set(true);
-    this.errorMessage.set(null);
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `${window.location.origin}/oauth2/authorize`;
 
-    const body = new URLSearchParams({
-      response_type: 'code',
+    const fields: Record<string, string> = {
       client_id: this.clientId,
-      redirect_uri: this.redirectUri,
-      scope: this.scope,
-      code_challenge: this.codeChallenge,
-      code_challenge_method: this.codeChallengeMethod,
       state: this.state,
-    });
+    };
 
-    this.http
-      .post<AuthorizeResponse>('/oauth2/authorize', body.toString(), {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      })
-      .subscribe({
-        next: res => {
-          const url = new URL(this.redirectUri);
-          url.searchParams.set('code', res.code);
-          if (this.state) url.searchParams.set('state', this.state);
-          window.location.href = url.toString();
-        },
-        error: () => {
-          this.loading.set(false);
-          this.errorMessage.set('consent.error.default');
-        },
-      });
+    // 每个 scope 作为独立的 hidden input，Spring AS 按 Set 接收
+    for (const [name, value] of Object.entries(fields)) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    }
+    for (const s of this.scopeList) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'scope';
+      input.value = s;
+      form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
   }
 
   deny(): void {

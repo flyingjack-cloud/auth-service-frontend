@@ -1,3 +1,3 @@
 export const environment = {
-  apiBaseUrl: 'http://localhost:9001',
+  apiBaseUrl: 'http://auth.local/api',
 };

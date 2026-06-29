@@ -19,7 +19,7 @@ export class TwoFaVerifyComponent {
   private readonly twoFaStatus = inject(TwoFaStatusService);
 
   private readonly pendingToken: string;
-  private readonly redirectUri: string | undefined;
+  private readonly redirectTo: string | null;
 
   readonly loading = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -29,14 +29,15 @@ export class TwoFaVerifyComponent {
   });
 
   constructor() {
-    const state = history.state as { pendingToken?: string; redirectUri?: string };
+    const state = history.state as { pendingToken?: string; redirectTo?: string | null };
     if (!state?.pendingToken) {
       this.router.navigate(['/login']);
       this.pendingToken = '';
+      this.redirectTo = null;
       return;
     }
     this.pendingToken = state.pendingToken;
-    this.redirectUri = state.redirectUri;
+    this.redirectTo = state.redirectTo ?? null;
   }
 
   onSubmit(): void {
@@ -46,11 +47,12 @@ export class TwoFaVerifyComponent {
 
     const { code } = this.form.value;
     this.twoFa.verify({ pendingToken: this.pendingToken, code: code! }).subscribe({
-      next: (user) => {
-        this.auth.setCurrentUser(user);
+      next: (result) => {
+        this.auth.setCurrentUser(result);
         this.twoFaStatus.setEnabled(true);
-        if (this.redirectUri) {
-          window.location.href = this.redirectUri;
+        const redirectTo = this.chooseRedirect(result.redirectTo, this.redirectTo);
+        if (redirectTo) {
+          window.location.href = redirectTo;
         } else {
           this.router.navigate(['/account']);
         }
@@ -69,5 +71,22 @@ export class TwoFaVerifyComponent {
         }
       },
     });
+  }
+
+  private chooseRedirect(...candidates: Array<string | null | undefined>): string | null {
+    for (const candidate of candidates) {
+      if (candidate && this.isAllowedRedirect(candidate)) return candidate;
+    }
+    return null;
+  }
+
+  private isAllowedRedirect(value: string): boolean {
+    if (value.startsWith('/')) return true;
+    try {
+      const url = new URL(value);
+      return url.origin === window.location.origin && url.pathname.startsWith('/oauth2/authorize');
+    } catch {
+      return false;
+    }
   }
 }

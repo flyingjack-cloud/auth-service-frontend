@@ -1,33 +1,69 @@
 <div class="login-container">
   <mat-card class="login-card">
-    <mat-card-header>
-      <mat-card-title>管理后台</mat-card-title>
-      <mat-card-subtitle>请使用管理员账号登录</mat-card-subtitle>
-    </mat-card-header>
+    @if (!pendingToken()) {
+      <mat-card-header>
+        <mat-card-title>管理后台</mat-card-title>
+        <mat-card-subtitle>请使用管理员账号登录</mat-card-subtitle>
+      </mat-card-header>
 
-    <mat-card-content>
-      <sh-error-alert [message]="errorMessage()" />
+      <mat-card-content>
+        <sh-error-alert [message]="errorMessage()" />
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>用户名</mat-label>
-          <input matInput formControlName="username" autocomplete="username" />
-        </mat-form-field>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>用户名</mat-label>
+            <input matInput formControlName="username" autocomplete="username" />
+          </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>密码</mat-label>
-          <input matInput formControlName="password" type="password" autocomplete="current-password" />
-        </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>密码</mat-label>
+            <input matInput formControlName="password" type="password" autocomplete="current-password" />
+          </mat-form-field>
 
-        <sh-loading-button
-          [loading]="loading()"
-          [disabled]="form.invalid"
-          (clicked)="onSubmit()"
-          class="submit-btn"
-        >
-          登录
-        </sh-loading-button>
-      </form>
-    </mat-card-content>
+          <sh-loading-button
+            [loading]="loading()"
+            [disabled]="form.invalid"
+            (clicked)="onSubmit()"
+            class="submit-btn"
+          >
+            登录
+          </sh-loading-button>
+        </form>
+      </mat-card-content>
+    } @else {
+      <mat-card-header>
+        <mat-card-title>双因素验证</mat-card-title>
+        <mat-card-subtitle>请输入 Authenticator App 上的 6 位验证码</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <sh-error-alert [message]="errorMessage()" />
+
+        <form [formGroup]="twoFaForm" (ngSubmit)="onVerify2Fa()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>验证码</mat-label>
+            <input
+              matInput
+              formControlName="code"
+              inputmode="numeric"
+              maxlength="6"
+              autocomplete="one-time-code"
+              placeholder="000000"
+            />
+          </mat-form-field>
+
+          <sh-loading-button
+            [loading]="loading()"
+            [disabled]="twoFaForm.invalid"
+            (clicked)="onVerify2Fa()"
+            class="submit-btn"
+          >
+            验证
+          </sh-loading-button>
+        </form>
+
+        <button type="button" class="back-btn" (click)="onCancelTwoFa()">返回登录</button>
+      </mat-card-content>
+    }
   </mat-card>
 </div>

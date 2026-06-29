@@ -48,12 +48,12 @@ export class AuthService {
         map((response): LoginResult => {
           if (response.status === 202) {
             const body = response.body as PendingTokenResponse;
-            return { kind: '2fa', pendingToken: body.pendingToken };
+            return { kind: '2fa', pendingToken: body.pendingToken, redirectTo: body.redirectTo };
           }
           const user = response.body as User;
           this._currentUser.set(user);
           this.twoFaStatus.setEnabled(false);
-          return { kind: 'ok', user };
+          return { kind: 'ok', user, redirectTo: user.redirectTo };
         })
       );
   }

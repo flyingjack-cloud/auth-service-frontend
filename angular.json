@@ -78,7 +78,11 @@
               "buildTarget": "auth-portal:build:production"
             },
             "development": {
-              "buildTarget": "auth-portal:build:development"
+              "buildTarget": "auth-portal:build:development",
+              "allowedHosts": [
+                "auth.local",
+                "localhost"
+              ]
             }
           },
           "defaultConfiguration": "development"
@@ -175,7 +179,11 @@
               "buildTarget": "admin-portal:build:production"
             },
             "development": {
-              "buildTarget": "admin-portal:build:development"
+              "buildTarget": "admin-portal:build:development",
+              "allowedHosts": [
+                "auth.local",
+                "localhost"
+              ]
             }
           },
           "defaultConfiguration": "development"
