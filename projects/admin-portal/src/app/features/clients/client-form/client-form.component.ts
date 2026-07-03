@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ApiError, ClientManagementService, ErrorAlertComponent, LoadingButtonComponent } from '@shared';
 
@@ -107,6 +108,7 @@ class SecretRevealDialogComponent {
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
     MatTabsModule,
     LoadingButtonComponent,
     ErrorAlertComponent,
@@ -123,6 +125,8 @@ export class ClientFormComponent implements OnInit {
   readonly loadingData = signal(false);
   readonly saving = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  /** 认证方式为 none（公共客户端，SPA/PKCE）时为 true：隐藏密钥、强制 PKCE */
+  readonly isPublicClient = signal(false);
 
   editClientId = '';
 
@@ -138,11 +142,34 @@ export class ClientFormComponent implements OnInit {
     authorizationGrantTypes: ['authorization_code,refresh_token', [Validators.required]],
     clientAuthenticationMethods: ['client_secret_basic', [Validators.required]],
     requireProofKey: [true],
+    requireAuthorizationConsent: [false],
     accessTokenTtlHours: [2, [Validators.required, Validators.min(1)]],
+    accessTokenTtlMinutes: [null as number | null, [Validators.min(1)]],
     refreshTokenTtlDays: [7, [Validators.required, Validators.min(1)]],
+    reuseRefreshTokens: [true],
   });
 
+  /** 认证方式切换：公共客户端隐藏密钥、强制并锁定 PKCE */
+  private applyClientType(method: string | null | undefined): void {
+    const isPublic = method === 'none';
+    this.isPublicClient.set(isPublic);
+    const secret = this.form.get('clientSecret')!;
+    const proofKey = this.form.get('requireProofKey')!;
+    if (isPublic) {
+      secret.setValue('');
+      secret.disable({ emitEvent: false });
+      proofKey.setValue(true, { emitEvent: false });
+      proofKey.disable({ emitEvent: false });
+    } else if (!this.isEdit()) {
+      secret.enable({ emitEvent: false });
+      proofKey.enable({ emitEvent: false });
+    }
+  }
+
   ngOnInit(): void {
+    this.form.get('clientAuthenticationMethods')!.valueChanges.subscribe(m => this.applyClientType(m));
+    this.applyClientType(this.form.get('clientAuthenticationMethods')!.value);
+
     const param = this.route.snapshot.params['clientId'];
     if (param) {
       this.isEdit.set(true);
@@ -203,7 +230,7 @@ export class ClientFormComponent implements OnInit {
         },
       });
     } else {
-      const v = this.form.value;
+      const v = this.form.getRawValue();
       this.clientService
         .createClient({
           clientId: v.clientId!,
@@ -217,12 +244,20 @@ export class ClientFormComponent implements OnInit {
           authorizationGrantTypes: v.authorizationGrantTypes!,
           clientAuthenticationMethods: v.clientAuthenticationMethods!,
           requireProofKey: v.requireProofKey ?? true,
+          requireAuthorizationConsent: v.requireAuthorizationConsent ?? false,
           accessTokenTtlHours: v.accessTokenTtlHours!,
+          ...(v.accessTokenTtlMinutes ? { accessTokenTtlMinutes: v.accessTokenTtlMinutes } : {}),
           refreshTokenTtlDays: v.refreshTokenTtlDays!,
+          reuseRefreshTokens: v.reuseRefreshTokens ?? true,
         })
         .subscribe({
           next: (res) => {
             this.saving.set(false);
+            // 公共客户端无密钥：后端返回 plainSecret 为空，跳过密钥弹窗
+            if (!res.plainSecret) {
+              this.router.navigate(['/clients']);
+              return;
+            }
             const ref = this.dialog.open(SecretRevealDialogComponent, {
               data: { plainSecret: res.plainSecret },
               disableClose: true,

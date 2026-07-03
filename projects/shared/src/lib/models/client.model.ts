@@ -22,8 +22,13 @@ export interface CreateClientRequest {
   redirectUris: string;
   scopes: string;
   requireProofKey: boolean;
+  requireAuthorizationConsent?: boolean;
   accessTokenTtlHours: number;
+  /** 填写则按分钟，优先于 accessTokenTtlHours（SPA 短时效，如 30） */
+  accessTokenTtlMinutes?: number;
   refreshTokenTtlDays: number;
+  /** false = 每次刷新轮换 refresh token（公共客户端推荐） */
+  reuseRefreshTokens?: boolean;
   description: string | null;
   avatarUrl: string | null;
   contactEmail: string | null;

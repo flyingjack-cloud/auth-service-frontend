@@ -159,6 +159,7 @@
               "outputHashing": "all"
             },
             "development": {
+              "baseHref": "/admin/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
@@ -180,6 +181,7 @@
             },
             "development": {
               "buildTarget": "admin-portal:build:development",
+              "servePath": "/admin",
               "allowedHosts": [
                 "auth.local",
                 "localhost"
