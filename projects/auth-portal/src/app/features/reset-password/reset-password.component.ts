@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -11,6 +11,22 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const confirm = group.get('confirmPassword')?.value;
   return pw && confirm && pw !== confirm ? { passwordMismatch: true } : null;
 }
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_PATTERN = /^\d{11}$/;
+
+function principalType(value: string | null | undefined): 'email' | 'phone' | null {
+  const v = (value ?? '').trim();
+  if (EMAIL_PATTERN.test(v)) return 'email';
+  if (PHONE_PATTERN.test(v)) return 'phone';
+  return null;
+}
+
+const emailOrPhoneValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const value = control.value as string | null | undefined;
+  if (!value) return null;
+  return principalType(value) ? null : { emailOrPhone: true };
+};
 
 @Component({
   selector: 'auth-reset-password',
@@ -36,7 +52,7 @@ export class ResetPasswordComponent {
 
   readonly form = inject(FormBuilder).group(
     {
-      principal: ['', [Validators.required]],
+      principal: ['', [Validators.required, emailOrPhoneValidator]],
       code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
       confirmPassword: ['', [Validators.required]],
@@ -53,7 +69,11 @@ export class ResetPasswordComponent {
   }
 
   get resetType(): 'email' | 'phone' {
-    return (this.form.value.principal ?? '').includes('@') ? 'email' : 'phone';
+    return principalType(this.form.value.principal) ?? 'phone';
+  }
+
+  get captchaPrincipal(): string {
+    return principalType(this.form.value.principal) ? (this.form.value.principal ?? '').trim() : '';
   }
 
   get passwordsMatch(): boolean {

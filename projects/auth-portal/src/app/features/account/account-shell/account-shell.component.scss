@@ -118,3 +118,60 @@
   flex: 1;
   min-width: 0;
 }
+
+@media (max-width: 900px) {
+  .top-bar {
+    height: auto;
+    min-height: 56px;
+    padding: 10px 1rem;
+    gap: 10px;
+  }
+
+  .brand-name {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bar-actions {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .bar-username {
+    display: none;
+  }
+
+  .lang-btn {
+    padding: 4px 8px;
+  }
+
+  .page-body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin: 1rem auto;
+    padding: 0 1rem 1rem;
+  }
+
+  .sidebar {
+    display: flex;
+    gap: 8px;
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 1rem;
+  }
+
+  .nav-item {
+    flex: 1 1 0;
+    justify-content: center;
+    margin-bottom: 0;
+    min-height: 40px;
+  }
+
+  .main-area {
+    width: 100%;
+  }
+}

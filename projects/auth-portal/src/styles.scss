@@ -520,6 +520,50 @@ sh-loading-button button.mat-mdc-raised-button {
   color: var(--auth-text-secondary);
 }
 
+@media (max-width: 768px) {
+  .info-card {
+    padding: 1rem;
+    border-radius: 10px;
+  }
+
+  .info-card-subtitle {
+    line-height: 1.45;
+  }
+
+  .info-row {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) auto;
+    gap: 8px 10px;
+  }
+
+  .info-row-body {
+    min-width: 0;
+  }
+
+  .info-row-value {
+    overflow-wrap: anywhere;
+  }
+
+  .info-row > .small-btn,
+  .info-row > .small-btn-primary,
+  .info-row > .badge,
+  .info-row > span {
+    margin-left: 0;
+    justify-self: end;
+  }
+
+  .info-row > .small-btn,
+  .info-row > .small-btn-primary {
+    min-height: 34px;
+  }
+
+  .info-row > form,
+  .info-row sh-error-alert {
+    grid-column: 2 / -1;
+  }
+}
+
 // ── Badges ──────────────────────────────────────────────
 .badge {
   font-size: 12px;

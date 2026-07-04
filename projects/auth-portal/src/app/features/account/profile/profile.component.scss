@@ -1,3 +1,10 @@
+.profile-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
 .avatar-circle {
   width: 52px;
   height: 52px;
@@ -10,4 +17,80 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.profile-summary-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.profile-meta {
+  font-size: 13px;
+  color: #65656E;
+  margin: 0;
+}
+
+.inline-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+
+  .text-input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .info-card {
+    padding: 1rem;
+  }
+
+  .info-row {
+    align-items: center !important;
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) auto;
+    gap: 8px 10px;
+  }
+
+  .info-row-body {
+    min-width: 0;
+  }
+
+  .info-row-value {
+    overflow-wrap: anywhere;
+  }
+
+  .info-row > .small-btn {
+    margin-left: 0;
+    justify-self: end;
+  }
+
+  .inline-edit-form,
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .inline-edit-form .small-btn,
+  .inline-edit-form .small-btn-primary,
+  .form-actions .small-btn,
+  .form-actions .small-btn-primary {
+    width: 100%;
+    min-height: 36px;
+  }
 }
