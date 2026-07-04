@@ -16,7 +16,7 @@
 >
 > 所有业务响应均包裹在统一格式中：
 > ```json
-> { "code": 200, "message": "Success", "data": { ... }, "timestamp": 1743783208000 }
+> { "code": 200, "message": "Success", "data": { ... }, "timestamp": "2026-07-04T03:33:18.387159656Z" }
 > ```
 > 错误时 `data` 为 `null`，`code` 为对应 HTTP 状态码。
 
