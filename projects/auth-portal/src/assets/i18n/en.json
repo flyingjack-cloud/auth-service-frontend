@@ -97,6 +97,7 @@
     "backToSignIn": "Back to sign in",
     "success": "Password reset. Please sign in with your new password.",
     "error": {
+      "invalidPrincipal": "Enter a valid email or 11-digit phone number",
       "invalidCode": "Invalid code, please retry",
       "notFound": "Account not found",
       "default": "Reset failed, please try again"

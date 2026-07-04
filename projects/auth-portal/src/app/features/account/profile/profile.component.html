@@ -4,14 +4,12 @@
 
 <!-- Avatar card -->
 <div class="info-card">
-  <div style="display:flex;align-items:center;gap:14px;">
+  <div class="profile-summary">
     <div class="avatar-circle">{{ initials() }}</div>
-    <div style="flex:1;">
-      <p style="font-size:16px;font-weight:500;margin:0;">{{ user()?.username }}</p>
+    <div class="profile-summary-text">
+      <p class="profile-name">{{ user()?.username }}</p>
       @if (memberYear()) {
-        <p style="font-size:13px;color:#65656E;margin:0;">
-          {{ 'profile.memberSince' | translate: { year: memberYear() } }}
-        </p>
+        <p class="profile-meta">{{ 'profile.memberSince' | translate: { year: memberYear() } }}</p>
       }
     </div>
   </div>
@@ -30,10 +28,9 @@
       @if (!editing()) {
         <p class="info-row-value">{{ user()?.username }}</p>
       } @else {
-        <form [formGroup]="form" (ngSubmit)="save()" style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+        <form [formGroup]="form" (ngSubmit)="save()" class="inline-edit-form">
           <input class="text-input" formControlName="username"
-                 placeholder="5-15 lowercase letters or numbers"
-                 style="flex:1;min-width:0;" />
+                 placeholder="5-15 lowercase letters or numbers" />
           <button class="small-btn-primary" type="submit" [disabled]="form.invalid || loading()">
             {{ 'profile.save' | translate }}
           </button>
@@ -79,7 +76,7 @@
                    [placeholder]="'profile.contact.currentPassword' | translate"
                    autocomplete="current-password" />
           </div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
+          <div class="form-actions">
             <button class="small-btn-primary" type="submit"
                     [disabled]="contactForm.invalid || contactLoading()">
               {{ 'profile.save' | translate }}
@@ -124,7 +121,7 @@
                    [placeholder]="'profile.contact.currentPassword' | translate"
                    autocomplete="current-password" />
           </div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
+          <div class="form-actions">
             <button class="small-btn-primary" type="submit"
                     [disabled]="contactForm.invalid || contactLoading()">
               {{ 'profile.save' | translate }}

@@ -97,6 +97,7 @@
     "backToSignIn": "返回登录",
     "success": "密码已重置，请使用新密码登录",
     "error": {
+      "invalidPrincipal": "请输入有效的邮箱或 11 位手机号",
       "invalidCode": "验证码错误，请重试",
       "notFound": "该账号不存在",
       "default": "重置失败，请稍后重试"

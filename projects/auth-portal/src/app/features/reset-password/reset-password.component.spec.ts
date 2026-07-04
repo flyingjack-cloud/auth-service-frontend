@@ -39,14 +39,20 @@ describe('ResetPasswordComponent', () => {
 
   // ── resetType ──────────────────────────────────────────────────────────────
 
-  it('resetType returns email when principal contains @', () => {
+  it('resetType returns email when principal is a valid email', () => {
     component.form.patchValue({ principal: 'u@example.com' });
     expect(component.resetType).toBe('email');
   });
 
-  it('resetType returns phone when principal has no @', () => {
+  it('resetType returns phone when principal is an 11-digit phone number', () => {
     component.form.patchValue({ principal: '13800000000' });
     expect(component.resetType).toBe('phone');
+  });
+
+  it('marks principal invalid when it is neither email nor phone', () => {
+    component.form.patchValue({ principal: 'not-a-contact' });
+    expect(component.principalControl.hasError('emailOrPhone')).toBeTrue();
+    expect(component.captchaPrincipal).toBe('');
   });
 
   // ── passwordsMatch / passwordsMismatch ────────────────────────────────────
@@ -79,6 +85,14 @@ describe('ResetPasswordComponent', () => {
   it('form is valid when all fields are correct and passwords match', () => {
     component.form.patchValue({
       principal: 'u@example.com', code: '123456',
+      password: 'pass1234', confirmPassword: 'pass1234',
+    });
+    expect(component.form.valid).toBeTrue();
+  });
+
+  it('form is valid with an 11-digit phone principal', () => {
+    component.form.patchValue({
+      principal: '13800000000', code: '123456',
       password: 'pass1234', confirmPassword: 'pass1234',
     });
     expect(component.form.valid).toBeTrue();
