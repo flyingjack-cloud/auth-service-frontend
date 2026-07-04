@@ -6,6 +6,7 @@ import { ENVIRONMENT } from '../tokens/environment.token';
 import { ApiError } from '../models/api-error.model';
 
 const ENV_AUTH = { apiBaseUrl: 'http://localhost:9001' };
+const API_TIMESTAMP = '2026-07-04T03:33:18.387159656Z';
 
 describe('apiInterceptor', () => {
   let http: HttpClient;
@@ -29,7 +30,7 @@ describe('apiInterceptor', () => {
     http.get('/account/check-login').subscribe();
     const req = mock.expectOne('http://localhost:9001/account/check-login');
     expect(req.request.withCredentials).toBeTrue();
-    req.flush({ code: 200, message: 'OK', data: { id: '1' }, timestamp: 0 });
+    req.flush({ code: 200, message: 'OK', data: { id: '1' }, timestamp: API_TIMESTAMP });
   });
 
   it('unwraps the data field from a successful response', (done) => {
@@ -38,7 +39,7 @@ describe('apiInterceptor', () => {
       done();
     });
     mock.expectOne('http://localhost:9001/account/profile').flush({
-      code: 200, message: 'OK', data: { id: '42', username: 'alice' }, timestamp: 0,
+      code: 200, message: 'OK', data: { id: '42', username: 'alice' }, timestamp: API_TIMESTAMP,
     });
   });
 
@@ -98,14 +99,14 @@ describe('apiInterceptor — third-party routing', () => {
     http.get('/captcha/generate/image').subscribe();
     const req = mock.expectOne('http://localhost:7100/captcha/generate/image');
     expect(req.request.withCredentials).toBeTrue();
-    req.flush({ code: 200, message: 'OK', data: { uuid: 'u', base64Image: 'b' }, timestamp: 0 });
+    req.flush({ code: 200, message: 'OK', data: { uuid: 'u', base64Image: 'b' }, timestamp: API_TIMESTAMP });
   });
 
   it('still routes non-captcha paths to apiBaseUrl', () => {
     http.get('/account/profile').subscribe();
     const req = mock.expectOne('http://localhost:9001/account/profile');
     expect(req.request.withCredentials).toBeTrue();
-    req.flush({ code: 200, message: 'OK', data: null, timestamp: 0 });
+    req.flush({ code: 200, message: 'OK', data: null, timestamp: API_TIMESTAMP });
   });
 
   it('falls back to apiBaseUrl for /captcha/ when thirdPartyBaseUrl is absent', () => {
@@ -122,7 +123,7 @@ describe('apiInterceptor — third-party routing', () => {
     h.get('/captcha/generate/image').subscribe();
     const req = m.expectOne('http://localhost:9001/captcha/generate/image');
     expect(req.request.withCredentials).toBeTrue();
-    req.flush({ code: 200, message: 'OK', data: null, timestamp: 0 });
+    req.flush({ code: 200, message: 'OK', data: null, timestamp: API_TIMESTAMP });
     m.verify();
   });
 });

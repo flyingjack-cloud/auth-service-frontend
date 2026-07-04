@@ -65,7 +65,7 @@ src/
 后端所有响应统一包裹：
 
 ```json
-{ "code": 200, "message": "Success", "data": { ... }, "timestamp": 1743783208000 }
+{ "code": 200, "message": "Success", "data": { ... }, "timestamp": "2026-07-04T03:33:18.387159656Z" }
 ```
 
 需在 `HttpInterceptor` 中统一解包 `data` 字段；错误时 `data` 为 `null`，以 `message` 或 `errorId` 区分原因（详见 `API.md` 错误码速查表）。
