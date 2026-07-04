@@ -191,5 +191,42 @@
       "passwordsMismatch": "Passwords do not match",
       "default": "Change failed, please try again"
     }
+  },
+  "twoFa": {
+    "verify": {
+      "title": "Two-Factor Verification",
+      "subtitle": "Enter the 6-digit code from your Authenticator App",
+      "codePlaceholder": "000000",
+      "submit": "Verify",
+      "back": "Back to Sign In",
+      "error": {
+        "invalidToken": "Verification session expired, please sign in again",
+        "invalidCode": "Incorrect code, please try again",
+        "default": "Verification failed, please try again"
+      }
+    },
+    "setup": {
+      "title": "Two-Factor Authentication (2FA)",
+      "disabledDescription": "Add an extra layer of security with an Authenticator App",
+      "enableButton": "Enable 2FA",
+      "scanInstruction": "Scan the QR code with your Authenticator App, then enter the 6-digit code",
+      "codePlaceholder": "000000",
+      "confirmButton": "Confirm Setup",
+      "enabledDescription": "Protected by Authenticator App",
+      "enabledBadge": "Enabled",
+      "disableButton": "Disable 2FA",
+      "disablePasswordLabel": "Current password",
+      "disableTotpLabel": "Authenticator App code",
+      "disableConfirmButton": "Confirm Disable",
+      "success": {
+        "enabled": "2FA has been successfully enabled",
+        "disabled": "2FA has been disabled"
+      },
+      "error": {
+        "invalidCode": "Incorrect code, please try again",
+        "wrongPassword": "Incorrect password",
+        "default": "Operation failed, please try again"
+      }
+    }
   }
 }

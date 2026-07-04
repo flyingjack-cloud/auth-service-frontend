@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { AccountService, ApiError } from '@shared';
+import { AccountService, ApiError, TwoFaService } from '@shared';
 import { SecurityComponent } from './security.component';
 
 const dummyLoader = { getTranslation: () => of({}) };
@@ -10,9 +10,11 @@ const dummyLoader = { getTranslation: () => of({}) };
 describe('SecurityComponent', () => {
   let component: SecurityComponent;
   let mockAccountService: jasmine.SpyObj<Pick<AccountService, 'changePassword'>>;
+  let mockTwoFaService: jasmine.SpyObj<Pick<TwoFaService, 'setup' | 'confirm' | 'disable'>>;
 
   beforeEach(async () => {
     mockAccountService = jasmine.createSpyObj('AccountService', ['changePassword']);
+    mockTwoFaService = jasmine.createSpyObj('TwoFaService', ['setup', 'confirm', 'disable']);
 
     await TestBed.configureTestingModule({
       imports: [SecurityComponent],
@@ -20,6 +22,7 @@ describe('SecurityComponent', () => {
         provideAnimationsAsync(),
         provideTranslateService({ loader: { provide: TranslateLoader, useValue: dummyLoader } }),
         { provide: AccountService, useValue: mockAccountService },
+        { provide: TwoFaService, useValue: mockTwoFaService },
       ],
     }).compileComponents();
 
@@ -34,17 +37,17 @@ describe('SecurityComponent', () => {
   });
 
   it('form is invalid when newPassword is shorter than 8 chars', () => {
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'short' });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'short', confirmPassword: 'short' });
     expect(component.form.invalid).toBeTrue();
   });
 
   it('form is invalid when newPassword is longer than 16 chars', () => {
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'a'.repeat(17) });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'a'.repeat(17), confirmPassword: 'a'.repeat(17) });
     expect(component.form.invalid).toBeTrue();
   });
 
   it('form is valid with correct inputs', () => {
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123' });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123', confirmPassword: 'newpass123' });
     expect(component.form.valid).toBeTrue();
   });
 
@@ -57,7 +60,7 @@ describe('SecurityComponent', () => {
 
   it('onSubmit calls account.changePassword with correct payload', () => {
     mockAccountService.changePassword.and.returnValue(of(null));
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123' });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123', confirmPassword: 'newpass123' });
     component.onSubmit();
     expect(mockAccountService.changePassword).toHaveBeenCalledWith({
       oldPassword: 'current1',
@@ -67,7 +70,7 @@ describe('SecurityComponent', () => {
 
   it('onSubmit sets successMessage and resets form on success', () => {
     mockAccountService.changePassword.and.returnValue(of(null));
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123' });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123', confirmPassword: 'newpass123' });
     component.onSubmit();
     expect(component.successMessage()).toBe('security.success');
     expect(component.form.value.oldPassword).toBeNull();
@@ -76,7 +79,7 @@ describe('SecurityComponent', () => {
 
   it('onSubmit clears loading on success', () => {
     mockAccountService.changePassword.and.returnValue(of(null));
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123' });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123', confirmPassword: 'newpass123' });
     component.onSubmit();
     expect(component.loading()).toBeFalse();
   });
@@ -87,7 +90,7 @@ describe('SecurityComponent', () => {
     mockAccountService.changePassword.and.returnValue(
       throwError(() => new ApiError('error.user.wrong-password', 'Wrong', 400)),
     );
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123' });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123', confirmPassword: 'newpass123' });
     component.onSubmit();
     expect(component.errorMessage()).toBe('security.error.wrongPassword');
   });
@@ -96,7 +99,7 @@ describe('SecurityComponent', () => {
     mockAccountService.changePassword.and.returnValue(
       throwError(() => new ApiError('error.unknown', 'Unknown', 500)),
     );
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123' });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123', confirmPassword: 'newpass123' });
     component.onSubmit();
     expect(component.errorMessage()).toBe('security.error.default');
   });
@@ -105,7 +108,7 @@ describe('SecurityComponent', () => {
     mockAccountService.changePassword.and.returnValue(
       throwError(() => new ApiError('error.unknown', 'Unknown', 500)),
     );
-    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123' });
+    component.form.patchValue({ oldPassword: 'current1', newPassword: 'newpass123', confirmPassword: 'newpass123' });
     component.onSubmit();
     expect(component.loading()).toBeFalse();
   });

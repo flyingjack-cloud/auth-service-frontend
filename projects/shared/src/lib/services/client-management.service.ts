@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { OAuthClient, CreateClientRequest, UpdateClientRequest } from '../models/client.model';
+import { OAuthClient, CreateClientRequest, CreateClientResponse, UpdateClientRequest } from '../models/client.model';
 
 @Injectable({ providedIn: 'root' })
 export class ClientManagementService {
@@ -15,7 +15,7 @@ export class ClientManagementService {
   }
 
   createClient(payload: CreateClientRequest) {
-    return this.http.post<OAuthClient>('/clients/', payload);
+    return this.http.post<CreateClientResponse>('/clients/', payload);
   }
 
   updateClient(clientId: string, payload: UpdateClientRequest) {

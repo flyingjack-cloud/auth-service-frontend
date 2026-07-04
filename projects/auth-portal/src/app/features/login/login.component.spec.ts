@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { convertToParamMap } from '@angular/router';
 import { computed, signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { TranslateLoader, provideTranslateService } from '@ngx-translate/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { ApiError, AuthService, CaptchaService } from '@shared';
+import { ApiError, AuthService, CaptchaService, LoginResult } from '@shared';
 import { LoginComponent } from './login.component';
 import { User } from '@shared';
 
@@ -13,6 +14,10 @@ const dummyLoader = { getTranslation: () => of({}) };
 
 function makeUser(partial: Partial<User> = {}): User {
   return { id: '1', username: 'alice', phone: null, email: null, ...partial };
+}
+
+function makeLoginResultOk(partial: Partial<User> = {}): LoginResult {
+  return { kind: 'ok', user: makeUser(partial) };
 }
 
 describe('LoginComponent', () => {
@@ -41,7 +46,7 @@ describe('LoginComponent', () => {
         provideTranslateService({ loader: { provide: TranslateLoader, useValue: dummyLoader } }),
         { provide: AuthService, useValue: mockAuthService },
         { provide: CaptchaService, useValue: mockCaptchaService },
-        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} } } },
+        { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {}, queryParamMap: convertToParamMap({}) } } },
       ],
     }).compileComponents();
 
@@ -165,7 +170,8 @@ describe('LoginComponent', () => {
   });
 
   it('onSubmit calls auth.login with loginType, principal and password', () => {
-    mockAuthService.login.and.returnValue(of(makeUser()));
+    mockAuthService.login.and.returnValue(of(makeLoginResultOk()));
+    component.loginType.set('username');
     component.form.patchValue({ principal: 'alice', password: 'secret123' });
     component.onSubmit();
     expect(mockAuthService.login).toHaveBeenCalledWith(
@@ -176,7 +182,7 @@ describe('LoginComponent', () => {
 
   it('onSubmit navigates to /account on success with no redirect_uri', async () => {
     const navigateSpy = spyOn(router, 'navigate');
-    mockAuthService.login.and.returnValue(of(makeUser()));
+    mockAuthService.login.and.returnValue(of(makeLoginResultOk()));
     component.form.patchValue({ principal: 'alice', password: 'secret123' });
     component.onSubmit();
     expect(navigateSpy).toHaveBeenCalledWith(['/account']);
@@ -201,7 +207,8 @@ describe('LoginComponent', () => {
   });
 
   it('onSubmit passes captchaUuid and captchaToken as captcha when showCaptcha is true', () => {
-    mockAuthService.login.and.returnValue(of(makeUser()));
+    mockAuthService.login.and.returnValue(of(makeLoginResultOk()));
+    component.loginType.set('username');
     component.failCount.set(3);
     component.captchaUuid.set('test-uuid');
     component.form.patchValue({ principal: 'alice', password: 'secret123', captchaToken: 'ABC123' });

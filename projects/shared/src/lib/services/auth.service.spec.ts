@@ -11,6 +11,7 @@ describe('AuthService', () => {
   let mock: HttpTestingController;
 
   beforeEach(() => {
+    localStorage.removeItem('2fa_enabled');
     TestBed.configureTestingModule({
       providers: [AuthService, provideHttpClient(), provideHttpClientTesting()],
     });
@@ -18,7 +19,10 @@ describe('AuthService', () => {
     mock = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => mock.verify());
+  afterEach(() => {
+    mock.verify();
+    localStorage.removeItem('2fa_enabled');
+  });
 
   it('starts with null currentUser and isLoggedIn = false', () => {
     expect(service.currentUser()).toBeNull();
@@ -34,12 +38,31 @@ describe('AuthService', () => {
     mock.expectOne('/account/check-login').flush(MOCK_USER);
   });
 
-  it('login sets currentUser', (done) => {
-    service.login({ loginType: 'username', principal: 'alice', password: 'pw' }).subscribe(() => {
+  it('login returns { kind: "ok", user } and sets currentUser on 200', (done) => {
+    service.login({ loginType: 'username', principal: 'alice', password: 'pw' }).subscribe(result => {
+      expect(result.kind).toBe('ok');
+      if (result.kind === 'ok') {
+        expect(result.user).toEqual(MOCK_USER);
+      }
       expect(service.currentUser()).toEqual(MOCK_USER);
       done();
     });
     mock.expectOne('/account/login').flush(MOCK_USER);
+  });
+
+  it('login returns { kind: "2fa", pendingToken } and does not set currentUser on 202', (done) => {
+    service.login({ loginType: 'username', principal: 'alice', password: 'pw' }).subscribe(result => {
+      expect(result.kind).toBe('2fa');
+      if (result.kind === '2fa') {
+        expect(result.pendingToken).toBe('pending-tok-xyz');
+      }
+      expect(service.currentUser()).toBeNull();
+      done();
+    });
+    mock.expectOne('/account/login').flush(
+      { pendingToken: 'pending-tok-xyz' },
+      { status: 202, statusText: 'Accepted' }
+    );
   });
 
   it('login with captcha sends X-Captcha-* headers', (done) => {
@@ -54,13 +77,13 @@ describe('AuthService', () => {
     req.flush(MOCK_USER);
   });
 
-  it('logout clears currentUser', (done) => {
-    // Pre-seed: log in first
+  it('logout clears currentUser and 2FA status', (done) => {
+    localStorage.setItem('2fa_enabled', 'true');
     service.login({ loginType: 'username', principal: 'alice', password: 'pw' }).subscribe(() => {
-      // Now log out
       service.logout().subscribe(() => {
         expect(service.currentUser()).toBeNull();
         expect(service.isLoggedIn()).toBeFalse();
+        expect(localStorage.getItem('2fa_enabled')).toBeNull();
         done();
       });
       mock.expectOne('/account/logout').flush(null);

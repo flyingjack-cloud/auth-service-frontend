@@ -78,7 +78,11 @@
               "buildTarget": "auth-portal:build:production"
             },
             "development": {
-              "buildTarget": "auth-portal:build:development"
+              "buildTarget": "auth-portal:build:development",
+              "allowedHosts": [
+                "auth.local",
+                "localhost"
+              ]
             }
           },
           "defaultConfiguration": "development"
@@ -155,6 +159,7 @@
               "outputHashing": "all"
             },
             "development": {
+              "baseHref": "/admin/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
@@ -175,7 +180,12 @@
               "buildTarget": "admin-portal:build:production"
             },
             "development": {
-              "buildTarget": "admin-portal:build:development"
+              "buildTarget": "admin-portal:build:development",
+              "servePath": "/admin",
+              "allowedHosts": [
+                "auth.local",
+                "localhost"
+              ]
             }
           },
           "defaultConfiguration": "development"

@@ -191,5 +191,42 @@
       "passwordsMismatch": "两次输入的密码不一致",
       "default": "修改失败，请稍后重试"
     }
+  },
+  "twoFa": {
+    "verify": {
+      "title": "双因素验证",
+      "subtitle": "请输入 Authenticator App 上的 6 位验证码",
+      "codePlaceholder": "000000",
+      "submit": "验证",
+      "back": "返回登录",
+      "error": {
+        "invalidToken": "验证会话已过期，请重新登录",
+        "invalidCode": "验证码错误，请重试",
+        "default": "验证失败，请稍后重试"
+      }
+    },
+    "setup": {
+      "title": "双因素验证 (2FA)",
+      "disabledDescription": "使用 Authenticator App 为账号增加一层保护",
+      "enableButton": "启用 2FA",
+      "scanInstruction": "使用 Authenticator App 扫描二维码，然后输入 App 生成的 6 位验证码",
+      "codePlaceholder": "000000",
+      "confirmButton": "确认绑定",
+      "enabledDescription": "已通过 Authenticator App 保护",
+      "enabledBadge": "已启用",
+      "disableButton": "停用 2FA",
+      "disablePasswordLabel": "当前密码",
+      "disableTotpLabel": "Authenticator App 验证码",
+      "disableConfirmButton": "确认停用",
+      "success": {
+        "enabled": "2FA 已成功启用",
+        "disabled": "2FA 已停用"
+      },
+      "error": {
+        "invalidCode": "验证码错误，请重试",
+        "wrongPassword": "密码不正确",
+        "default": "操作失败，请稍后重试"
+      }
+    }
   }
 }

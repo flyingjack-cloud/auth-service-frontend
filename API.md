@@ -71,6 +71,87 @@ Prod: POST /api/account/login
 }
 ```
 
+#### 登录响应 — 开启 2FA 时
+
+用户若开启了 2FA，登录接口不再返回 200，而是返回 **202**：
+```json
+{ "code": 202, "message": "2FA required", "data": { "pendingToken": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" } }
+```
+
+客户端须保存 `pendingToken`（有效期 5 分钟），引导用户输入 Authenticator App 上的 6 位验证码，再调用 `POST /account/2fa/verify`。
+
+---
+
+### 完成 2FA 验证
+```
+Dev:  POST /account/2fa/verify
+Prod: POST /api/account/2fa/verify
+```
+**权限：** 公开（持有 pendingToken）
+
+**请求体：**
+```json
+{ "pendingToken": "...", "code": "123456" }
+```
+
+**成功响应 200：** 同普通登录成功（建立 Session，返回用户信息）
+
+**失败场景：**
+- `401`：pendingToken 不存在或已过期（`error.2fa.invalid-token`）
+- `401`：TOTP 验证码错误（`error.2fa.invalid-code`）
+
+---
+
+### 绑定 2FA
+```
+Dev:  POST /account/2fa/setup
+Prod: POST /api/account/2fa/setup
+```
+**权限：** 已登录
+
+**成功响应 200：**
+```json
+{ "data": { "otpAuthUri": "otpauth://totp/flyingjack:myuser?secret=...&issuer=flyingjack" } }
+```
+
+将 `otpAuthUri` 渲染为二维码，用户用 Authenticator App 扫描绑定。Setup 会话有效期 5 分钟。
+
+---
+
+### 确认 2FA 绑定
+```
+Dev:  POST /account/2fa/confirm
+Prod: POST /api/account/2fa/confirm
+```
+**权限：** 已登录
+
+**请求体：**
+```json
+{ "code": "123456" }
+```
+
+扫码后输入 App 显示的第一个验证码，验证通过则 2FA 正式启用。
+
+**成功响应 200：** `data: null`
+
+---
+
+### 关闭 2FA
+```
+Dev:  DELETE /account/2fa
+Prod: DELETE /api/account/2fa
+```
+**权限：** 已登录
+
+**请求体：**
+```json
+{ "password": "currentpassword", "code": "123456" }
+```
+
+需同时提供当前密码和当前 TOTP 码，防止账号被盗后被关闭 2FA。
+
+**成功响应 200：** `data: null`
+
 ---
 
 ### 登出
@@ -427,7 +508,7 @@ GET /.well-known/oauth2-authorization-server
 
 ## 五、OAuth2 客户端管理
 
-> 所有接口均需 **ROLE_ADMIN**。响应不返回 `clientSecret` 明文。
+> 所有接口均需 **ROLE_ADMIN**。创建接口在响应中返回一次性明文密钥，**之后无法再查询**；其余接口不返回密钥原文。
 
 ### 列出所有客户端
 ```
@@ -493,9 +574,33 @@ Prod: POST /api/clients/
 }
 ```
 
-**成功响应 201：** 返回创建后的 `ClientSafeDto`
+`clientSecret` 可省略，省略时服务端自动生成 32 字节随机密钥（Base64URL 编码）。
 
-**失败响应 429：** `clientId` 已存在
+**成功响应 201：**
+```json
+{
+  "data": {
+    "client": {
+      "id": 1,
+      "clientId": "my-app",
+      "clientIdIssuedAt": "2025-04-04T16:00:00Z",
+      "clientName": "My Application",
+      "clientAuthenticationMethods": "client_secret_basic",
+      "authorizationGrantTypes": "authorization_code,refresh_token",
+      "redirectUris": "https://myapp.com/callback",
+      "scopes": "openid",
+      "description": "My application client",
+      "avatarUrl": null,
+      "contactEmail": "admin@myapp.com"
+    },
+    "plainSecret": "abc123..."
+  }
+}
+```
+
+`plainSecret` 为密钥明文，**仅此一次**返回，请立即保存。
+
+**失败响应 409：** `clientId` 已存在
 
 ---
 
@@ -660,5 +765,7 @@ Prod: DELETE /api/admin/users/{id}
 | 403 | `error.oauth2.client.miss` | OAuth2 客户端不存在 |
 | 429 | `error.business.conflict` | 资源已存在（用户名/clientId 冲突） |
 | 429 | `error.security.authenticated.authenticated.over-attempt` | 登录尝试次数过多 |
+| 401 | `error.2fa.invalid-token` | 2FA 会话（pendingToken）无效或过期 |
+| 401 | `error.2fa.invalid-code` | TOTP 验证码错误 |
 | 429 | `error.business.sentinel.flow` | 服务限流 |
 | 500 | `error.system.fail` | 系统内部错误 |

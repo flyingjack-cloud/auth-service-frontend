@@ -29,10 +29,15 @@
                   <input matInput formControlName="clientName" />
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>{{ isEdit() ? '新密钥（留空保持不变）' : '客户端密钥' }}</mat-label>
-                  <input matInput formControlName="clientSecret" type="password" />
-                </mat-form-field>
+                @if (!isPublicClient()) {
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>{{ isEdit() ? '新密钥（留空保持不变）' : '客户端密钥（留空则自动生成）' }}</mat-label>
+                    <input matInput formControlName="clientSecret" type="password" />
+                    @if (!isEdit()) {
+                      <mat-hint>留空则由系统自动生成安全密钥</mat-hint>
+                    }
+                  </mat-form-field>
+                }
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>回调地址（多个用逗号分隔）</mat-label>
@@ -40,7 +45,7 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="full-width">
-                  <mat-label>Scopes（空格分隔）</mat-label>
+                  <mat-label>Scopes（逗号分隔）</mat-label>
                   <input matInput formControlName="scopes" />
                 </mat-form-field>
 
@@ -70,12 +75,24 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                   <mat-label>客户端认证方式</mat-label>
-                  <input matInput formControlName="clientAuthenticationMethods" />
+                  <mat-select formControlName="clientAuthenticationMethods">
+                    <mat-option value="client_secret_basic">机密客户端（client_secret_basic）</mat-option>
+                    <mat-option value="none">公共客户端（none，SPA/PKCE，无密钥）</mat-option>
+                  </mat-select>
                 </mat-form-field>
 
                 <div class="checkbox-row">
                   <mat-checkbox formControlName="requireProofKey">需要 PKCE（requireProofKey）</mat-checkbox>
+                  @if (isPublicClient()) {
+                    <span class="inline-hint">公共客户端必须使用 PKCE，已强制开启</span>
+                  }
                 </div>
+
+                @if (!isEdit()) {
+                  <div class="checkbox-row">
+                    <mat-checkbox formControlName="requireAuthorizationConsent">需要用户授权确认（consent）</mat-checkbox>
+                  </div>
+                }
 
                 <div class="ttl-row">
                   <mat-form-field appearance="outline">
@@ -83,11 +100,25 @@
                     <input matInput formControlName="accessTokenTtlHours" type="number" min="1" />
                   </mat-form-field>
 
+                  @if (!isEdit()) {
+                    <mat-form-field appearance="outline">
+                      <mat-label>AccessToken 有效期（分钟，可选）</mat-label>
+                      <input matInput formControlName="accessTokenTtlMinutes" type="number" min="1" />
+                      <mat-hint>填写则优先于小时（SPA 建议 30）</mat-hint>
+                    </mat-form-field>
+                  }
+
                   <mat-form-field appearance="outline">
                     <mat-label>RefreshToken 有效期（天）</mat-label>
                     <input matInput formControlName="refreshTokenTtlDays" type="number" min="1" />
                   </mat-form-field>
                 </div>
+
+                @if (!isEdit()) {
+                  <div class="checkbox-row">
+                    <mat-checkbox formControlName="reuseRefreshTokens">复用 RefreshToken（取消勾选 = 每次刷新轮换，SPA 推荐取消）</mat-checkbox>
+                  </div>
+                }
               </div>
             </mat-tab>
           </mat-tab-group>
@@ -153,4 +184,11 @@
 
   .ttl-row { display: flex; gap: 16px; }
   .ttl-row mat-form-field { flex: 1; }
+
+  .inline-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6));
+  }
 </style>

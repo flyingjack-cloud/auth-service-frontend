@@ -116,12 +116,16 @@ export class LoginComponent {
     this.auth
       .login({ loginType: this.loginType(), principal: principal!, password: password! }, captcha)
       .subscribe({
-        next: () => {
-          const redirectUri = this.route.snapshot.queryParams['redirect_uri'];
-          if (redirectUri) {
-            window.location.href = redirectUri;
+        next: (result) => {
+          if (result.kind === '2fa') {
+            this.router.navigate(['/2fa-verify'], {
+              state: {
+                pendingToken: result.pendingToken,
+                redirectTo: this.chooseRedirect(result.redirectTo, this.loginRedirectUri()),
+              },
+            });
           } else {
-            this.router.navigate(['/account']);
+            this.redirectAfterLogin(result.redirectTo);
           }
         },
         error: (err: ApiError) => {
@@ -142,6 +146,41 @@ export class LoginComponent {
         this.cooldownSeconds.update(s => Math.max(0, s - 1));
         if (this.cooldownSeconds() === 0) this.failCount.set(0);
       });
+  }
+
+  private redirectAfterLogin(backendRedirectTo?: string | null): void {
+    const fallbackRedirectTo = this.loginRedirectUri();
+    const redirectTo = this.chooseRedirect(backendRedirectTo, fallbackRedirectTo);
+    if (redirectTo) {
+      window.location.href = redirectTo;
+      return;
+    }
+    this.router.navigate(['/account']);
+  }
+
+  private chooseRedirect(...candidates: Array<string | null | undefined>): string | null {
+    for (const candidate of candidates) {
+      if (candidate && this.isAllowedRedirect(candidate)) return candidate;
+    }
+    return null;
+  }
+
+  private loginRedirectUri(): string | null {
+    const redirectUri =
+      this.route.snapshot.queryParamMap.get('redirect_uri') ??
+      new URLSearchParams(window.location.search).get('redirect_uri');
+    if (!redirectUri) return null;
+    return this.isAllowedRedirect(redirectUri) ? redirectUri : null;
+  }
+
+  private isAllowedRedirect(value: string): boolean {
+    if (value.startsWith('/')) return true;
+    try {
+      const url = new URL(value);
+      return url.origin === window.location.origin && url.pathname.startsWith('/oauth2/authorize');
+    } catch {
+      return false;
+    }
   }
 
   private mapError(errorId: string, httpStatus: number): string {

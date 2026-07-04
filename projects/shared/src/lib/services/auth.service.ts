@@ -1,12 +1,14 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { of } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
-import { User, LoginRequest, CaptchaCredentials } from '../models/user.model';
+import { tap, map, catchError } from 'rxjs/operators';
+import { User, LoginRequest, CaptchaCredentials, PendingTokenResponse, LoginResult } from '../models/user.model';
+import { TwoFaStatusService } from './two-fa-status.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly twoFaStatus = inject(TwoFaStatusService);
 
   private readonly _currentUser = signal<User | null>(null);
   private readonly _isAdmin = signal<boolean>(false);
@@ -40,9 +42,20 @@ export class AuthService {
         .set('X-Captcha-ID', captcha.id)
         .set('X-Captcha-Token', captcha.token);
     }
-    return this.http.post<User>('/account/login', payload, { headers }).pipe(
-      tap(user => this._currentUser.set(user))
-    );
+    return this.http
+      .post<User | PendingTokenResponse>('/account/login', payload, { headers, observe: 'response' })
+      .pipe(
+        map((response): LoginResult => {
+          if (response.status === 202) {
+            const body = response.body as PendingTokenResponse;
+            return { kind: '2fa', pendingToken: body.pendingToken, redirectTo: body.redirectTo };
+          }
+          const user = response.body as User;
+          this._currentUser.set(user);
+          this.twoFaStatus.setEnabled(false);
+          return { kind: 'ok', user, redirectTo: user.redirectTo };
+        })
+      );
   }
 
   setCurrentUser(user: User): void {
@@ -54,6 +67,7 @@ export class AuthService {
       tap(() => {
         this._currentUser.set(null);
         this._isAdmin.set(false);
+        this.twoFaStatus.clearStatus();
       })
     );
   }
